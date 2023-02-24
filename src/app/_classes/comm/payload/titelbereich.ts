@@ -10,6 +10,7 @@ export class Titelbereich {
   ini: number;
   sk: number;
   zk: number;
+  /** Attribute */
   mu: number;
   kl: number;
   ch: number;
@@ -18,6 +19,7 @@ export class Titelbereich {
   ge: number;
   ko: number;
   kk: number;
+
   trunkenheit: number;
   hintergrund: string;
 

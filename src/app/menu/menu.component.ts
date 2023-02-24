@@ -16,7 +16,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   destroyed = new Subject();
 
   /** other */
-  nav = -1;
+  nav = 1;
   userDevice: string = '';
   viewport: string = '';
   resizeObservable$: Observable<Event>;

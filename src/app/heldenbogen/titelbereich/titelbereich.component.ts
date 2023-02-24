@@ -13,28 +13,9 @@ import {Titelbereich} from "../../_classes/comm/payload/titelbereich";
 export class TitelbereichComponent implements OnInit, OnDestroy  {
   /** Charakter-Werte */
   public werte: Titelbereich = new Titelbereich();
-  /*
-  aktLeP
-  maxLeP
-  aktAsP
-  maxAsP
-  aktKaP
-  maxKaP
-  gs
-  aw
-  ini
-  sk
-  zk
-  mu
-  kl
-  ch
-  in
-  ff
-  ge
-  ko
-  kk
-  trunkenheit
-  */
+
+
+  /**  */
 
   destroyed = new Subject();
   constructor(private websocket: WebsocketService) { }
