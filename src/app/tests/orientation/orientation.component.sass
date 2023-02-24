@@ -1,0 +1,37 @@
+#mobile, #mobile_portrait, #mobile_landscpae, #tablet, #tablet_portrait, #tablet_landscpae, #other
+  visibility: hidden
+
+// mobile
+@media (max-width: 480px), (max-height: 480px)
+  #mobile
+    visibility: visible
+
+// mobile portrait
+@media (max-width: 480px)
+  #mobile_portrait
+    visibility: visible
+
+// mobile landscape
+@media (max-height: 480px)
+  #mobile_landscpae
+    visibility: visible
+
+// tablet
+@media (max-width: 1024px) and (max-height: 1024px) and (min-width: 481px) and (min-height: 481px)
+  #tablet
+    visibility: visible
+
+// tablet portrait
+@media (min-width: 481px) and (max-width: 768px) and (min-height: 481px)
+  #tablet_portrait
+    visibility: visible
+
+// tablet landscape
+@media (min-width: 769px) and (max-width: 1024px) and (min-height: 481px)
+  #tablet_landscpae
+    visibility: visible
+
+// other
+@media (min-width: 1025px)
+  #other
+    visibility: visible

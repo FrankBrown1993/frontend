@@ -1,0 +1,39 @@
+@import "../../sass/var"
+#body
+  width: 100%
+app-titelbereich
+  width: 100%
+
+// mobile
+@media (max-width: 480px), (max-height: 480px)
+  .navbar
+    display: flex
+    flex-flow: row
+    flex-wrap: wrap
+    justify-content: space-around
+    .flag
+      margin-top: $cube * 2
+      margin-left: $cube
+      margin-right: $cube
+
+// mobile portrait
+@media (max-width: 480px)
+  .flag
+    width: $cube * 20
+    height: $cube * 5
+    background-color: darkred
+
+
+
+// mobile landscape
+@media (max-height: 480px)
+  .flag
+    width: $cube * 18
+    height: $cube * 5
+    background-color: darkblue
+// tablet portrait
+@media (min-width: 481px) and (max-width: 768px) and (min-height: 481px)
+
+// other
+@media (min-width: 769px)
+

@@ -1,0 +1,16 @@
+<!--button *ngIf="nav === 0" (click)="changeNav(1)">login</button>
+<div>device: {{userDevice}}</div>
+<div>viewport orientation: {{viewport}}</div-->
+<app-login (ping)="login($event)" *ngIf="nav === -1"></app-login>
+<div class="horizontalCenter" *ngIf="nav !== -1" id="sides">
+  <div class="verticalCenter">
+    <div class="horizontalCenter" id="middle">
+      <app-heldenbogen *ngIf="nav === 1"></app-heldenbogen>
+    </div>
+  </div>
+</div>
+
+
+
+<!--input type="file" (change)="onFileChanged($event)"-->
+

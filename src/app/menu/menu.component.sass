@@ -1,0 +1,35 @@
+@import "../../sass/var"
+
+#sides
+  background-color: $pergament
+#middle
+  min-height: 100svh
+.verticalCenter
+  min-height: 100svh
+app-heldenbogen
+  width: 100%
+
+// mobile
+@media (max-width: 480px), (max-height: 480px)
+  #middle
+    width: 100vw
+// mobile portrait
+@media (max-width: 480px)
+
+// mobile landscape
+@media (max-height: 480px)
+
+// tablet
+@media (max-width: 1024px) and (max-height: 1024px) and (min-width: 481px) and (min-height: 481px)
+  #middle
+    width: 100vw
+// tablet portrait
+@media (min-width: 481px) and (max-width: 768px) and (min-height: 481px)
+
+// tablet landscape
+@media (min-width: 769px) and (max-width: 1024px) and (min-height: 481px)
+
+// other
+@media (min-width: 1025px)
+  #middle
+    width: $cube * 128

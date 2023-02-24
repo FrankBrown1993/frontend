@@ -1,1 +1,40 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face
+  font-family: "Aladin"
+  src: url('./assets/fonts/Aladin-Regular.ttf') format('truetype')
+@font-face
+  font-family: "DSA-Akademiesiegel"
+  src: url('./assets/fonts/Akademiesiegel.ttf') format('truetype')
+@font-face
+  font-family: "Homemade Apple"
+  src: url('./assets/fonts/HomemadeApple-Regular.ttf') format('truetype')
+
+@import "./sass/var"
+
+*
+  font-family: $aladin
+
+
+body,html
+  font-size: larger
+  margin: 0
+  padding: 0
+  background-color: $pergament
+input
+  background: none
+  outline: none
+  border: none
+h1, h2, h3, h4, h5, h6
+  text-align: center
+
+
+.verticalCenter, .horizontalCenter, .verticalStart, .horizontalStart
+  display: flex
+.verticalCenter, .verticalStart
+  flex-flow: column
+.horizontalCenter, .horizontalStart
+  flex-flow: row
+.verticalCenter, .horizontalCenter
+  justify-content: center
+.verticalStart, .horizontalStart
+  justify-content: start

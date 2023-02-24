@@ -1,0 +1,46 @@
+@import "../../../sass/var"
+
+input
+  font-size: larger
+  text-align: center
+  background: $light
+button
+  visibility: hidden
+  background: none
+  border: none
+  outline: none
+  font-size: 2em
+  color: $light
+  text-shadow: 0px 0px 10px black
+  cursor: pointer
+h1
+  color: $light
+  text-shadow: 0px 0px 10px black
+
+#background
+  background-image: url("../../../assets/images/backgrounds/background.jpg")
+  background-repeat: no-repeat
+  background-position: center
+  background-size: contain
+  filter: sepia(50%)
+  outline: 1px solid black
+  height: 100svh
+
+// mobile
+@media (max-width: 480px), (max-height: 480px)
+  #background
+    width: 100vw
+// mobile portrait
+@media (max-width: 480px)
+
+// mobile landscape
+@media (max-height: 480px)
+
+// tablet portrait
+@media (min-width: 481px) and (max-width: 768px) and (min-height: 481px)
+  #background
+    width: 100vw
+// other
+@media (min-width: 769px)
+  #background
+    width: $cube * 92
