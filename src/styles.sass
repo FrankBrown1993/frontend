@@ -16,7 +16,6 @@
 
 
 body,html
-  font-size: 5vmin
   margin: 0
   padding: 0
   background-color: $pergament
@@ -30,6 +29,7 @@ h1, h2, h3, h4, h5, h6
 
 .verticalCenter, .horizontalCenter, .verticalStart, .horizontalStart
   display: flex
+  flex-wrap: wrap
 .verticalCenter, .verticalStart
   flex-flow: column
 .horizontalCenter, .horizontalStart
@@ -38,3 +38,30 @@ h1, h2, h3, h4, h5, h6
   justify-content: center
 .verticalStart, .horizontalStart
   justify-content: start
+
+// mobile (vw)
+@media (max-width: 480px), (max-height: 480px)
+
+// mobile portrait
+@media (max-width: 480px)
+
+// mobile landscape
+@media (max-height: 480px)
+
+// tablet
+@media (max-width: 1024px) and (max-height: 1024px) and (min-width: 481px) and (min-height: 481px)
+
+// tablet portrait (vmin)
+@media (min-width: 481px) and (max-width: 768px) and (min-height: 481px)
+
+// tablet landscape (vmax)
+@media (min-width: 769px) and (max-width: 1024px) and (min-height: 481px)
+
+// not-pc
+@media (max-width: 1024px)
+  body,html
+    font-size: 2.5vw
+// other ($cube * 128 * %)
+@media (min-width: 1025px)
+  body,html
+    font-size: $cube * 128 * 0.025

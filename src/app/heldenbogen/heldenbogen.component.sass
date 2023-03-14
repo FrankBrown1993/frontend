@@ -1,6 +1,7 @@
 @import "../../sass/var"
 #body
   width: 100%
+  outline: 1px solid darkblue
 app-titelbereich
   width: 100%
 
@@ -34,6 +35,13 @@ app-titelbereich
 // tablet portrait
 @media (min-width: 481px) and (max-width: 768px) and (min-height: 481px)
 
-// other
-@media (min-width: 769px)
 
+
+// not-pc
+@media (max-width: 1024px)
+  app-titelbereich
+    height: 30vw
+// pc
+@media (min-width: 1025px)
+  app-titelbereich
+    height: 30 * $vwCube

@@ -38,7 +38,7 @@ export class HeldenbogenComponent implements OnInit, OnDestroy {
   KK
   Trunkenheit
   */
-  public title: string = 'Allgemeine Informationen';
+  public titel: string = 'Allgemeine Informationen';
 
 
   constructor(private websocket: WebsocketService) { }

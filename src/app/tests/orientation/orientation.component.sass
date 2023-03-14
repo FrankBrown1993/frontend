@@ -1,4 +1,4 @@
-#mobile, #mobile_portrait, #mobile_landscpae, #tablet, #tablet_portrait, #tablet_landscpae, #other
+#mobile, #mobile_portrait, #mobile_landscpae, #tablet, #tablet_portrait, #tablet_landscpae, #not_pc, #pc
   visibility: hidden
 
 // mobile
@@ -31,7 +31,11 @@
   #tablet_landscpae
     visibility: visible
 
+// not-pc
+@media (max-width: 1024px)
+  #not_pc
+    visibility: visible
 // other
 @media (min-width: 1025px)
-  #other
+  #pc
     visibility: visible

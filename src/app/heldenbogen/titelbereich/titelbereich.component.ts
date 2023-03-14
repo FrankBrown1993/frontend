@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 import {Message} from "../../_classes/comm/message";
@@ -11,14 +11,26 @@ import {Titelbereich} from "../../_classes/comm/payload/titelbereich";
   styleUrls: ['./titelbereich.component.sass']
 })
 export class TitelbereichComponent implements OnInit, OnDestroy  {
+  @Input() titel: string;
+
+
   /** Charakter-Werte */
   public werte: Titelbereich = new Titelbereich();
+  public eigenschaften: Map<string, number> = new Map<string, number>();
 
+  /** Abenteuer-Informationen */
+  public datum: string = '';
+  public zeit: string = '';
 
-  /**  */
-
+  /** Websocket */
   destroyed = new Subject();
-  constructor(private websocket: WebsocketService) { }
+
+  constructor(private websocket: WebsocketService) {
+    const namen: string[] = ['1MU', '2KL', '3IN', '4CH', '5FF', '6GE', '7KO', '8KK'];
+    namen.forEach(name => {
+      this.eigenschaften.set(name, 0);
+    });
+  }
 
   ngOnInit(): void {
     const websocket = this.websocket.connect('id').pipe(
@@ -32,12 +44,15 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
         this.werte.copy(neueWerte);
         console.log(neueWerte);
         console.log(this.werte);
+        this.reload();
       }
       console.log(message);
     });
 
     /** Dummy Message */
     this.werte.dummyValues();
+    this.reload();
+
   }
 
   test(): void {
@@ -48,4 +63,29 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
   ngOnDestroy() {
     this.destroyed.next(1);
   }
+
+  reload(): void {
+    this.getEigenschaften();
+    this.datum = this.werte.getDatum('Zwölfgötter');
+    this.zeit = this.werte.getZeitbeschreibung();
+  }
+
+  getEigenschaften(): void {
+    this.eigenschaften.set('1MU', this.werte.mu);
+    this.eigenschaften.set('2KL', this.werte.kl);
+    this.eigenschaften.set('3IN', this.werte.in);
+    this.eigenschaften.set('4CH', this.werte.ch);
+    this.eigenschaften.set('5FF', this.werte.ff);
+    this.eigenschaften.set('6GE', this.werte.ge);
+    this.eigenschaften.set('7KO', this.werte.ko);
+    this.eigenschaften.set('8KK', this.werte.kk);
+  }
+
+  getShakeAnimationTiming() {
+    return {
+      duration: 300,
+      iterations: 3,
+    };
+  }
+
 }

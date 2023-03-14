@@ -12,6 +12,8 @@ import { TalenteComponent } from './heldenbogen/inhalt/talente/talente.component
 import { MenuComponent } from './menu/menu.component';
 import { OrientationComponent } from './tests/orientation/orientation.component';
 import {FormsModule} from "@angular/forms";
+import { ImagerotationComponent } from './tests/imagerotation/imagerotation.component';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -24,11 +26,13 @@ import {FormsModule} from "@angular/forms";
     KampfComponent,
     TalenteComponent,
     MenuComponent,
-    OrientationComponent
+    OrientationComponent,
+    ImagerotationComponent
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

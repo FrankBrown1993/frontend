@@ -1,15 +1,42 @@
 @import "../../../sass/var"
+.background
+  position: absolute
+  background-size: cover
+  background-position: center
+  background-repeat: no-repeat
 
 #body
-  background-color: #00111a
-#leftBlock
-  outline: 1px solid green
-#rightBlock
-  outline: 1px solid red
+  position: absolute
+#infoBox
+  background: $light
+#titel
+  padding-bottom: 0px
+  margin-bottom: 0px
+#wetterbox
+  background-size: contain
+  background-position: bottom
+  background-repeat: no-repeat
   display: flex
-  flex-flow: row
-  justify-content: flex-start
-  flex-wrap: wrap
+  flex-flow: column
+  justify-content: flex-end
+#wolkenbox
+  background-size: contain
+  background-position: top
+  background-repeat: no-repeat
+#tempbox
+  background-size: cover
+  background-position: top
+  background-repeat: no-repeat
+#date, #timebox
+  text-align: center
+
+
+
+#mondbox
+  background-size: contain
+  background-position: center
+  background-repeat: no-repeat
+
 .attribute
   display: flex
   flex-flow: column
@@ -18,42 +45,62 @@
 .wert
   width: 100%
   text-align: center
+
 // mobile
 @media (max-width: 480px), (max-height: 480px)
 
 // mobile portrait
 @media (max-width: 480px)
-  #body
-    height: 30vw
-    -moz-box-shadow: inset 0 -2vh 1vh -1vh $pergament
-    -webkit-box-shadow: inset 0 -2vh 1vh -1vh $pergament
-    box-shadow: inset 0 -2vh 1vh -1vh $pergament
-  #leftBlock
-    width: 30vw
-  #rightBlock
-    margin-top: 7vw
-    width: 70vw
-  .attribute
-    width: 7.5vw
-    height: 7.5vw
-    margin-right: 1.25vw
-    margin-top: 1.25vw
-  .name
-    font-size: 2vw
-    margin-left: 0.625vw
-    margin-top: 0.625vw
-  .wert
-    font-size: 3.5vw
 
 // mobile landscape
 @media (max-height: 480px)
-  #body
+
+// tablet
+@media (max-width: 1024px) and (max-height: 1024px) and (min-width: 481px) and (min-height: 481px)
+
+// tablet portrait
+@media (min-width: 481px) and (max-width: 768px) and (min-height: 481px)
+
+// tablet landscape
+@media (min-width: 769px) and (max-width: 1024px) and (min-height: 481px)
+
+// not-pc
+@media (max-width: 1024px)
+  .background
     height: 30vw
-    -moz-box-shadow: inset 0 -2vh 1vh -1vh $pergament
-    -webkit-box-shadow: inset 0 -2vh 1vh -1vh $pergament
-    box-shadow: inset 0 -2vh 1vh -1vh $pergament
+    width: 100vw
+    -moz-box-shadow: inset 0 -2vw 1vw -1vw $pergament
+    -webkit-box-shadow: inset 0 -2vw 1vw -1vw $pergament
+    box-shadow: inset 0 -2vw 1vw -1vw $pergament
+  #body
+    // transform: translate(0, -30vw)
+    height: 30vw
+    -moz-box-shadow: inset 0 -2vw 1vw -1vw $pergament
+    -webkit-box-shadow: inset 0 -2vw 1vw -1vw $pergament
+    box-shadow: inset 0 -2vw 1vw -1vw $pergament
   #leftBlock
     width: 30vw
+  #infoBox
+    margin-top: 8.25vw
+    width: 25vw
+    height: 18vw
+    border-radius: 5vw
+  #titel
+    margin-top: 2.5vw
+    width: 20vw
+    height: 7vw
+  #wetterbox, #wolkenbox
+    width: 5vw
+    height: 10vw
+  #mondbox
+    width: 2.5vw
+    height: 8vw
+  #tempbox
+    width: 1.75vw
+    height: 4vw
+  #date, #timebox
+    width: 15vw
+    font-size: 2vw
   #rightBlock
     margin-top: 7vw
     width: 70vw
@@ -68,78 +115,55 @@
     margin-top: 0.625vw
   .wert
     font-size: 3.5vw
-// tablet
-@media (max-width: 1024px) and (max-height: 1024px) and (min-width: 481px) and (min-height: 481px)
-
-
-// tablet portrait
-@media (min-width: 481px) and (max-width: 768px) and (min-height: 481px)
-  #body
-    height: 30vmin
-    -moz-box-shadow: inset 0 -2vmin 1vmin -1vmin $pergament
-    -webkit-box-shadow: inset 0 -2vmin 1vmin -1vmin $pergament
-    box-shadow: inset 0 -2vmin 1vmin -1vmin $pergament
-  #leftBlock
-    width: 30vmin
-  #rightBlock
-    width: 70vmin
-    margin-top: 7vmin
-  .attribute
-    width: 7.5vmin
-    height: 7.5vmin
-    margin-right: 1.25vmin
-    margin-top: 1.25vmin
-  .name
-    font-size: 2vmin
-    margin-left: 0.625vmin
-    margin-top: 0.625vmin
-  .wert
-    font-size: 3.5vmin
-
-// tablet landscape
-@media (min-width: 769px) and (max-width: 1024px) and (min-height: 481px)
-  #body
-    height: 30vmax
-    -moz-box-shadow: inset 0 -2vmax 1vmax -1vmax $pergament
-    -webkit-box-shadow: inset 0 -2vmax 1vmax -1vmax $pergament
-    box-shadow: inset 0 -2vmax 1vmax -1vmax $pergament
-  #leftBlock
-    width: 30vmax
-  #rightBlock
-    width: 70vmax
-    margin-top: 7vmax
-  .attribute
-    width: 7.5vmax
-    height: 7.5vmax
-    margin-right: 1.25vmax
-    margin-top: 1.25vmax
-  .name
-    font-size: 2vmax
-    margin-left: 0.625vmax
-    margin-top: 0.625vmax
-  .wert
-    font-size: 3.5vmax
 
 // pc
-@media (min-width: 769px)
+@media (min-width: 1025px)
+  .background
+    height: 30 * $vwCube
+    width: 100 * $vwCube
+    -moz-box-shadow: inset 0 -2 * $vwCube  $vwCube -1 * $vwCube $pergament
+    -webkit-box-shadow: inset 0 -2 * $vwCube $vwCube -1 * $vwCube $pergament
+    box-shadow: inset 0 -2 * $vwCube $vwCube -1 * $vwCube $pergament
   #body
-    height: $cube * 38.4
-    -moz-box-shadow: inset 0 -2vmin 1vmin -1vmin $pergament
-    -webkit-box-shadow: inset 0 -2vmin 1vmin -1vmin $pergament
-    box-shadow: inset 0 -2vmin 1vmin -1vmin $pergament
+    transform: translate(0, 30 * $vwCube)
+    height: 30 * $vwCube
+    -moz-box-shadow: inset 0 -2 * $vwCube  $vwCube -1 * $vwCube $pergament
+    -webkit-box-shadow: inset 0 -2 * $vwCube $vwCube -1 * $vwCube $pergament
+    box-shadow: inset 0 -2 * $vwCube $vwCube -1 * $vwCube $pergament
   #leftBlock
-    width: $cube * 38.4
+    width: 30 * $vwCube
+  #infoBox
+    margin-top: 8.25 * $vwCube
+    width: 25 * $vwCube
+    height: 18 * $vwCube
+    border-radius: 5 * $vwCube
+  #titel
+    margin-top: 2.5 * $vwCube
+    width: 20 * $vwCube
+    height: 7 * $vwCube
+  #wetterbox, #wolkenbox
+    width: 5 * $vwCube
+    height: 10 * $vwCube
+  #mondbox
+    width: 2.5 * $vwCube
+    height: 8 * $vwCube
+  #tempbox
+    width: 1.75 * $vwCube
+    height: 4 * $vwCube
+  #date, #timebox
+    width: 15 * $vwCube
+    font-size:  2 * $vwCube
   #rightBlock
-    width: $cube * 89.6
-    margin-top: $cube * 8.96
+    margin-top: 7 * $vwCube
+    width: 70 * $vwCube
   .attribute
-    width: $cube * 9.6
-    height: $cube * 9.6
-    margin-right: $cube * 1.6
-    margin-top: $cube * 1.6
+    width: 7.5 * $vwCube
+    height: 7.5 * $vwCube
+    margin-right: 1.25 * $vwCube
+    margin-top: 1.25 * $vwCube
   .name
-    font-size: $cube * 2.56
-    margin-top: $cube * 0.8
-    margin-left: $cube * 0.8
+    font-size: 2 * $vwCube
+    margin-left: 0.625 * $vwCube
+    margin-top: 0.625 * $vwCube
   .wert
-    font-size: $cube * 4.48
+    font-size: 3.5 * $vwCube

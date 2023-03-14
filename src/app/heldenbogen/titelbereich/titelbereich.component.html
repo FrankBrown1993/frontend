@@ -1,40 +1,50 @@
-<div class="horizontalStart" id="body">
-  <div id="leftBlock">
+<!--div class="horizontalStart" [style.background-image]="'url(\'assets/images/biomes/\'' + werte.hintergrund + '.jpg)'"-->
+<!--div class="horizontalStart" style="background-image: url('assets/images/biomes/Wald.jpg')"-->
+<!--div class="background" id="biome"
+     [@drunk]="drunk_state"
+     (@drunk.done)="switchDrunkState()"
+     style="background-image: url('assets/images/biomes/Wald.jpg')"></div-->
+<div class="background"
+     [style.background-image]="'url(\'assets/images/biomes/' + werte.hintergrund + '.jpg\')'"
+     [style.animation]="'drunkCam4 20s infinite alternate'">
+</div>
 
+<!--div class="background" style="background-image: url('assets/images/biomes/{{werte.hintergrund}}.jpg'); animation: drunkCam{{werte.trunkenheit}} 20s infinite alternate">
+  <div class="background" id="bg2" style="background-image: url('assets/images/biomes/{{werte.hintergrund}}.jpg'); animation: doubleVision{{werte.trunkenheit}} 15s infinite alternate"></div>
+  <div class="blood" style="background-image: url('assets/images/conditions/blood_vision.png'); opacity: {{((werte.maxLeP - werte.aktLeP) / werte.maxLeP)}}">
+    <div class="blood2" style="background-image: url('assets/images/conditions/blood_edge.png'); opacity: {{((werte.maxLeP - werte.aktLeP) / werte.maxLeP)}}"></div>
   </div>
-  <div id="rightBlock">
-    <div class="attribute">
-      <div class="name">MU</div>
-      <div class="wert">{{werte.mu}}</div>
+  <div class="dirt" style="background-image: url('assets/images/conditions/dirt.png'); opacity: {{(werte.schnutz / 4)}}"></div>
+</div-->
+<div class="horizontalStart" id="body">
+  <div id="leftBlock" class="horizontalCenter">
+    <div class="verticalStart">
+      <div id="infoBox" class="verticalStart">
+        <div class="horizontalCenter">
+          <h4 id="titel">{{titel}}</h4>
+        </div>
+        <div class="horizontalStart">
+          <div id="tempbox" [style.background-image]="'url(\'assets/images/weather/' + werte.aktTemp + '.png\')'"></div>
+          <div id="wetterbox" [style.background-image]="'url(\'assets/images/weather/' + werte.niederschlag + '.png\')'">
+            <div id="wolkenbox" [style.background-image]="'url(\'assets/images/weather/' + werte.bewoelkung + '.png\')'"></div>
+          </div>
+          <div class="verticalCenter">
+            <div id="date">{{datum}}</div>
+            <div id="timebox">{{zeit}}</div>
+
+          </div>
+          <div id="mondbox" [style.background-image]="'url(\'assets/images/weather/mond' + werte.mond + '.png\')'"></div>
+        </div>
+
+      </div>
     </div>
-    <div class="attribute">
-      <div class="name">KL</div>
-      <div class="wert">{{werte.kl}}</div>
-    </div>
-    <div class="attribute">
-      <div class="name">IN</div>
-      <div class="wert">{{werte.in}}</div>
-    </div>
-    <div class="attribute">
-      <div class="name">CH</div>
-      <div class="wert">{{werte.ch}}</div>
-    </div>
-    <div class="attribute">
-      <div class="name">FF</div>
-      <div class="wert">{{werte.ff}}</div>
-    </div>
-    <div class="attribute">
-      <div class="name">GE</div>
-      <div class="wert">{{werte.ge}}</div>
-    </div>
-    <div class="attribute">
-      <div class="name">KO</div>
-      <div class="wert">{{werte.ko}}</div>
-    </div>
-    <div class="attribute">
-      <div class="name">KK</div>
-      <div class="wert">{{werte.kk}}</div>
+  </div>
+  <div id="rightBlock" class="horizontalStart">
+    <div class="attribute" *ngFor="let pair of eigenschaften | keyvalue">
+      <div class="name">{{pair.key.substring(1)}}</div>
+      <div class="wert">{{pair.value}}</div>
     </div>
   </div>
 
 </div>
+drunkCam{{werte.rausch}} 20s infinite alternate
