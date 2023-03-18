@@ -1,21 +1,34 @@
-<!--div class="horizontalStart" [style.background-image]="'url(\'assets/images/biomes/\'' + werte.hintergrund + '.jpg)'"-->
-<!--div class="horizontalStart" style="background-image: url('assets/images/biomes/Wald.jpg')"-->
-<!--div class="background" id="biome"
-     [@drunk]="drunk_state"
-     (@drunk.done)="switchDrunkState()"
-     style="background-image: url('assets/images/biomes/Wald.jpg')"></div-->
 <div class="background"
-     [style.background-image]="'url(\'assets/images/biomes/' + werte.hintergrund + '.jpg\')'"
-     [style.animation]="'drunkCam4 20s infinite alternate'">
+     *ngIf="werte.ohnmacht"
+     [style.background-image]="'url(\'assets/images/conditions/faint.png\')'">
 </div>
-
-<!--div class="background" style="background-image: url('assets/images/biomes/{{werte.hintergrund}}.jpg'); animation: drunkCam{{werte.trunkenheit}} 20s infinite alternate">
-  <div class="background" id="bg2" style="background-image: url('assets/images/biomes/{{werte.hintergrund}}.jpg'); animation: doubleVision{{werte.trunkenheit}} 15s infinite alternate"></div>
-  <div class="blood" style="background-image: url('assets/images/conditions/blood_vision.png'); opacity: {{((werte.maxLeP - werte.aktLeP) / werte.maxLeP)}}">
-    <div class="blood2" style="background-image: url('assets/images/conditions/blood_edge.png'); opacity: {{((werte.maxLeP - werte.aktLeP) / werte.maxLeP)}}"></div>
-  </div>
-  <div class="dirt" style="background-image: url('assets/images/conditions/dirt.png'); opacity: {{(werte.schnutz / 4)}}"></div>
-</div-->
+<div class="background"
+     *ngIf="!werte.ohnmacht"
+     [@drunkVision]="drunkVision"
+     (@drunkVision.done)="toogleAnimation()"
+     [style.background-image]="'url(\'assets/images/biomes/' + werte.hintergrund + '.jpg\')'">
+</div>
+<div class="background"
+     *ngIf="!werte.ohnmacht"
+     [@doubleVision]="doubleVision"
+     (@doubleVision.done)="toogleAnimation()"
+     [style.background-image]="'url(\'assets/images/biomes/' + werte.hintergrund + '.jpg\')'">
+</div>
+<div class="background"
+     *ngIf="!werte.ohnmacht"
+     [style.background-image]="'url(\'assets/images/conditions/blood_edge.png\')'"
+     [style.opacity]="(werte.schmerz) / 4.0">
+</div>
+<div class="background"
+     *ngIf="!werte.ohnmacht"
+     [style.background-image]="'url(\'assets/images/conditions/blood_vision.png\')'"
+     [style.opacity]="(werte.schmerz) / 4.0">
+</div>
+<div class="background"
+     *ngIf="!werte.ohnmacht"
+     [style.background-image]="'url(\'assets/images/conditions/dirt.png\')'"
+     [style.opacity]="(werte.schmutz) / 4.0">
+</div>
 <div class="horizontalStart" id="body">
   <div id="leftBlock" class="horizontalCenter">
     <div class="verticalStart">
@@ -47,4 +60,3 @@
   </div>
 
 </div>
-drunkCam{{werte.rausch}} 20s infinite alternate

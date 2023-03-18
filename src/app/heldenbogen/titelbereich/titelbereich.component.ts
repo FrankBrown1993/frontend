@@ -4,11 +4,17 @@ import {takeUntil} from "rxjs/operators";
 import {Message} from "../../_classes/comm/message";
 import {WebsocketService} from "../../_services/websocket.service";
 import {Titelbereich} from "../../_classes/comm/payload/titelbereich";
+import {drunkVision} from "../../_interfaces/animations/drunkVision";
+import {doubleVision} from "../../_interfaces/animations/double-vision";
 
 @Component({
   selector: 'app-titelbereich',
   templateUrl: './titelbereich.component.html',
-  styleUrls: ['./titelbereich.component.sass']
+  styleUrls: ['./titelbereich.component.sass'],
+  animations: [
+    drunkVision,
+    doubleVision
+  ],
 })
 export class TitelbereichComponent implements OnInit, OnDestroy  {
   @Input() titel: string;
@@ -30,6 +36,23 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
     namen.forEach(name => {
       this.eigenschaften.set(name, 0);
     });
+  }
+
+  public drunkVision = 'done';
+  public doubleVision = 'done';
+
+  public toogleAnimation() {
+    if (this.drunkVision.startsWith('drunk')) {
+      this.drunkVision = 'done';
+      this.doubleVision = 'done';
+    } else {
+      this.drunkVision = 'drunk' + this.werte.rausch;
+      this.doubleVision = 'drunk' + this.werte.rausch;
+    }
+  }
+
+  istOhnmaechtig(): boolean {
+    return false;
   }
 
   ngOnInit(): void {

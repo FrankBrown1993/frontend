@@ -27,7 +27,9 @@ export class Titelbereich {
 
   /** Zustandsvisualisierungen */
   rausch: number;
-  schnutz: number;
+  schmutz: number;
+  schmerz: number;
+  ohnmacht: boolean;
 
 
 
@@ -71,11 +73,14 @@ export class Titelbereich {
     this.mond = other.mond || this.mond;
     this.stunde = other.stunde || this.stunde;
     this.rausch = other.rausch || this.rausch;
-    this.schnutz = other.schnutz || this.schnutz;
+    this.schmutz = other.schmutz || this.schmutz;
+    this.schmerz = other.schmerz || this.schmerz;
+    this.ohnmacht = other.ohnmacht || this.ohnmacht;
+
   }
 
   dummyValues(): void {
-    this.aktLeP = 30;
+    this.aktLeP = 0;
     this.maxLeP = 30;
     this.aktAsP = 24;
     this.maxAsP = 24;
@@ -104,8 +109,10 @@ export class Titelbereich {
     this.mond = 2;
     this.stunde = 11;
     this.minute = 27;
-    this.rausch = 4;
-    this.schnutz = 2;
+    this.rausch = 0;
+    this.schmutz = 1;
+    this.schmerz = 0;
+    this.ohnmacht = false;
   }
 
   getZeitbeschreibung(): string {
