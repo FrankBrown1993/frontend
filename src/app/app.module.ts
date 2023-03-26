@@ -14,6 +14,7 @@ import { OrientationComponent } from './tests/orientation/orientation.component'
 import {FormsModule} from "@angular/forms";
 import { ImagerotationComponent } from './tests/imagerotation/imagerotation.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { ConnectionComponent } from './tests/connection/connection.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     TalenteComponent,
     MenuComponent,
     OrientationComponent,
-    ImagerotationComponent
+    ImagerotationComponent,
+    ConnectionComponent
   ],
   imports: [
     BrowserModule,
