@@ -1,35 +1,43 @@
-<div class="background"
-     *ngIf="werte.ohnmacht"
-     [style.background-image]="'url(\'assets/images/conditions/faint.png\')'">
+<!-- Background -->
+<div>
+  <div class="background"
+       *ngIf="werte.ohnmacht"
+       [style.background-image]="'url(\'assets/images/conditions/faint.png\')'">
+  </div>
+
+  <!-- (@drunkVision.done)="toogleAnimation()" => führt zu Fehlern -->
+  <div class="background"
+       *ngIf="!werte.ohnmacht"
+       [@drunkVision]="drunkVision"
+       (@drunkVision.done)="toggleDrunkVision()"
+       [style.background-image]="'url(\'assets/images/biomes/' + werte.hintergrund + '.jpg\')'">
+  </div>
+  <div class="background"
+       *ngIf="!werte.ohnmacht"
+       [@doubleVision]="doubleVision"
+       (@doubleVision.done)="toggleDoubleVision()"
+       [style.background-image]="'url(\'assets/images/biomes/' + werte.hintergrund + '.jpg\')'">
+  </div>
+  <div class="background"
+       *ngIf="!werte.ohnmacht"
+       [style.background-image]="'url(\'assets/images/conditions/blood_edge.png\')'"
+       [style.opacity]="(werte.schmerz) / 4.0">
+  </div>
+  <div class="background"
+       *ngIf="!werte.ohnmacht"
+       [style.background-image]="'url(\'assets/images/conditions/blood_vision.png\')'"
+       [style.opacity]="(werte.schmerz) / 4.0">
+  </div>
+  <div class="background"
+       *ngIf="!werte.ohnmacht"
+       [style.background-image]="'url(\'assets/images/conditions/dirt.png\')'"
+       [style.opacity]="(werte.schmutz) / 4.0">
+  </div>
 </div>
-<div class="background"
-     *ngIf="!werte.ohnmacht"
-     [@drunkVision]="drunkVision"
-     (@drunkVision.done)="toogleAnimation()"
-     [style.background-image]="'url(\'assets/images/biomes/' + werte.hintergrund + '.jpg\')'">
-</div>
-<div class="background"
-     *ngIf="!werte.ohnmacht"
-     [@doubleVision]="doubleVision"
-     (@doubleVision.done)="toogleAnimation()"
-     [style.background-image]="'url(\'assets/images/biomes/' + werte.hintergrund + '.jpg\')'">
-</div>
-<div class="background"
-     *ngIf="!werte.ohnmacht"
-     [style.background-image]="'url(\'assets/images/conditions/blood_edge.png\')'"
-     [style.opacity]="(werte.schmerz) / 4.0">
-</div>
-<div class="background"
-     *ngIf="!werte.ohnmacht"
-     [style.background-image]="'url(\'assets/images/conditions/blood_vision.png\')'"
-     [style.opacity]="(werte.schmerz) / 4.0">
-</div>
-<div class="background"
-     *ngIf="!werte.ohnmacht"
-     [style.background-image]="'url(\'assets/images/conditions/dirt.png\')'"
-     [style.opacity]="(werte.schmutz) / 4.0">
-</div>
+<!-- Content -->
 <div class="horizontalStart" id="body">
+
+  <!-- Info-Box on the left side -->
   <div id="leftBlock" class="horizontalCenter">
     <div class="verticalStart">
       <div id="infoBox" class="verticalStart">
@@ -52,11 +60,31 @@
       </div>
     </div>
   </div>
+
+  <!-- Attributes and values on the right side -->
   <div id="rightBlock" class="horizontalStart">
+    <!-- Attributes -->
     <div class="attribute" *ngFor="let pair of eigenschaften | keyvalue">
       <div class="name">{{pair.key.substring(1)}}</div>
       <div class="wert">{{pair.value}}</div>
     </div>
-  </div>
 
+    <!-- current LeP -->
+    <div class="modifiable">
+      <div class="name">aktuelle LeP</div>
+      <div class="wert">
+        <img src="assets/images/menu/button_neg.png" (click)="changeLeP('decLeP')">
+        {{werte.aktLeP}}
+        <img src="assets/images/menu/button_pos.png" (click)="changeLeP('incLeP')">
+      </div>
+    </div>
+
+    <!-- max LeP -->
+    <div class="attribute">
+      <div class="name">max LeP</div>
+      <div class="wert">{{werte.maxLeP}}</div>
+    </div>
+  </div>
 </div>
+<div class="abstandshalter"></div>
+

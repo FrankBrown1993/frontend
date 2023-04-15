@@ -96,7 +96,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     if (input.files && input.files.length > 0) {
       const file: File = input.files[0];
       this.getBase64(file).then((data: string) => {
-        const message: Message = new Message('file', 0, -1, data);
+        const message: Message = new Message('file', 0, data);
         this.websocket.sendMessage(message);
       });
     }

@@ -25,10 +25,11 @@ function getDrunkStyle(drunkness: number): AnimationStyleMetadata[] {
   } else if (drunkness === 4) {
     steps.push(style({opacity: '0.3', transform: 'rotate(2deg)', offset: 0.05}));
     steps.push(style({transform: 'rotate(-3deg)', offset: 0.25}));
-    steps.push(style({opacity: '0.5', transform: 'rotate(5deg)', offset: 0.45}));
+    steps.push(style({opacity: '0.5', transform: 'rotate(4.5deg)', offset: 0.45}));
     steps.push(style({opacity: '0.5', transform: 'rotate(-3deg)', offset: 0.65}));
     steps.push(style({opacity: '0.3', transform: 'rotate(2deg)', offset: 0.85}));
     steps.push(style({opacity: '0.2', transform: 'rotate(-2deg)', offset: 0.95}));
+    steps.push(style({opacity: '0.2', transform: 'rotate(0deg)', offset: 1}));
   }
   return steps;
 }

@@ -41,18 +41,20 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
   public drunkVision = 'done';
   public doubleVision = 'done';
 
-  public toogleAnimation() {
+  public toggleDrunkVision() {
     if (this.drunkVision.startsWith('drunk')) {
       this.drunkVision = 'done';
-      this.doubleVision = 'done';
     } else {
       this.drunkVision = 'drunk' + this.werte.rausch;
-      this.doubleVision = 'drunk' + this.werte.rausch;
     }
   }
 
-  istOhnmaechtig(): boolean {
-    return false;
+  public toggleDoubleVision() {
+    if (this.doubleVision.startsWith('drunk')) {
+      this.doubleVision = 'done';
+    } else {
+      this.doubleVision = 'drunk' + this.werte.rausch;
+    }
   }
 
   ngOnInit(): void {
@@ -78,11 +80,6 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
 
   }
 
-  test(): void {
-    const message2: Message = new Message('titelbereich2', 0, -1, '');
-    this.websocket.sendMessage(message2);
-  }
-
   ngOnDestroy() {
     this.destroyed.next(1);
   }
@@ -104,11 +101,38 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
     this.eigenschaften.set('8KK', this.werte.kk);
   }
 
+  /**
+   * Increases or decreases LeP about 1 point
+   * @Param modification: incLeP or decLeP
+   */
+  changeLeP(modification: string): void {
+    const message: Message = new Message('titelbereich', 0, modification);
+    this.sendMessage(message);
+  }
+
+  private sendMessage(message: Message): void {
+    this.websocket.sendMessage(message);
+  }
+
   getShakeAnimationTiming() {
     return {
       duration: 300,
       iterations: 3,
     };
   }
+
+  istOhnmaechtig(): boolean {
+    return false;
+  }
+
+  test(): void {
+    const message2: Message = new Message('titelbereich2', 0, '');
+    this.websocket.sendMessage(message2);
+  }
+
+  test2(): void {
+
+  }
+
 
 }

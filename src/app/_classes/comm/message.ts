@@ -5,11 +5,11 @@ export class Message {
   seq: number;
   body: string;
 
-  constructor(type: string, code: number, seq: number, body: string) {
+  constructor(type: string, code: number, body: string) {
     this.type = type;
     this.code = code;
     this.body = body;
-    this.seq = seq;
+    this.seq = -1;
   }
 
   getFrameSize(): number {

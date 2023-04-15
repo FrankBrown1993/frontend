@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   login(): void {
-    const message: Message = new Message('login', 0, -1, this.input);
+    const message: Message = new Message('login', 0, this.input);
     this.websocket.sendMessage(message);
 
     // ToDo code below should be in incoming messages
