@@ -15,6 +15,8 @@ import {FormsModule} from "@angular/forms";
 import { ImagerotationComponent } from './tests/imagerotation/imagerotation.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { ConnectionComponent } from './tests/connection/connection.component';
+import { ModValuesComponent } from './heldenbogen/mod-values/mod-values.component';
+import { OverlayComponent } from './heldenbogen/overlay/overlay.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { ConnectionComponent } from './tests/connection/connection.component';
     MenuComponent,
     OrientationComponent,
     ImagerotationComponent,
-    ConnectionComponent
+    ConnectionComponent,
+    ModValuesComponent,
+    OverlayComponent
   ],
   imports: [
     BrowserModule,

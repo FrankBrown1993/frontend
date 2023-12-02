@@ -14,11 +14,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   @Output() ping: EventEmitter<any> = new EventEmitter<any>();
   destroyed = new Subject();
 
+  id = 'id_test';
+
   input: string;
   constructor(private websocket: WebsocketService) { }
 
   ngOnInit(): void {
-    const websocket = this.websocket.connect('id').pipe(
+    const websocket = this.websocket.connect(this.id).pipe(
       takeUntil(this.destroyed),
     );
 
@@ -34,7 +36,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   login(): void {
-    const message: Message = new Message('login', 0, this.input);
+    const message: Message = new Message('login', 'login', '', 0, -1, this.input);
     this.websocket.sendMessage(message);
 
     // ToDo code below should be in incoming messages

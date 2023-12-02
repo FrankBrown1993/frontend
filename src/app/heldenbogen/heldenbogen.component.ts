@@ -40,11 +40,13 @@ export class HeldenbogenComponent implements OnInit, OnDestroy {
   */
   public titel: string = 'Allgemeine Informationen';
 
+  public activeOverlay: string = '';
+
 
   constructor(private websocket: WebsocketService) { }
 
   ngOnInit(): void {
-    const websocket = this.websocket.connect('id').pipe(
+    const websocket = this.websocket.connect('15').pipe(
       takeUntil(this.destroyed),
     );
 

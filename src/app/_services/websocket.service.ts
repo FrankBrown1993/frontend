@@ -26,7 +26,7 @@ export class WebsocketService implements OnDestroy {
   }
 
   sendMessage(message: Message): void {
-    console.log('[WEBSOCKET] sendMessage');
+    console.log('[WEBSOCKET] sendMessage', message);
     const maxFrameLimit: number = 65536;
     // const maxFrameLimit: number = 50;
     if (this.connection) {
@@ -43,7 +43,7 @@ export class WebsocketService implements OnDestroy {
           } else {
             remainingBody = '';
           }
-          const splitMsg: Message = new Message(message.type, message.code, body);
+          const splitMsg: Message = new Message(message.type, message.returnTo, message.modifier, message.code, message.charId, body);
           splitMsg.seq = seq;
           if (remainingBody.length >= maxFrameLimit - message.getFrameSizeWithoutBody()) {
             remainingBody = remainingBody.substr(maxFrameLimit - message.getFrameSizeWithoutBody());
@@ -51,7 +51,7 @@ export class WebsocketService implements OnDestroy {
           this.connection.next(splitMsg);
           seq++;
         }
-        const endMessage: Message = new Message(message.type, message.code, '~END~');
+        const endMessage: Message = new Message(message.type, message.returnTo, message.modifier, message.code, message.charId, '~END~');
         endMessage.seq = seq;
         this.connection.next(endMessage);
       } else {

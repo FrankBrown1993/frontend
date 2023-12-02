@@ -13,7 +13,7 @@ export class Titelbereich {
   ini: number;
   sk: number;
   zk: number;
-  trunkenheit: number;
+
 
   /** Attribute */
   mu: number;
@@ -25,13 +25,14 @@ export class Titelbereich {
   ko: number;
   kk: number;
 
-  /** Zustandsvisualisierungen */
+  /** Zustandsvisualisierungen und Zustände */
+  trunkenheit: number;
+  erschoepfung: number;
+  /** visaulisiert */
   rausch: number;
   schmutz: number;
   schmerz: number;
   ohnmacht: boolean;
-
-
 
   /** Abenteuer-Informationen */
   hintergrund: string;
@@ -44,39 +45,38 @@ export class Titelbereich {
   minute: number;
 
   copy(other: Titelbereich): void {
-    this.aktLeP = other.aktLeP || this.aktLeP;
-    this.maxLeP = other.maxLeP || this.maxLeP;
-    this.aktAsP = other.aktAsP || this.aktAsP;
-    this.maxAsP = other.maxAsP || this.maxAsP;
-    this.aktKaP = other.aktKaP || this.aktKaP;
-    this.maxKaP = other.maxKaP || this.maxKaP;
-    this.gs = other.gs || this.gs;
-    this.aw = other.aw || this.aw;
-    this.ini = other.ini || this.ini;
-    this.sk = other.sk || this.sk;
-    this.zk = other.zk || this.zk;
-    this.trunkenheit = other.trunkenheit || this.trunkenheit;
-    this.mu = other.mu || this.mu;
-    this.kl = other.kl || this.kl;
-    this.ch = other.ch || this.ch;
-    this.in = other.in || this.in;
-    this.ff = other.ff || this.ff;
-    this.ge = other.ge || this.ge;
-    this.ko = other.ko || this.ko;
-    this.kk = other.kk || this.kk;
-    this.hintergrund = other.hintergrund || this.hintergrund;
-    this.datum = other.datum || this.datum;
-    // this.wetter = other.wetter || this.wetter;
-    this.bewoelkung = other.bewoelkung || this.bewoelkung;
-    this.aktTemp = other.aktTemp || this.aktTemp;
-    this.niederschlag = other.niederschlag || this.niederschlag;
-    this.mond = other.mond || this.mond;
-    this.stunde = other.stunde || this.stunde;
-    this.rausch = other.rausch || this.rausch;
-    this.schmutz = other.schmutz || this.schmutz;
-    this.schmerz = other.schmerz || this.schmerz;
-    this.ohnmacht = other.ohnmacht || this.ohnmacht;
-
+    this.aktLeP = other.aktLeP ?? this.aktLeP;
+    this.maxLeP = other.maxLeP ?? this.maxLeP;
+    this.aktAsP = other.aktAsP ?? this.aktAsP;
+    this.maxAsP = other.maxAsP ?? this.maxAsP;
+    this.aktKaP = other.aktKaP ?? this.aktKaP;
+    this.maxKaP = other.maxKaP ?? this.maxKaP;
+    this.gs = other.gs ?? this.gs;
+    this.aw = other.aw ?? this.aw;
+    this.ini = other.ini ?? this.ini;
+    this.sk = other.sk ?? this.sk;
+    this.zk = other.zk ?? this.zk;
+    this.trunkenheit = other.trunkenheit ?? this.trunkenheit;
+    this.erschoepfung = other.erschoepfung ?? this.erschoepfung;
+    this.mu = other.mu ?? this.mu;
+    this.kl = other.kl ?? this.kl;
+    this.ch = other.ch ?? this.ch;
+    this.in = other.in ?? this.in;
+    this.ff = other.ff ?? this.ff;
+    this.ge = other.ge ?? this.ge;
+    this.ko = other.ko ?? this.ko;
+    this.kk = other.kk ?? this.kk;
+    this.hintergrund = other.hintergrund ?? this.hintergrund;
+    this.datum = other.datum ?? this.datum;
+    this.bewoelkung = other.bewoelkung ?? this.bewoelkung;
+    this.aktTemp = other.aktTemp ?? this.aktTemp;
+    this.niederschlag = other.niederschlag ?? this.niederschlag;
+    this.mond = other.mond ?? this.mond;
+    this.stunde = other.stunde ?? this.stunde;
+    this.rausch = other.rausch ?? this.rausch;
+    this.schmutz = other.schmutz ?? this.schmutz;
+    this.schmerz = other.schmerz ?? this.schmerz;
+    this.ohnmacht = other.ohnmacht ?? this.ohnmacht;
   }
 
   dummyValues(): void {
@@ -92,6 +92,7 @@ export class Titelbereich {
     this.sk = 2;
     this.zk = 0;
     this.trunkenheit = 0;
+    this.erschoepfung = 0;
     this.mu = 12;
     this.kl = 14;
     this.ch = 12;
@@ -102,7 +103,6 @@ export class Titelbereich {
     this.kk = 10;
     this.hintergrund = 'Wald';
     this.datum = '16.1.1000';
-    // this.wetter = 'geschlossene Wolkendecke#leichter Wind#kleine schuppenartige Wellen#15#19#19#Nieselregen';
     this.bewoelkung = 'bew4';
     this.aktTemp = 'temp1';
     this.niederschlag = 'rain3';

@@ -1,0 +1,120 @@
+@import "../../../sass/var"
+
+
+#pos, .entryPos
+  color: darkgreen
+#neg, .entryNeg
+  color: darkred
+
+.info
+  position: fixed
+  background: $light_semi
+  display: flex
+  flex-flow: column
+  justify-content: flex-start
+  height: 10vh
+
+
+.body
+  position: fixed
+  display: flex
+  flex-flow: row
+  justify-content: center
+.popup
+  display: flex
+  flex-flow: column
+  justify-content: flex-start
+  background: $pergament
+  h1
+    text-align: center
+  .values
+    width: 100%
+    display: flex
+    flex-flow: row
+    flex-wrap: wrap
+    justify-content: space-around
+    .modValue
+      display: flex
+      flex-flow: row
+      justify-content: flex-start
+      width: 40%
+      .label
+        text-align: right
+        width: 75%
+      .value
+        text-align: right
+        width: 25%
+
+  .button
+    background: $light
+    text-align: center
+    cursor: pointer
+
+// mobile
+@media (max-width: 480px), (max-height: 480px)
+
+// mobile portrait
+@media (max-width: 480px)
+
+
+
+// mobile landscape
+@media (max-height: 480px)
+
+// tablet portrait
+@media (min-width: 481px) and (max-width: 768px) and (min-height: 481px)
+
+
+
+// not-pc
+@media (max-width: 1024px)
+  #pos, #neg
+    margin-left: 2vw
+    margin-right: 2vw
+  .body
+    width: 100vw
+  .popup
+    margin-top: 5vw
+    min-height: 5vw
+    //width: 50vw
+    border-radius: 1vw
+    border: 0.25vw solid $brown
+    h1
+      font-size: 3vw
+      margin-left: 2vw
+      margin-right: 2vw
+    h2
+      font-size: 2.5vw
+  .button
+    margin-top: 2vw
+    width: 10vw
+    border-radius: 1vw
+    margin-bottom: 1vw
+.info
+  padding: 1vw
+// pc
+@media (min-width: 1025px)
+  #pos, #neg
+    margin-left: 2 * $vwCube
+    margin-right: 2 * $vwCube
+  .body
+    width: 100 * $vwCube
+  .popup
+    margin-top: 5 * $vwCube
+    min-height: 5 * $vwCube
+    //width: 80 * $vwCube
+    border-radius: 1 * $vwCube
+    border: 0.25 * $vwCube solid $brown
+    h1
+      font-size: 3 * $vwCube
+      margin-left: 2 * $vwCube
+      margin-right: 2 * $vwCube
+    h2
+      font-size: 2.5 * $vwCube
+  .button
+    margin-top: 2 * $vwCube
+    width: 10 * $vwCube
+    border-radius: 1 * $vwCube
+    margin-bottom: 1 * $vwCube
+.info
+  padding: 1 * $vwCube

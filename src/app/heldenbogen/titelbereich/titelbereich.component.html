@@ -66,16 +66,18 @@
     <!-- Attributes -->
     <div class="attribute" *ngFor="let pair of eigenschaften | keyvalue">
       <div class="name">{{pair.key.substring(1)}}</div>
-      <div class="wert">{{pair.value}}</div>
+      <div class="wert" (click)="getModifierFor($event, pair.key.substring(1))">{{pair.value}}</div>
     </div>
 
     <!-- current LeP -->
     <div class="modifiable">
       <div class="name">aktuelle LeP</div>
       <div class="wert">
-        <img src="assets/images/menu/button_neg.png" (click)="changeLeP('decLeP')">
-        {{werte.aktLeP}}
-        <img src="assets/images/menu/button_pos.png" (click)="changeLeP('incLeP')">
+        <img src="assets/images/menu/button_neg.png" (click)="changeWert(-1, 'LeP')">
+        <div (click)="getModifierFor($event, 'LeP')">
+          {{werte.aktLeP}}
+        </div>
+        <img src="assets/images/menu/button_pos.png" (click)="changeWert(1, 'LeP')">
       </div>
     </div>
 
@@ -84,7 +86,37 @@
       <div class="name">max LeP</div>
       <div class="wert">{{werte.maxLeP}}</div>
     </div>
+
+    <!-- GS -->
+    <div class="attribute">
+      <div class="name">GS</div>
+      <div class="wert" (click)="getModifierFor($event, 'GS')">{{werte.gs}}</div>
+    </div>
+
+    <!-- Trunkenheit -->
+    <div class="modifiable">
+      <div class="name">Trunkenheit</div>
+      <div class="wert" (click)="getModifierFor($event, 'Trink-AuP')">
+        <img src="assets/images/menu/button_neg.png" (click)="changeWert(-1, 'Trunkenheit')">
+        {{werte.trunkenheit}}
+        <img src="assets/images/menu/button_pos.png" (click)="changeWert(1, 'Trunkenheit')">
+      </div>
+    </div>
+
+    <!-- Erschoepfung -->
+    <div class="modifiable">
+      <div class="name">Erschöpfung</div>
+      <div class="wert" (click)="getModifierFor($event, 'Erschöpfung')">
+        <img src="assets/images/menu/button_neg.png" (click)="changeWert(-1, 'Erschoepfung')">
+        {{werte.erschoepfung}}
+        <img src="assets/images/menu/button_pos.png" (click)="changeWert(1, 'Erschoepfung')">
+      </div>
+    </div>
+
   </div>
 </div>
+<app-mod-values *ngIf="modValPopup != null"
+                [modValPopup]="modValPopup"
+                (ping)="closePopup()"></app-mod-values>
 <div class="abstandshalter"></div>
 

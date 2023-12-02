@@ -1,0 +1,47 @@
+@import "../../../sass/var"
+
+.leftBar, .rightBar
+  position: fixed
+  display: flex
+  flex-flow: column
+  justify-content: flex-start
+.modInfo
+  background-image: url("../../../assets/images/icons/modification_opaque.png")
+  background-position: center
+  background-repeat: no-repeat
+  cursor: pointer
+
+// not-pc
+@media (max-width: 1024px)
+.leftBar, .rightBar
+  top: 30vw
+  height: 10vw
+  width: 5vw
+
+.rightBar
+  margin-left: 95vw
+
+.modInfo
+  width: 4vw
+  height: 4vw
+  border: 0.25vw solid black
+  border-radius: 2.5vw
+  background-size: 4vw
+  box-shadow: 1vw 1vw 1vw #888888
+
+// pc
+@media (min-width: 1025px)
+.leftBar, .rightBar
+  top: 30 * $vwCube
+  height: 10 * $vwCube
+
+.rightBar
+  margin-left: 95 * $vwCube
+
+.modInfo
+  width: 4 * $vwCube
+  height: 4 * $vwCube
+  border: 0.25 * $vwCube solid black
+  border-radius: 2.5 * $vwCube
+  background-size: 4 * $vwCube
+  box-shadow: 0.5 * $vwCube 0.75 * $vwCube 1 * $vwCube #888888

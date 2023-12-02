@@ -1,4 +1,15 @@
-import {AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 import {Message} from "../../_classes/comm/message";
@@ -6,6 +17,11 @@ import {WebsocketService} from "../../_services/websocket.service";
 import {Titelbereich} from "../../_classes/comm/payload/titelbereich";
 import {drunkVision} from "../../_interfaces/animations/drunkVision";
 import {doubleVision} from "../../_interfaces/animations/double-vision";
+import {ModifiableValue} from "../../_classes/comm/payload/modifiable-value";
+import {BooleanEvent} from "../../_interfaces/events/boolean-event";
+import {Event} from "@angular/router";
+import {ModValuesComponent} from "../mod-values/mod-values.component";
+import {Modvaluepopup} from "../../_classes/modvaluepopup";
 
 @Component({
   selector: 'app-titelbereich',
@@ -19,6 +35,9 @@ import {doubleVision} from "../../_interfaces/animations/double-vision";
 export class TitelbereichComponent implements OnInit, OnDestroy  {
   @Input() titel: string;
 
+  id = 'id_test';
+  charId = 5;
+
 
   /** Charakter-Werte */
   public werte: Titelbereich = new Titelbereich();
@@ -31,7 +50,10 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
   /** Websocket */
   destroyed = new Subject();
 
-  constructor(private websocket: WebsocketService) {
+
+
+  constructor(private websocket: WebsocketService,
+              private ngZone: NgZone) {
     const namen: string[] = ['1MU', '2KL', '3IN', '4CH', '5FF', '6GE', '7KO', '8KK'];
     namen.forEach(name => {
       this.eigenschaften.set(name, 0);
@@ -40,6 +62,8 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
 
   public drunkVision = 'done';
   public doubleVision = 'done';
+
+  public modValPopup: Modvaluepopup = new Modvaluepopup();
 
   public toggleDrunkVision() {
     if (this.drunkVision.startsWith('drunk')) {
@@ -58,26 +82,67 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
   }
 
   ngOnInit(): void {
-    const websocket = this.websocket.connect('id').pipe(
+    const websocket = this.websocket.connect(this.id).pipe(
       takeUntil(this.destroyed),
     );
 
     websocket.subscribe((raw: string) => {
       const message: Message = JSON.parse(raw);
-      if (message.type === 'titelbereich' && message.body.length > 0) {
-        const neueWerte: Titelbereich = JSON.parse(message.body);
-        this.werte.copy(neueWerte);
-        console.log(neueWerte);
-        console.log(this.werte);
-        this.reload();
+      if (message.body.length > 0) {
+        if (message.type === 'titelbereich') {
+          const neueWerte: Titelbereich = JSON.parse(message.body);
+          this.werte.copy(neueWerte);
+          console.log(neueWerte);
+          console.log(this.werte);
+          this.reload();
+        } else if (message.type === 'titelbereich_modifiable') {
+          const mods: ModifiableValue[] = JSON.parse(message.body);
+          this.distributeMods(mods);
+
+        }
       }
       console.log(message);
     });
 
-    /** Dummy Message */
-    this.werte.dummyValues();
-    this.reload();
+    const message: Message = new Message('energy', 'titelbereich', '', 0, this.charId, 'all');
+    this.sendMessage(message);
 
+    /** Dummy Message */
+    // this.werte.dummyValues();
+    // this.reload();
+  }
+
+  private distributeMods(mods: ModifiableValue[]): void {
+    this.ngZone.run( () => {
+      const temp: Modvaluepopup = new Modvaluepopup();
+      temp.modified = this.modValPopup.modified;
+      temp.pointerX = this.modValPopup.pointerX;
+      temp.pointerY = this.modValPopup.pointerY;
+      this.modValPopup = new Modvaluepopup();
+      this.modValPopup.copy(temp);
+      mods.forEach(m => {
+        let str: string = m.modValue;
+        if (str.startsWith('x')) {
+          str = str.substring(1);
+          if (parseFloat(str) > 1) {
+            this.modValPopup.modifiableValuesPos.push(m);
+          } else if (parseFloat(str) < 1) {
+            this.modValPopup.modifiableValuesNeg.push(m);
+          }
+        } else {
+          if (parseFloat(str) > 0) {
+            this.modValPopup.modifiableValuesPos.push(m);
+          } else if (parseFloat(str) < 0) {
+            this.modValPopup.modifiableValuesNeg.push(m);
+          }
+        }
+      });
+    });
+
+  }
+
+  public closePopup(): void {
+    this.modValPopup = new Modvaluepopup();
   }
 
   ngOnDestroy() {
@@ -102,17 +167,33 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
   }
 
   /**
-   * Increases or decreases LeP about 1 point
+   * Increases or decreases a named value about 1 point
    * @Param modification: incLeP or decLeP
    */
-  changeLeP(modification: string): void {
-    const message: Message = new Message('titelbereich', 0, modification);
+  changeWert(modification: number, name: string): void {
+    const message: Message = new Message('energy', 'titelbereich', 'manuell', modification, this.charId, name);
+    this.sendMessage(message);
+  }
+
+  public getModifierFor($event: any, name: string): void {
+    console.log($event);
+    this.ngZone.run( () => {
+      if (this.modValPopup != null) {
+        this.modValPopup.pointerX = $event.clientX;
+        this.modValPopup.pointerY = $event.clientY;
+        this.modValPopup.modified = name;
+      }
+    });
+
+    const message: Message = new Message('modValues', 'titelbereich_modifiable', '', 0, this.charId, name);
     this.sendMessage(message);
   }
 
   private sendMessage(message: Message): void {
     this.websocket.sendMessage(message);
   }
+
+
 
   getShakeAnimationTiming() {
     return {
@@ -123,11 +204,6 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
 
   istOhnmaechtig(): boolean {
     return false;
-  }
-
-  test(): void {
-    const message2: Message = new Message('titelbereich2', 0, '');
-    this.websocket.sendMessage(message2);
   }
 
   test2(): void {

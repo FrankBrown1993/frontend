@@ -32,7 +32,7 @@ export class ConnectionComponent implements OnInit, OnDestroy {
     websocket.subscribe((raw: string) => {
       const message: Message = JSON.parse(raw);
       console.log(message);
-      if (message.type === 'hodensack') {
+      if (message.type === 'testfile') {
         this.image = message.body;
       }
     });
@@ -43,7 +43,7 @@ export class ConnectionComponent implements OnInit, OnDestroy {
     if (input.files && input.files.length > 0) {
       const file: File = input.files[0];
       this.getBase64(file).then((data: string) => {
-        const message: Message = new Message('testfile', 0, data);
+        const message: Message = new Message('testfile', 'id', '', 0, -1, data);
         this.websocket.sendMessage(message);
       });
     }

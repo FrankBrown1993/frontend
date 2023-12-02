@@ -15,6 +15,9 @@ export class MenuComponent implements OnInit, OnDestroy {
   /** Websocket */
   destroyed = new Subject();
 
+
+  id = 'id_test';
+
   /** other */
   nav = 1;
   userDevice: string = '';
@@ -26,7 +29,7 @@ export class MenuComponent implements OnInit, OnDestroy {
               private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
-    const websocket = this.websocket.connect('id').pipe(
+    const websocket = this.websocket.connect(this.id).pipe(
       takeUntil(this.destroyed),
     );
 
@@ -96,7 +99,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     if (input.files && input.files.length > 0) {
       const file: File = input.files[0];
       this.getBase64(file).then((data: string) => {
-        const message: Message = new Message('file', 0, data);
+        const message: Message = new Message('file', 'file', '', 0, -1, data);
         this.websocket.sendMessage(message);
       });
     }

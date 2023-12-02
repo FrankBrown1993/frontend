@@ -28,17 +28,19 @@ h1, h2, h3, h4, h5, h6
   text-align: center
 
 
-.verticalCenter, .horizontalCenter, .verticalStart, .horizontalStart
+.verticalCenter, .horizontalCenter, .verticalStart, .horizontalStart, .horizontalSpaceAround
   display: flex
   flex-wrap: wrap
 .verticalCenter, .verticalStart
   flex-flow: column
-.horizontalCenter, .horizontalStart
+.horizontalCenter, .horizontalStart, .horizontalSpaceAround
   flex-flow: row
 .verticalCenter, .horizontalCenter
   justify-content: center
 .verticalStart, .horizontalStart
   justify-content: start
+.horizontalSpaceAround
+  justify-content: space-around
 
 // mobile (vw)
 @media (max-width: 480px), (max-height: 480px)
