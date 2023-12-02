@@ -37,7 +37,7 @@ export class ModValuesComponent implements OnInit, OnChanges, AfterContentChecke
   popupX: string;
   popupY: string;
 
-  popupInitialized = false;
+  popupVisibility = 'hidden';
 
   constructor(private renderer: Renderer2) {
     this.screenHeight = window.innerHeight;
@@ -45,6 +45,7 @@ export class ModValuesComponent implements OnInit, OnChanges, AfterContentChecke
   }
 
   public closePopup(): void {
+    this.popupVisibility = 'hidden';
     this.ping.emit();
   }
 
@@ -65,6 +66,9 @@ export class ModValuesComponent implements OnInit, OnChanges, AfterContentChecke
 
       this.popupX = x + 'px';
       this.popupY = y + 'px';
+      if (x !== 0 && y !== 0) {
+        this.popupVisibility = 'visible';
+      }
     }
 
 
@@ -72,17 +76,16 @@ export class ModValuesComponent implements OnInit, OnChanges, AfterContentChecke
   }
 
   ngAfterContentChecked() {
-    if (!this.modValPopup.initialized) {
+    /*if (!this.modValPopup.initialized) {
       console.warn('ngAfterContentChecked', this.modValPopup);
       this.getCoordinates();
       this.modValPopup.initialized = true;
-    }
+    }*/
   }
 
 
   ngOnInit(): void {
     this.modValPopup.modified = '';
-
 
   }
 
@@ -92,9 +95,9 @@ export class ModValuesComponent implements OnInit, OnChanges, AfterContentChecke
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.warn('ngOnChanges');
+    // console.warn('ngOnChanges');
     console.warn(changes);
-    // this.getCoordinates();
+    this.getCoordinates();
   }
 
 

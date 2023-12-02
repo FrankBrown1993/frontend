@@ -11,10 +11,11 @@ export class OverlayComponent {
 
   public activate(name: string): void {
     this.activeOverlay = name;
+    alert('active overlay: ' + this.activeOverlay);
     this.activeOverlayChange.emit(this.activeOverlay);
   }
 
   public check() {
-    console.log(this.activeOverlay);
+    alert('active overlay: ' + this.activeOverlay);
   }
 }

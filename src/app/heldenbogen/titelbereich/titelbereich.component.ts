@@ -108,8 +108,8 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
     this.sendMessage(message);
 
     /** Dummy Message */
-    // this.werte.dummyValues();
-    // this.reload();
+    this.werte.dummyValues();
+    this.reload();
   }
 
   private distributeMods(mods: ModifiableValue[]): void {

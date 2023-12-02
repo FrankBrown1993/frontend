@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {Subject} from "rxjs";
 import {WebsocketService} from "../_services/websocket.service";
 import {takeUntil} from "rxjs/operators";

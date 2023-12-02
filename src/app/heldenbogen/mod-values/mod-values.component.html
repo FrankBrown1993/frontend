@@ -1,8 +1,7 @@
-<div #body class="body" *ngIf="modValPopup.modified !== ''">
-</div>
-<div #popupinfo class="info" [style.left]="popupX"
-                  [style.top]="popupY"
-                  *ngIf="modValPopup.modified !== ''">
+<div #popupinfo class="info"
+     *ngIf="modValPopup.modified !== ''"
+     [style.left]="popupX"
+     [style.top]="popupY" [style.visibility]="popupVisibility">
   <div class="entry" *ngIf="modValPopup.modifiableValuesPos.length == 0 && modValPopup.modifiableValuesNeg.length == 0">
     keine
   </div>
