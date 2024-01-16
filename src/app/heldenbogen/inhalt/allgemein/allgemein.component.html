@@ -1,2 +1,58 @@
-<div class="body">
+<div class="verticalStart">
+
+  <!-- oberer Bereich -->
+  <div class="horizontalStart">
+    <app-portrait></app-portrait>
+    <div class="table">
+      <div class="zeile">
+        <div class="name">Name:</div>
+        <div class="text">{{werte.name}}</div>
+        <div class="name" *ngIf="werte.titel != null">Titel:</div>
+        <div class="text" *ngIf="werte.titel != null">{{werte.titel}}</div>
+        <div class="name" *ngIf="werte.titel == null"></div>
+        <div class="text" *ngIf="werte.titel == null"></div>
+      </div>
+      <div class="zeile">
+        <div class="name">Spezies:</div>
+        <div class="text">{{werte.rasse}}</div>
+        <div class="name">Kultur:</div>
+        <div class="text">{{werte.kultur}}</div>
+      </div>
+
+      <div class="zeile">
+        <div class="name">Profession:</div>
+        <div class="textLong">{{werte.profession}}</div>
+      </div>
+      <div class="zeile">
+        <div class="name">Sozialer Stand:</div>
+        <div class="text">{{werte.sozialer_stand}}</div>
+        <div class="name"></div>
+        <div class="text"></div>
+      </div>
+      <div class="zeileH">
+        - Körperliche Merkmale -
+      </div>
+      <div class="zeile">
+        <div class="name">Augenfarbe:</div>
+        <div class="text">{{werte.augenfarbe}}</div>
+        <div class="name">Alter:</div>
+        <div class="text">{{werte.alter}}</div>
+      </div>
+      <div class="zeile">
+        <div class="name">Haarfarbe:</div>
+        <div class="text">{{werte.haarfarbe}}</div>
+        <div class="name">Größe:</div>
+        <div class="text">{{werte.groesse}} Halbfinger</div>
+      </div>
+      <div class="zeile">
+        <div class="name">Geschlecht:</div>
+        <div class="text">{{werte.geschlecht}}</div>
+        <div class="name">Gewicht:</div>
+        <div class="text">{{werte.gewicht}} Stein</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- bekannte Personen -->
+  <h3>Bekannte Personen</h3>
 </div>

@@ -17,6 +17,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { ConnectionComponent } from './tests/connection/connection.component';
 import { ModValuesComponent } from './heldenbogen/mod-values/mod-values.component';
 import { OverlayComponent } from './heldenbogen/overlay/overlay.component';
+import { PortraitComponent } from './heldenbogen/subcomponents/portrait/portrait.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { OverlayComponent } from './heldenbogen/overlay/overlay.component';
     ImagerotationComponent,
     ConnectionComponent,
     ModValuesComponent,
-    OverlayComponent
+    OverlayComponent,
+    PortraitComponent
   ],
   imports: [
     BrowserModule,

@@ -7,7 +7,6 @@
 .abstandshalter
   position: absolute
   background-color: $pergament
-  z-index: -1
 #body
   position: absolute
 #infoBox
@@ -15,6 +14,9 @@
 #titel
   padding-bottom: 0px
   margin-bottom: 0px
+h4
+  padding: 0
+  margin: 0
 #wetterbox
   background-size: contain
   background-position: bottom
@@ -45,7 +47,7 @@
   flex-flow: column
   justify-content: flex-start
   background: $light
-.wert
+.wert, .wertText
   width: 100%
   text-align: center
   display: flex
@@ -53,7 +55,6 @@
   justify-content: space-around
   img
     cursor: pointer
-
 // mobile
 @media (max-width: 480px), (max-height: 480px)
 
@@ -97,10 +98,11 @@
     width: 25vw
     height: 18vw
     border-radius: 5vw
+  #titelbox
+    height: 10vw
   #titel
-    margin-top: 2.5vw
+    //margin-top: 2.5vw
     width: 20vw
-    height: 7vw
   #wetterbox, #wolkenbox
     width: 5vw
     height: 10vw
@@ -110,6 +112,8 @@
   #tempbox
     width: 1.75vw
     height: 4vw
+  #dateTime
+    padding-top: 1vw
   #date, #timebox
     width: 15vw
     font-size: 2vw
@@ -133,6 +137,8 @@
     img
       width: 4vw
       height: 4vw
+  .wertText
+    font-size: 3.2vw
 
 // pc
 @media (min-width: 1025px)
@@ -158,10 +164,11 @@
     width: 25 * $vwCube
     height: 18 * $vwCube
     border-radius: 5 * $vwCube
+  #titelbox
+    height: 10 * $vwCube
   #titel
-    margin-top: 2.5 * $vwCube
+    //margin-top: 2.5 * $vwCube
     width: 20 * $vwCube
-    height: 7 * $vwCube
   #wetterbox, #wolkenbox
     width: 5 * $vwCube
     height: 10 * $vwCube
@@ -171,6 +178,8 @@
   #tempbox
     width: 1.75 * $vwCube
     height: 4 * $vwCube
+  #dateTime
+    padding-top: 1 * $vwCube
   #date, #timebox
     width: 15 * $vwCube
     font-size:  2 * $vwCube
@@ -194,4 +203,6 @@
     img
       width: 4 * $vwCube
       height: 4 * $vwCube
+  .wertText
+    font-size: 3.2 * $vwCube
 

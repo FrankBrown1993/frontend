@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  EventEmitter,
+  EventEmitter, HostListener,
   Input,
   NgZone,
   OnDestroy,
@@ -34,7 +34,11 @@ import {Modvaluepopup} from "../../_classes/modvaluepopup";
 })
 export class TitelbereichComponent implements OnInit, OnDestroy  {
   @Input() titel: string;
+  @Input() activeOverlay: string;
+  @Output() activeOverlayChange = new EventEmitter<string>();
 
+
+  /** ToDo: change this to dynamic */
   id = 'id_test';
   charId = 5;
 
@@ -50,6 +54,8 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
   /** Websocket */
   destroyed = new Subject();
 
+  rauschStufen = ['nüchtern', 'angeheitert', 'betrunken','vollrausch', 'bewusstlos'];
+
 
 
   constructor(private websocket: WebsocketService,
@@ -64,22 +70,6 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
   public doubleVision = 'done';
 
   public modValPopup: Modvaluepopup = new Modvaluepopup();
-
-  public toggleDrunkVision() {
-    if (this.drunkVision.startsWith('drunk')) {
-      this.drunkVision = 'done';
-    } else {
-      this.drunkVision = 'drunk' + this.werte.rausch;
-    }
-  }
-
-  public toggleDoubleVision() {
-    if (this.doubleVision.startsWith('drunk')) {
-      this.doubleVision = 'done';
-    } else {
-      this.doubleVision = 'drunk' + this.werte.rausch;
-    }
-  }
 
   ngOnInit(): void {
     const websocket = this.websocket.connect(this.id).pipe(
@@ -104,13 +94,33 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
       console.log(message);
     });
 
-    const message: Message = new Message('energy', 'titelbereich', '', 0, this.charId, 'all');
+    const message: Message = new Message('character', 'titelbereich', '', 0, this.charId, 'all');
     this.sendMessage(message);
+    const message2: Message = new Message('adventure', 'titelbereich', '', 0, this.charId, 'all');
+    this.sendMessage(message2);
 
     /** Dummy Message */
-    this.werte.dummyValues();
-    this.reload();
+    // this.werte.dummyValues();
+    // this.reload();
   }
+
+  public toggleDrunkVision() {
+    if (this.drunkVision.startsWith('drunk')) {
+      this.drunkVision = 'done';
+    } else {
+      this.drunkVision = 'drunk' + this.werte.berauscht;
+    }
+  }
+
+  public toggleDoubleVision() {
+    if (this.doubleVision.startsWith('drunk')) {
+      this.doubleVision = 'done';
+    } else {
+      this.doubleVision = 'drunk' + this.werte.berauscht;
+    }
+  }
+
+
 
   private distributeMods(mods: ModifiableValue[]): void {
     this.ngZone.run( () => {
@@ -143,7 +153,10 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
 
   public closePopup(): void {
     this.modValPopup = new Modvaluepopup();
+    this.activeOverlay = '';
+    this.activeOverlayChange.emit(this.activeOverlay);
   }
+
 
   ngOnDestroy() {
     this.destroyed.next(1);
@@ -171,22 +184,23 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
    * @Param modification: incLeP or decLeP
    */
   changeWert(modification: number, name: string): void {
-    const message: Message = new Message('energy', 'titelbereich', 'manuell', modification, this.charId, name);
+    const message: Message = new Message('character', 'titelbereich', 'manuell', modification, this.charId, name);
     this.sendMessage(message);
   }
 
   public getModifierFor($event: any, name: string): void {
-    console.log($event);
-    this.ngZone.run( () => {
-      if (this.modValPopup != null) {
-        this.modValPopup.pointerX = $event.clientX;
-        this.modValPopup.pointerY = $event.clientY;
-        this.modValPopup.modified = name;
-      }
-    });
-
-    const message: Message = new Message('modValues', 'titelbereich_modifiable', '', 0, this.charId, name);
-    this.sendMessage(message);
+    if (this.activeOverlay === 'modInfo') {
+      console.log($event);
+      this.ngZone.run( () => {
+        if (this.modValPopup != null) {
+          this.modValPopup.pointerX = $event.clientX;
+          this.modValPopup.pointerY = $event.clientY;
+          this.modValPopup.modified = name;
+        }
+      });
+      const message: Message = new Message('modValues', 'titelbereich_modifiable', '', 0, this.charId, name);
+      this.sendMessage(message);
+    }
   }
 
   private sendMessage(message: Message): void {

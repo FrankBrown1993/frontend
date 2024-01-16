@@ -1,0 +1,50 @@
+@import "../../../../sass/var"
+.portraitBox
+  overflow: hidden
+  position: relative
+  display: flex
+  flex-flow: row
+  justify-content: center
+  background: radial-gradient(circle, $pergament, $brownalphahalf 80%)
+.portrait
+  position: absolute
+  object-fit: cover
+  object-position: top
+.fileupload
+  display: inline-block
+  cursor: pointer
+.hiddenElement
+  display: none
+.edit
+  text-align: center
+
+// not-pc
+@media (max-width: 1024px)
+.portraitBox
+  height: 36vw
+  width: 27vw
+  border: 0.5vw solid $brown
+.portrait
+  height: 36vw
+  width: 27vw
+.fileupload
+  width: 20vw
+  line-height: 5vw
+.edit
+  line-height: 5vw
+  width: 5vw
+// pc
+@media (min-width: 1025px)
+.portraitBox
+  height: 36 * $vwCube
+  width: 27 * $vwCube
+  border: 0.5 * $vwCube solid $brown
+.portrait
+  height: 36 * $vwCube
+  width: 27 * $vwCube
+.fileupload
+  width: 20 * $vwCube
+  line-height: 5 * $vwCube
+.edit
+  line-height: 5 * $vwCube
+  width: 5 * $vwCube

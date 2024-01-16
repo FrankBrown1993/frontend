@@ -23,9 +23,8 @@ import {connect, debounceTime, fromEvent, Observable, Subscription} from "rxjs";
   templateUrl: './mod-values.component.html',
   styleUrls: ['./mod-values.component.sass']
 })
-export class ModValuesComponent implements OnInit, OnChanges, AfterContentChecked{
+export class ModValuesComponent implements OnInit, OnChanges{
   @Input() modValPopup: Modvaluepopup;
-
 
   @Output() ping: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('popupinfo') box: ElementRef;
@@ -39,14 +38,16 @@ export class ModValuesComponent implements OnInit, OnChanges, AfterContentChecke
 
   popupVisibility = 'hidden';
 
-  constructor(private renderer: Renderer2) {
+  constructor() {
     this.screenHeight = window.innerHeight;
     this.screenWidth = window.innerWidth;
   }
 
   public closePopup(): void {
-    this.popupVisibility = 'hidden';
-    this.ping.emit();
+    if (this.popupVisibility === 'visible') {
+      this.popupVisibility = 'hidden';
+      this.ping.emit();
+    }
   }
 
   public getCoordinates(): void {
@@ -75,28 +76,13 @@ export class ModValuesComponent implements OnInit, OnChanges, AfterContentChecke
     console.log(this.popupX, this.popupY);
   }
 
-  ngAfterContentChecked() {
-    /*if (!this.modValPopup.initialized) {
-      console.warn('ngAfterContentChecked', this.modValPopup);
-      this.getCoordinates();
-      this.modValPopup.initialized = true;
-    }*/
-  }
-
 
   ngOnInit(): void {
     this.modValPopup.modified = '';
 
   }
 
-  @HostListener('document:mousedown', ['$event'])
-  onMouseMove(e: any) {
-    this.closePopup();
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
-    // console.warn('ngOnChanges');
-    console.warn(changes);
     this.getCoordinates();
   }
 

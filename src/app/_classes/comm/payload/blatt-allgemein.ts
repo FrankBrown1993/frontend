@@ -11,10 +11,6 @@ export class BlattAllgemein {
   alter: number;
   sozialer_stand: number;
   titel: string;
-  bild: string;
-  vorteile: string[];
-  nachteile: string[];
-  sonderfertigkeiten: string[];
 
   copy(other: BlattAllgemein): void {
     this.name = other.name ?? this.name;
@@ -29,10 +25,6 @@ export class BlattAllgemein {
     this.alter = other.alter ?? this.alter;
     this.sozialer_stand = other.sozialer_stand ?? this.sozialer_stand;
     this.titel = other.titel ?? this.titel;
-    this.bild = other.bild ?? this.bild;
-    this.vorteile = other.vorteile ?? this.vorteile;
-    this.nachteile = other.nachteile ?? this.nachteile;
-    this.sonderfertigkeiten = other.sonderfertigkeiten ?? this.sonderfertigkeiten;
   }
 
   dummyValues(): void {
@@ -48,9 +40,5 @@ export class BlattAllgemein {
     this.alter = 18;
     this.sozialer_stand = 1;
     this.titel = '';
-    this.bild = '';
-    this.vorteile = [];
-    this.nachteile = [];
-    this.sonderfertigkeiten = [];
   }
 }

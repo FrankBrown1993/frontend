@@ -10,13 +10,13 @@
        *ngIf="!werte.ohnmacht"
        [@drunkVision]="drunkVision"
        (@drunkVision.done)="toggleDrunkVision()"
-       [style.background-image]="'url(\'assets/images/biomes/' + werte.hintergrund + '.jpg\')'">
+       [style.background-image]="'url(\'assets/images/biomes/' + werte.region + '.jpg\')'">
   </div>
   <div class="background"
        *ngIf="!werte.ohnmacht"
        [@doubleVision]="doubleVision"
        (@doubleVision.done)="toggleDoubleVision()"
-       [style.background-image]="'url(\'assets/images/biomes/' + werte.hintergrund + '.jpg\')'">
+       [style.background-image]="'url(\'assets/images/biomes/' + werte.region + '.jpg\')'">
   </div>
   <div class="background"
        *ngIf="!werte.ohnmacht"
@@ -42,14 +42,16 @@
     <div class="verticalStart">
       <div id="infoBox" class="verticalStart">
         <div class="horizontalCenter">
-          <h4 id="titel">{{titel}}</h4>
+          <div class="verticalCenter" id="titelbox">
+            <h4 id="titel">{{titel}}</h4>
+          </div>
         </div>
         <div class="horizontalStart">
           <div id="tempbox" [style.background-image]="'url(\'assets/images/weather/' + werte.aktTemp + '.png\')'"></div>
           <div id="wetterbox" [style.background-image]="'url(\'assets/images/weather/' + werte.niederschlag + '.png\')'">
             <div id="wolkenbox" [style.background-image]="'url(\'assets/images/weather/' + werte.bewoelkung + '.png\')'"></div>
           </div>
-          <div class="verticalCenter">
+          <div class="verticalStart" id="dateTime">
             <div id="date">{{datum}}</div>
             <div id="timebox">{{zeit}}</div>
 
@@ -96,10 +98,8 @@
     <!-- Trunkenheit -->
     <div class="modifiable">
       <div class="name">Trunkenheit</div>
-      <div class="wert" (click)="getModifierFor($event, 'Trink-AuP')">
-        <img src="assets/images/menu/button_neg.png" (click)="changeWert(-1, 'Trunkenheit')">
-        {{werte.trunkenheit}}
-        <img src="assets/images/menu/button_pos.png" (click)="changeWert(1, 'Trunkenheit')">
+      <div class="wertText" (click)="getModifierFor($event, 'Trink-AuP')">
+        {{rauschStufen[werte.berauscht]}}
       </div>
     </div>
 
@@ -117,4 +117,5 @@
 </div>
 <app-mod-values [modValPopup]="modValPopup"
                 (ping)="closePopup()"></app-mod-values>
+
 <div class="abstandshalter"></div>

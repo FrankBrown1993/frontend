@@ -1,0 +1,11 @@
+<div class="portraitBox">
+  <img class="portrait" [src]="portrait"/>
+</div>
+<div class="horizontalEnd">
+  <label class="fileupload" *ngIf="edit" >
+    neues Bild wählen
+    <input class="hiddenElement" type="file" (change)="onFileChanged($event)">
+  </label>
+  <label class="edit" *ngIf="!edit" (click)="edit = !edit">✎</label>
+  <label class="edit" *ngIf="edit" (click)="edit = !edit">❌</label>
+</div>

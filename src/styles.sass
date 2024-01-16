@@ -28,12 +28,12 @@ h1, h2, h3, h4, h5, h6
   text-align: center
 
 
-.verticalCenter, .horizontalCenter, .verticalStart, .horizontalStart, .horizontalSpaceAround
+.verticalCenter, .horizontalCenter, .verticalStart, .horizontalStart, .horizontalSpaceAround, .horizontalEnd
   display: flex
   flex-wrap: wrap
 .verticalCenter, .verticalStart
   flex-flow: column
-.horizontalCenter, .horizontalStart, .horizontalSpaceAround
+.horizontalCenter, .horizontalStart, .horizontalSpaceAround, .horizontalEnd
   flex-flow: row
 .verticalCenter, .horizontalCenter
   justify-content: center
@@ -41,6 +41,8 @@ h1, h2, h3, h4, h5, h6
   justify-content: start
 .horizontalSpaceAround
   justify-content: space-around
+.horizontalEnd
+  justify-content: flex-end
 
 // mobile (vw)
 @media (max-width: 480px), (max-height: 480px)

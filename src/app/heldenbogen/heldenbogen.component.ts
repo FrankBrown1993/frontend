@@ -38,7 +38,7 @@ export class HeldenbogenComponent implements OnInit, OnDestroy {
   KK
   Trunkenheit
   */
-  public titel: string = 'Allgemeine Informationen';
+  public titel: string = 'Steckbrief';
 
   public activeOverlay: string = '';
 

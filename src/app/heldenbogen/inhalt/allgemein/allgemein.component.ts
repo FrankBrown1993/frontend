@@ -14,7 +14,7 @@ import {Message} from "../../../_classes/comm/message";
 export class AllgemeinComponent implements OnInit, OnDestroy  {
 
   id = 'id_test';
-  charId = 15;
+  charId = 5;
 
   /** Charakter-Werte */
   public werte: BlattAllgemein = new BlattAllgemein();
@@ -45,14 +45,21 @@ export class AllgemeinComponent implements OnInit, OnDestroy  {
     });
 
     /** Dummy Message */
-    this.werte.dummyValues();
-    this.reload();
+    // this.werte.dummyValues();
+    // this.reload();
+
+    const message: Message = new Message('character', 'blatt_allgemein', '', 0, this.charId, 'profil');
+    this.sendMessage(message);
   }
 
   constructor(private websocket: WebsocketService) {}
 
   reload(): void {
     // Todo
+  }
+
+  private sendMessage(message: Message): void {
+    this.websocket.sendMessage(message);
   }
 
 }

@@ -26,16 +26,15 @@ export class Titelbereich {
   kk: number;
 
   /** Zustandsvisualisierungen und Zustände */
-  trunkenheit: number;
   erschoepfung: number;
   /** visaulisiert */
-  rausch: number;
+  berauscht: number;
   schmutz: number;
   schmerz: number;
   ohnmacht: boolean;
 
   /** Abenteuer-Informationen */
-  hintergrund: string;
+  region: string;
   datum: string;
   bewoelkung: string;
   aktTemp: string;
@@ -56,7 +55,6 @@ export class Titelbereich {
     this.ini = other.ini ?? this.ini;
     this.sk = other.sk ?? this.sk;
     this.zk = other.zk ?? this.zk;
-    this.trunkenheit = other.trunkenheit ?? this.trunkenheit;
     this.erschoepfung = other.erschoepfung ?? this.erschoepfung;
     this.mu = other.mu ?? this.mu;
     this.kl = other.kl ?? this.kl;
@@ -66,14 +64,14 @@ export class Titelbereich {
     this.ge = other.ge ?? this.ge;
     this.ko = other.ko ?? this.ko;
     this.kk = other.kk ?? this.kk;
-    this.hintergrund = other.hintergrund ?? this.hintergrund;
+    this.region = other.region ?? this.region;
     this.datum = other.datum ?? this.datum;
     this.bewoelkung = other.bewoelkung ?? this.bewoelkung;
     this.aktTemp = other.aktTemp ?? this.aktTemp;
     this.niederschlag = other.niederschlag ?? this.niederschlag;
     this.mond = other.mond ?? this.mond;
     this.stunde = other.stunde ?? this.stunde;
-    this.rausch = other.rausch ?? this.rausch;
+    this.berauscht = other.berauscht ?? this.berauscht;
     this.schmutz = other.schmutz ?? this.schmutz;
     this.schmerz = other.schmerz ?? this.schmerz;
     this.ohnmacht = other.ohnmacht ?? this.ohnmacht;
@@ -91,7 +89,6 @@ export class Titelbereich {
     this.ini = 10;
     this.sk = 2;
     this.zk = 0;
-    this.trunkenheit = 0;
     this.erschoepfung = 0;
     this.mu = 12;
     this.kl = 14;
@@ -101,7 +98,7 @@ export class Titelbereich {
     this.ge = 10;
     this.ko = 9;
     this.kk = 10;
-    this.hintergrund = 'Wald';
+    this.region = 'Wald';
     this.datum = '16.1.1000';
     this.bewoelkung = 'bew4';
     this.aktTemp = 'temp1';
@@ -109,7 +106,7 @@ export class Titelbereich {
     this.mond = 2;
     this.stunde = 11;
     this.minute = 27;
-    this.rausch = 0;
+    this.berauscht = 0;
     this.schmutz = 1;
     this.schmerz = 0;
     this.ohnmacht = false;

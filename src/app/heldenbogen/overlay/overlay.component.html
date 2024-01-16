@@ -2,6 +2,6 @@
 
 </div>
 <div class="rightBar">
-  <div class="modInfo" (click)="activate('modInfo')"></div>
-  <div class="modInfo" (click)="check()"></div>
+  <div class="info" id="modInfo" (click)="modInfo()" *ngIf="activeOverlay!=='modInfo'"></div>
+  <div class="info" id="modInfoActive" (click)="deativate('modInfo')" *ngIf="activeOverlay==='modInfo'"></div>
 </div>

@@ -1,2 +1,68 @@
-.body
-  outline: 1px solid purple
+@import "../../../../sass/var"
+.table
+  display: flex
+  flex-flow: column
+  justify-content: flex-end
+  h3
+    margin-top: 0
+  .zeileH
+    justify-content: center
+    font-style: italic
+  .zeile, .zeileH
+    display: flex
+    flex-flow: row
+  .zeile
+    justify-content: flex-start
+    .name
+      text-align: right
+      font-weight: bold
+    .text
+      text-align: left
+
+// not-pc
+@media (max-width: 1024px)
+  .table
+    height: 36.75vw
+    width: 65vw
+    margin-left: 4vw
+    h3
+      font-size: 2.5vw
+    .zeile, .zeileH
+      border-bottom: 0.2vw solid $darkbrown
+      line-height: 4vw
+      .name
+        font-size: 2.25vw
+        width: 24vw
+      .text
+        font-size: 2.25vw
+        width: 32vw
+        margin-left: 1vw
+      .textLong
+        font-size: 2.25vw
+        width: 88vw
+        margin-left: 1vw
+// pc
+@media (min-width: 1025px)
+  .table
+    height: 36.75 * $vwCube
+    width: 65 * $vwCube
+    margin-left: 4 * $vwCube
+    h3
+      font-size: 2.5 * $vwCube
+    .zeileH
+      width: 65 * $vwCube
+      margin-top: 1 * $vwCube
+    .zeile, .zeileH
+      border-bottom: 0.2 * $vwCube solid $darkbrown
+      line-height: 4 * $vwCube
+      .name
+        font-size: 2.25 * $vwCube
+        width: 24 * $vwCube
+      .text
+        font-size: 2.25 * $vwCube
+        width: 32 * $vwCube
+        margin-left: 1 * $vwCube
+      .textLong
+        font-size: 2.25 * $vwCube
+        width: 89 * $vwCube
+        margin-left: 1 * $vwCube
