@@ -10,14 +10,40 @@ button
   width: 7.5vw
   height: 7.5vw
   touch-action: manipulation
+.iconLoader
+  display: none
+.canvasBar
+  display: flex
+  flex-flow: row
+  background-image: linear-gradient($brown, $brownLight, $brown)
+  color: $light_semi
+  .symbols
+    background: $pergamentdark
 
 // not-pc
 @media (max-width: 1024px)
   #stage
     border-top: 0.5vw solid $brown
     border-bottom: 0.5vw solid $brown
+  .canvasBar
+    line-height: 3.5vw
+    .symbols
+      height: 3vw
+      font-size: 2vw
+      border-radius: 1.5vw
+      padding-left: 1vw
+      padding-right: 1vw
+      line-height: 3vw
 // pc
 @media (min-width: 1025px)
   #stage
     border-top: 0.5 * $vwCube solid $brown
     border-bottom: 0.5 * $vwCube solid $brown
+  .canvasBar
+    line-height: 3.5 * $vwCube
+    .symbols
+      padding-left: $vwCube
+      padding-right: $vwCube
+      line-height: 2.5 * $vwCube
+
+

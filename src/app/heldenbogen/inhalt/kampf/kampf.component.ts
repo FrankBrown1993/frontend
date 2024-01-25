@@ -67,6 +67,9 @@ export class KampfComponent implements OnInit, OnDestroy  {
         console.info('context is not null CHECK')
         this.stage.initialize(canvas, ctx);
         this.stage.sizeCanvas(window.innerWidth);
+        const closeImage: HTMLImageElement = document.getElementById('icon_x') as HTMLImageElement;
+        // this.stage.radMenu.setCancelImage(closeImage);
+        this.createNewRadMenu();
         this.stage.refreshCanvas();
       }
     }
@@ -195,5 +198,17 @@ export class KampfComponent implements OnInit, OnDestroy  {
     });
     avg.divideBy(fingers.length);
     return [avg, fingers];
+  }
+
+  public createNewRadMenu(): void {
+    const cancelImage: HTMLImageElement = document.getElementById('icon_x') as HTMLImageElement;
+    const swordImage: HTMLImageElement = document.getElementById('icon_sword') as HTMLImageElement;
+    const bowImage: HTMLImageElement = document.getElementById('icon_bow') as HTMLImageElement;
+    const mapImage: HTMLImageElement = document.getElementById('icon_map') as HTMLImageElement;
+    const images: HTMLImageElement[] = [];
+    images.push(swordImage);
+    images.push(bowImage);
+    images.push(mapImage);
+    this.stage.radMenu.initializeNew(3, images, cancelImage);
   }
 }

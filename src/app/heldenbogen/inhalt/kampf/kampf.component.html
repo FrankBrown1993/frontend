@@ -9,5 +9,17 @@
             (mousemove)="onMouseMove($event)"
             (mouseup)="onMouseUp($event)"></canvas>
   </div>
-  {{touchCount}} {{this.pos.toString()}}
+  <div class="canvasBar">
+    Aktionen: <div class="symbols">🟢</div> freie Aktionen 🔵 Verteidiungen bisher 🛡️
+  </div>
+  <div>
+    |
+  </div>
+</div>
+<div class="iconLoader">
+  <img id="icon_bow" src="assets/images/icons/bow.png">
+  <img id="icon_sword" src="assets/images/icons/upg_sword.png">
+  <img id="icon_map" src="assets/images/icons/map.png">
+  <img id="icon_x" src="assets/images/icons/x.png">
+  <img id="icon_null" src="assets/images/icons/placeholder.png">
 </div>

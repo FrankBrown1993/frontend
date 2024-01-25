@@ -20,8 +20,8 @@ export class Vec2 {
     return new Vec2(this.x - other.x, this.y - other.y);
   }
 
-  public multiply(v: Vec2, s: number): Vec2 {
-    return new Vec2(v.x * s, v.y * s);
+  public multiply(s: number): Vec2 {
+    return new Vec2(this.x * s, this.y * s);
   }
 
   public multiplyBy(s: number): void {

@@ -118,91 +118,120 @@ export class Stage {
   }
 
   private drawRadMenu(): void {
-    if (this.ctx != null) {
-      this.ctx.lineWidth = 0.5;
-      this.ctx.strokeStyle = this.radMenu.lineColor;
-      // inner circle
+    this.ctx.lineWidth = 0.5;
+    this.ctx.strokeStyle = this.radMenu.lineColor;
+    // inner circle
+    this.ctx.beginPath();
+    this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius / 3, 0, 2 * Math.PI);
+    this.ctx.stroke();
+    const segmentRad = 2 * Math.PI / this.radMenu.segments;
+    if (this.radMenu.selectedSegment > 0) {
+      const startAngle = Math.PI * 1.5 - segmentRad / 2 + (segmentRad * this.radMenu.selectedSegment);
+      const endAngle = startAngle + (segmentRad * (this.radMenu.segments - 1));
+      // unselected cirle
+      this.ctx.beginPath();
+      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius,
+        startAngle,
+        endAngle);
+      this.ctx.stroke();
+
+      // selected circle
+      this.ctx.beginPath();
+      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius * 1.25,
+        endAngle,
+        endAngle + segmentRad);
+      this.ctx.stroke();
+
+      // fill unselected area
+      this.ctx.beginPath();
+      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius / 3,
+        startAngle,
+        endAngle);
+      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius,
+        endAngle,
+        startAngle,
+        true);
+      this.ctx.fillStyle = this.radMenu.fillColor; // Farbe für den Kreisring
+      this.ctx.fill();
+
+      // fill selected area
+      this.ctx.beginPath();
+      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius / 3,
+        endAngle,
+        startAngle);
+      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius * 1.25,
+        startAngle,
+        endAngle,
+        true);
+      this.ctx.fillStyle = this.radMenu.fillColor; // Farbe für den Kreisring
+      this.ctx.fill();
+      this.ctx.drawImage(this.radMenu.cancelImage,
+        this.radMenu.pos.x - (this.radMenu.cancelImage.width) / 2,
+        this.radMenu.pos.y - (this.radMenu.cancelImage.height) / 2,
+        this.radMenu.cancelImage.width,
+        this.radMenu.cancelImage.height);
+    } else {
+      this.ctx.beginPath();
+      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius, 0, 2 * Math.PI);
+      this.ctx.stroke();
+
+      // fill
       this.ctx.beginPath();
       this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius / 3, 0, 2 * Math.PI);
-      this.ctx.stroke();
-      const segmentRad = 2 * Math.PI / this.radMenu.segments;
-      if (this.radMenu.selectedSegment > 0) {
-        const startAngle = Math.PI * 1.5 - segmentRad / 2 + (segmentRad * this.radMenu.selectedSegment);
-        const endAngle = startAngle + (segmentRad * (this.radMenu.segments - 1));
-        // unselected cirle
-        this.ctx.beginPath();
-        this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius,
-          startAngle,
-          endAngle);
-        this.ctx.stroke();
-
-        // selected circle
-        this.ctx.beginPath();
-        this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius * 1.25,
-          endAngle,
-          endAngle + segmentRad);
-        this.ctx.stroke();
-
-        // fill unselected area
-        this.ctx.beginPath();
-        this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius / 3,
-          startAngle,
-          endAngle);
-        this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius,
-          endAngle,
-          startAngle,
-          true);
-        this.ctx.fillStyle = this.radMenu.fillColor; // Farbe für den Kreisring
-        this.ctx.fill();
-
-        // fill selected area
-        this.ctx.beginPath();
-        this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius / 3,
-          endAngle,
-          startAngle);
-        this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius * 1.25,
-          startAngle,
-          endAngle,
-          true);
-        this.ctx.fillStyle = this.radMenu.fillColor; // Farbe für den Kreisring
-        this.ctx.fill();
-      } else {
-        this.ctx.beginPath();
-        this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius, 0, 2 * Math.PI);
-        this.ctx.stroke();
-
-        // fill
-        this.ctx.beginPath();
-        this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius / 3, 0, 2 * Math.PI);
-        this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius,0, 2 * Math.PI, true);
-        this.ctx.fillStyle = this.radMenu.fillColor; // Farbe für den Kreisring
-        this.ctx.fill();
-      }
-
-      for (let i = 0; i < this.radMenu.segments; i++) {
-        if (this.radMenu.segments > 1) {
-          let mult = 1;
-          if (i === this.radMenu.selectedSegment || i + 1 === this.radMenu.selectedSegment
-            || (i === 0 && this.radMenu.selectedSegment === this.radMenu.segments)) {
-            mult = 1.25;
-          }
-          if (this.radMenu.selectedSegment === 0) {
-            mult = 1;
-          }
-          const angle = -segmentRad / 2 + segmentRad * i;
-          this.ctx.beginPath(); // Start a new path
-          const rotated = new Vec2(Math.sin(angle), -Math.cos(angle));
-
-          this.ctx.moveTo(
-            this.radMenu.pos.x + rotated.x * this.radMenu.radius / 3,
-            this.radMenu.pos.y + rotated.y * this.radMenu.radius / 3);
-          this.ctx.lineTo(
-            this.radMenu.pos.x + rotated.x * this.radMenu.radius * mult,
-            this.radMenu.pos.y + rotated.y * this.radMenu.radius * mult); // Draw a line to (150, 100)
-          this.ctx.stroke(); // Render the path
-        }
-      }
+      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius,0, 2 * Math.PI, true);
+      this.ctx.fillStyle = this.radMenu.fillColor; // Farbe für den Kreisring
+      this.ctx.fill();
+      this.ctx.drawImage(this.radMenu.cancelImage,
+        this.radMenu.pos.x - (this.radMenu.cancelImage.width * 1.25) / 2,
+        this.radMenu.pos.y - (this.radMenu.cancelImage.height * 1.25) / 2,
+        this.radMenu.cancelImage.width * 1.25,
+        this.radMenu.cancelImage.height * 1.25);
     }
+
+    // draw straight lines
+    let i: number = 0;
+    this.radMenu.segmentBorderVectors.forEach(vec => {
+      let mult = 1;
+      if (i === this.radMenu.selectedSegment
+          || i + 1 === this.radMenu.selectedSegment
+          || (i === 0 && this.radMenu.selectedSegment === this.radMenu.segments)) {
+        mult = 1.25;
+      }
+      if (this.radMenu.selectedSegment === 0) {
+        mult = 1;
+      }
+      this.ctx.beginPath(); // Start a new path
+      this.ctx.moveTo(
+        this.radMenu.pos.x + vec.x * this.radMenu.radius / 3,
+        this.radMenu.pos.y + vec.y * this.radMenu.radius / 3);
+      i++;
+      this.ctx.lineTo(
+        this.radMenu.pos.x + vec.x * this.radMenu.radius * mult,
+        this.radMenu.pos.y + vec.y * this.radMenu.radius * mult); // Draw a line to (150, 100)
+      this.ctx.stroke(); // Render the path
+    });
+
+    i = 0;
+    // draw icons
+    this.radMenu.segmentMiddleVectors.forEach(vec => {
+      let mult = 1;
+      if (this.radMenu.selectedSegment - 1 === i) {
+        mult = 1.25;
+      }
+
+      /*
+        this.radMenu.pos.x - (this.radMenu.cancelImage.width * 1.25) / 2,
+        this.radMenu.pos.y - (this.radMenu.cancelImage.height * 1.25) / 2,
+       */
+      const scaledVec: Vec2 = vec.multiply(this.radMenu.radius * (2/3) * mult);
+      const position: Vec2 = this.radMenu.pos.add(scaledVec);
+      this.ctx.drawImage(this.radMenu.segmentIcons[i],
+        position.x - this.radMenu.segmentIcons[i].width * mult / 2,
+        position.y - this.radMenu.segmentIcons[i].height * mult / 2,
+        this.radMenu.segmentIcons[i].width * mult,
+        this.radMenu.segmentIcons[i].height * mult);
+      i++;
+    });
   }
 
   public closeRadMenu(): void {

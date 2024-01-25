@@ -11,10 +11,19 @@ export class RadMenu {
   fillColor: string = 'rgba(242, 230, 217, 0.5)';
   lineColor: string = 'rgb(76, 52, 26)';
 
+  cancelImage: HTMLImageElement;
+
+  segmentIcons: HTMLImageElement[] = [];
   segmentBorderVectors: Vec2[] = [];
   segmentMiddleVectors: Vec2[] = [];
 
   constructor() {
+    this.buildSegmentVecotrs();
+  }
+
+  public buildSegmentVecotrs(): void {
+    this.segmentBorderVectors = [];
+    this.segmentMiddleVectors = [];
     if (this.segments > 1) {
       const segmentRad = 2 * Math.PI / this.segments;
       for (let i = 0; i < this.segments; i++) {
@@ -31,6 +40,38 @@ export class RadMenu {
     }
   }
 
+  public initializeNew(segments: number, segmentIcons: HTMLImageElement[],
+                       cancelImage: HTMLImageElement,
+                       pos?: Vec2, open?: boolean, delay?: number,
+                       startTime?: number, radius?: number, selectedSegment?: number,
+                       fillColor?: string, lineColor?: string): void  {
+    this.segments = segments;
+    this.segmentIcons = segmentIcons;
+    this.cancelImage = cancelImage;
+    this.pos = pos ?? this.pos;
+    this.open = open ?? this.open;
+    this.delay = delay ?? this.delay;
+    this.startTime = startTime ?? this.startTime;
+    this.radius = radius ?? this.radius;
+    this.selectedSegment = selectedSegment ?? this.selectedSegment;
+    this.fillColor = fillColor ?? this.fillColor;
+    this.lineColor = lineColor ?? this.lineColor;
+    this.buildSegmentVecotrs();
+    this.updateImageSize(this.cancelImage);
+    this.segmentIcons.forEach(img => {
+      this.updateImageSize(img);
+    });
+  }
+
+  public setCancelImage(cancelImage: HTMLImageElement) {
+    this.cancelImage = cancelImage;
+    this.updateImageSize(this.cancelImage);
+  }
+
+  private updateImageSize(image: HTMLImageElement): void {
+    image.width = this.radius / 2;
+    image.height = this.radius / 2;
+  }
 
   public selectSegment(other: Vec2): void {
     const vec: Vec2 = other.substract(this.pos);
@@ -71,5 +112,7 @@ export class RadMenu {
     this.selectedSegment = 0;
     this.startTime = 0;
   }
+
+
 
 }
