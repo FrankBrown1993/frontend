@@ -16,15 +16,17 @@ export class AllgemeinComponent implements OnInit, OnDestroy  {
   id = 'id_test';
   charId = 5;
 
-  /** Charakter-Werte */
-  public werte: BlattAllgemein = new BlattAllgemein();
-
   /** Websocket */
   destroyed = new Subject();
 
+  /** Charakter-Werte */
+  public werte: BlattAllgemein = new BlattAllgemein();
+
+
+
 
   ngOnDestroy(): void {
-
+    this.destroyed.next(0);
   }
 
   ngOnInit(): void {

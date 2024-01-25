@@ -1,0 +1,23 @@
+@import "../../../../sass/var"
+
+#stage
+  touch-action: none
+.navigation
+  display: flex
+  flex-flow: row
+  justify-content: space-around
+button
+  width: 7.5vw
+  height: 7.5vw
+  touch-action: manipulation
+
+// not-pc
+@media (max-width: 1024px)
+  #stage
+    border-top: 0.5vw solid $brown
+    border-bottom: 0.5vw solid $brown
+// pc
+@media (min-width: 1025px)
+  #stage
+    border-top: 0.5 * $vwCube solid $brown
+    border-bottom: 0.5 * $vwCube solid $brown

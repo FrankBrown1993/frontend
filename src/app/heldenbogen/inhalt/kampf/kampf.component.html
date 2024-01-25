@@ -1,1 +1,13 @@
-<p>kampf works!</p>
+<div class="verticalStart">
+  <div class="horizontalCenter">
+    <canvas id="stage" width="400" height="400"
+            (touchstart)="onTouchStart($event)"
+            (touchmove)="onTouchMove($event)"
+            (touchend)="onTouchEnd($event)"
+            (wheel)="onWheel($event)"
+            (mousedown)="onMouseDown($event)"
+            (mousemove)="onMouseMove($event)"
+            (mouseup)="onMouseUp($event)"></canvas>
+  </div>
+  {{touchCount}} {{this.pos.toString()}}
+</div>
