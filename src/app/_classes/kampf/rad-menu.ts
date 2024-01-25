@@ -11,6 +11,26 @@ export class RadMenu {
   fillColor: string = 'rgba(242, 230, 217, 0.5)';
   lineColor: string = 'rgb(76, 52, 26)';
 
+  segmentBorderVectors: Vec2[] = [];
+  segmentMiddleVectors: Vec2[] = [];
+
+  constructor() {
+    if (this.segments > 1) {
+      const segmentRad = 2 * Math.PI / this.segments;
+      for (let i = 0; i < this.segments; i++) {
+        const angleBorder = -segmentRad / 2 + segmentRad * i;
+        const angleMiddle = segmentRad * i;
+        const vectorBoder = new Vec2(Math.sin(angleBorder), -Math.cos(angleBorder));
+        const vectorMiddle = new Vec2(Math.sin(angleMiddle), -Math.cos(angleMiddle));
+        this.segmentBorderVectors.push(vectorBoder);
+        this.segmentMiddleVectors.push(vectorMiddle);
+      }
+    } else {
+      this.segmentBorderVectors = [];
+      this.segmentMiddleVectors.push(new Vec2(0, -1));
+    }
+  }
+
 
   public selectSegment(other: Vec2): void {
     const vec: Vec2 = other.substract(this.pos);
