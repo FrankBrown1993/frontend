@@ -18,6 +18,7 @@ import { ConnectionComponent } from './tests/connection/connection.component';
 import { ModValuesComponent } from './heldenbogen/mod-values/mod-values.component';
 import { OverlayComponent } from './heldenbogen/overlay/overlay.component';
 import { PortraitComponent } from './heldenbogen/subcomponents/portrait/portrait.component';
+import { ArenaComponent } from './gm/arena/arena.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { PortraitComponent } from './heldenbogen/subcomponents/portrait/portrait
     ConnectionComponent,
     ModValuesComponent,
     OverlayComponent,
-    PortraitComponent
+    PortraitComponent,
+    ArenaComponent
   ],
   imports: [
     BrowserModule,

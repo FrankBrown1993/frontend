@@ -1,8 +1,4 @@
 <div class="verticalStart">
-  <div class="initiative">
-    <div class="roundPortrait" *ngFor="let char of stage.objects">
-    </div>
-  </div>
   <div class="horizontalCenter">
     <canvas id="stage" width="400" height="400"
             (touchstart)="onTouchStart($event)"
@@ -11,13 +7,15 @@
             (wheel)="onWheel($event)"
             (mousedown)="onMouseDown($event)"
             (mousemove)="onMouseMove($event)"
-            (mouseup)="onMouseUp($event)"></canvas>
+            (mouseup)="onMouseUp($event)"
+            (dragover)="allowDrop($event)"
+            (drop)="onDrop($event)"></canvas>
   </div>
-  <div class="canvasBar">
-    Aktionen: <img class="icon" src="assets/images/icons/circle_green.png"> freie Aktionen 🔵 Verteidigungen bisher 🛡️
-  </div>
-  <div>
-    |
+  <div class="horizontalStart" style="background: white">
+    <div class="portrait" *ngFor="let fighter of fighters"
+         [style.background-image]="'url(' + fighter.token + ')'"
+         draggable="true"
+         (dragstart)="onDragStart($event, fighter)"></div>
   </div>
 </div>
 <div class="iconLoader">

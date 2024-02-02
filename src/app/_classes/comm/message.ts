@@ -1,7 +1,7 @@
 /** frame length of empty message: <= 75 */
 export class Message {
   type: string
-  returnTo: string;
+  returnType: string;
   modifier: string;
   code: number;
   charId: number;
@@ -15,9 +15,9 @@ export class Message {
    * @param charId id of character
    * @param body eg. the name of the value to modify
    */
-  constructor(type: string, returnTo: string, modifier: string, code: number, charId: number, body: string) {
+  constructor(type: string, returnType: string, modifier: string, code: number, charId: number, body: string) {
     this.type = type;
-    this.returnTo = returnTo;
+    this.returnType = returnType;
     this.modifier = modifier;
     this.code = code;
     this.charId = charId;
@@ -27,7 +27,7 @@ export class Message {
 
   getFrameSize(): number {
     let count = this.type.length;
-    count += (this.returnTo + "").length;
+    count += (this.returnType + "").length;
     count += (this.modifier + "").length;
     count += (this.code + "").length;
     count += (this.charId + "").length;
@@ -39,7 +39,7 @@ export class Message {
 
   getFrameSizeWithoutBody(): number {
     let count = this.type.length;
-    count += (this.returnTo + "").length;
+    count += (this.returnType + "").length;
     count += (this.modifier + "").length;
     count += (this.code + "").length;
     count += (this.charId + "").length;

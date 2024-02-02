@@ -1,4 +1,4 @@
-@import "../../../../sass/var"
+@import "../../../sass/var"
 
 #stage
   touch-action: none
@@ -27,6 +27,12 @@ button
     background-size: contain
     background-position: center
 
+
+.portrait
+  background-size: cover
+  background-position: center
+  background-repeat: no-repeat
+
 // not-pc
 @media (max-width: 1024px)
   #stage
@@ -47,6 +53,10 @@ button
       margin-right: 0.5vw
       height: 2.5vw
       width: 2.5vw
+
+  .portrait
+    width: 5vw
+    height: 5vw
 // pc
 @media (min-width: 1025px)
   #stage
@@ -70,4 +80,7 @@ button
       height: 4 * $vwCube
       border: 0.3 * $vwCube solid $brown
       margin: 0.5 * $vwCube
+  .portrait
+    width: 5 * $vwCube
+    height: 5 * $vwCube
 

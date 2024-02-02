@@ -43,7 +43,7 @@ export class WebsocketService implements OnDestroy {
           } else {
             remainingBody = '';
           }
-          const splitMsg: Message = new Message(message.type, message.returnTo, message.modifier, message.code, message.charId, body);
+          const splitMsg: Message = new Message(message.type, message.returnType, message.modifier, message.code, message.charId, body);
           splitMsg.seq = seq;
           if (remainingBody.length >= maxFrameLimit - message.getFrameSizeWithoutBody()) {
             remainingBody = remainingBody.substr(maxFrameLimit - message.getFrameSizeWithoutBody());
@@ -51,7 +51,7 @@ export class WebsocketService implements OnDestroy {
           this.connection.next(splitMsg);
           seq++;
         }
-        const endMessage: Message = new Message(message.type, message.returnTo, message.modifier, message.code, message.charId, '~END~');
+        const endMessage: Message = new Message(message.type, message.returnType, message.modifier, message.code, message.charId, '~END~');
         endMessage.seq = seq;
         this.connection.next(endMessage);
       } else {

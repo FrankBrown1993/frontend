@@ -9,6 +9,8 @@ export class IpService {
 
   public getIp(): string {
     // mac: *.32
-    return '192.168.178.44';
+    // jan pc: *.44
+    // may pc: *.20
+    return '192.168.178.20';
   }
 }
