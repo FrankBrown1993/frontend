@@ -7,6 +7,8 @@ import {WebsocketService} from "../../_services/websocket.service";
 import {takeUntil} from "rxjs/operators";
 import {Message} from "../../_classes/comm/message";
 import {Fighter} from "../../_classes/comm/payload/fighter";
+import {Control} from "../../_classes/canvas/control";
+import {RadMenu} from "../../_classes/kampf/rad-menu";
 
 @Component({
   selector: 'app-arena',
@@ -21,10 +23,20 @@ export class ArenaComponent implements OnInit, OnDestroy {
 
   /** Canvas */
   stage: Stage = new Stage();
+  control: Control = new Control();
 
   fighters: Fighter[] = [];
 
+  selectedEntity: Entity | null = null;
+
+  /* 0: standard
+  *  1: move entity
+  */
+  mode: number = 0;
+
   constructor(private websocket: WebsocketService) {
+    this.stage.control = this.control;
+    this.control.stage = this.stage;
   }
 
   ngOnDestroy(): void {
@@ -58,24 +70,49 @@ export class ArenaComponent implements OnInit, OnDestroy {
           fighter.name = f.name;
           fighter.token = f.token;
           fighter.portrait = f.portrait;
-          const entity = new Entity(f.posX, f.posY, 50, '', fighter, 0, 0);
-          this.stage.objects.push(entity);
+
+          const tkn_fighter: HTMLImageElement = new Image(50,50);
+          tkn_fighter.src = fighter.token;
+          tkn_fighter.width = 50;
+          tkn_fighter.height = 50;
+
+          const entity = new Entity(f.posX, f.posY, 50, '', fighter, 0, 0, tkn_fighter);
+          // Todo image onload
+          this.stage.initiateObject(entity);
         });
-        this.stage.refreshCanvas();
+        // this.stage.refreshCanvas();
       }
       console.log(message);
     });
 
     addEventListener("resize", (event) => {
       this.stage.sizeCanvas(window.innerWidth);
-      this.stage.refreshCanvas();
+      // this.stage.refreshCanvas();
     });
     const canvas = document.getElementById('stage') as HTMLCanvasElement;
     this.initiateCanvas();
+    const posRadMenu = this.createPositionRadMenu();
+    const otherRadMenu = this.createOtherRadMenu();
     const initiateMsg: Message = new Message("fight", "arena_player_characters", "", 0 ,5,"");
     this.sendMessage(initiateMsg);
     const getFightersMsg: Message = new Message("fight", "arena_fighters", "", 2 ,5,"");
     this.sendMessage(getFightersMsg);
+    posRadMenu.eventEmitter.subscribe(data => {
+      if (data === 1) {
+        this.mode = 1;
+      } else if (data === 2) {
+        this.mode = 2;
+      } else if (data === 3) {
+        const id = this.selectedEntity?.fighter.id;
+        const removeCharMsg: Message = new Message("fight", "arena_fighters", "", 3 ,5,id + '');
+        this.sendMessage(removeCharMsg);
+        const getAvailableCharsMsg: Message = new Message("fight", "arena_player_characters", "", 0 ,5,"");
+        this.sendMessage(getAvailableCharsMsg);
+      }
+    });
+    otherRadMenu.eventEmitter.subscribe(data => {
+
+    });
   }
 
   private sendMessage(message: Message): void {
@@ -93,98 +130,86 @@ export class ArenaComponent implements OnInit, OnDestroy {
         console.info('context is not null CHECK')
         this.stage.initialize(canvas, ctx);
         this.stage.sizeCanvas(window.innerWidth);
-        const closeImage: HTMLImageElement = document.getElementById('icon_x') as HTMLImageElement;
-        // this.stage.radMenu.setCancelImage(closeImage);
-        this.createNewRadMenu();
-        this.stage.refreshCanvas();
       }
     }
   }
 
-  touchCount = 0;
-  pos: Vec2 = new Vec2(0,0);
-  initialLength: number = 0;
-
   public onTouchStart(event: TouchEvent) {
-    this.touchCount = event.touches.length;
     event.preventDefault();
-    if (this.touchCount == 1) {
+    this.stage.control.touchCount = event.touches.length;
+    this.stage.control.kindOfTouch = this.stage.control.touchCount;
+    if (this.stage.control.touchCount == 1) {
       this.startOneFingerTouch(event);
-    } else if (this.touchCount == 2) {
-      this.startTwoFingerTouch(event);
+    } else if (this.stage.control.touchCount == 2) {
+      this.stage.control.startTwoFingerTouch(event);
     }
+  }
+
+  private startOneFingerTouch(event: TouchEvent): void {
+    const touch: Touch = event.touches[0];
+    const touchPos: Vec2 = new Vec2(touch.clientX, touch.clientY);
+
+    this.selectedEntity = this.stage.getNearestObjectWithinReach(30, touchPos);
+
+    if (this.mode === 0) {
+      if (this.selectedEntity != null) {
+        const position = this.stage.convertObjectPositionToCanvasPosition(this.stage.getCenterOfObject(this.selectedEntity));
+        this.stage.radIndex = 0;
+        this.stage.positionRadMenu(position);
+      } else {
+        this.stage.radIndex = 1;
+        this.stage.positionRadMenu(touchPos);
+      }
+    } else if (this.mode === 1) {
+
+    }
+
+
   }
 
   onTouchMove(event: TouchEvent) {
-    this.touchCount = event.touches.length;
-    if (this.touchCount == 1) {
-      this.moveOneFingerTouch(event);
-    } else if (this.touchCount == 2) {
-      this.moveTwoFingerTouch(event);
-    }
+    this.control.onTouchMove(event);
   }
 
   onTouchEnd(event: TouchEvent) {
-    this.touchCount = 0;
-    this.stage.closeRadMenu();
-    this.stage.refreshCanvas();
+    this.control.onTouchEnd(event);
   }
 
   @HostListener('wheel', ['$event'])
   onWheel(event: WheelEvent) {
-    this.stage.closeRadMenu();
-    event.preventDefault();
-    console.log(event.deltaY);
-    this.stage.zoomMouse(event.deltaY);
+    this.stage.testFunction(this.testFunc, this.stage);
+    this.control.onWheel(event);
   }
 
-  mousePos: Vec2 = new Vec2(0, 0);
-  leftPressed = false;
-  middlePressed = false;
   onMouseDown(event: MouseEvent) {
     event.preventDefault();
     console.log(event);
     if (event.button === 0) { // left mouse click
-      this.leftPressed = true;
+      this.stage.control.leftPressed = true;
       const touchPos: Vec2 = new Vec2(event.x, event.y);
-      const obj: Entity | null = this.stage.getNearestObjectWithinReach(30, touchPos);
-      if (obj != null) {
-        const position = this.stage.convertObjectPositionToCanvasPosition(this.stage.getCenterOfObject(obj));
+      this.selectedEntity = this.stage.getNearestObjectWithinReach(30, touchPos);
+      if (this.selectedEntity != null) {
+        const position = this.stage.convertObjectPositionToCanvasPosition(this.stage.getCenterOfObject(this.selectedEntity));
+        this.stage.radIndex = 0;
         this.stage.positionRadMenu(position);
       } else {
+        this.stage.radIndex = 1;
         this.stage.positionRadMenu(touchPos);
       }
 
     } else if (event.button === 1) { // middle mouse click
       this.stage.closeRadMenu();
-      this.middlePressed = true;
-      this.mousePos = new Vec2(event.x, event.y);
+      this.stage.control.middlePressed = true;
+      this.stage.control.mousePos = new Vec2(event.x, event.y);
     }
   }
 
   onMouseMove(event: MouseEvent) {
-    // console.log(event);
-    if (this.middlePressed) {
-      this.stage.closeRadMenu();
-      const newPos: Vec2 = new Vec2(event.x, event.y);
-      const delta: Vec2 = newPos.substract(this.mousePos);
-      this.mousePos = newPos;
-      this.stage.shiftMouse(delta);
-    } else if (this.leftPressed){ // left mouse click
-      const touchPos: Vec2 = new Vec2(event.x, event.y);
-      this.stage.moveTouch(touchPos);
-    }
+    this.control.onMouseMove(event);
   }
 
   onMouseUp(event: MouseEvent) {
-    if (event.button === 0) {
-      this.stage.closeRadMenu();
-      this.leftPressed = false;
-      this.stage.refreshCanvas();
-    }
-    if (event.button === 1) {
-      this.middlePressed = false;
-    }
+    this.control.onMouseUp(event);
   }
 
   draggedFighter: Fighter | null;
@@ -192,9 +217,11 @@ export class ArenaComponent implements OnInit, OnDestroy {
     this.draggedFighter = fighter;
     console.log(event);
   }
+
   allowDrop(event: DragEvent) {
     event.preventDefault();
   }
+
   onDrop(event: DragEvent) {
     if (this.draggedFighter != null) {
       event.preventDefault();
@@ -205,8 +232,6 @@ export class ArenaComponent implements OnInit, OnDestroy {
       console.log(event);
       const tkn_fighter: HTMLImageElement = new Image(50,50);
       tkn_fighter.src = this.draggedFighter.token;
-      const ptrt_fighter: HTMLImageElement = new Image(50,50);
-      ptrt_fighter.src = this.draggedFighter.portrait;
       tkn_fighter.width = 50;
       tkn_fighter.height = 50;
 
@@ -222,12 +247,12 @@ export class ArenaComponent implements OnInit, OnDestroy {
 
       const newPos: Vec2 = canvasCenter.add(centerToPosTranslated);
 
-      this.stage.objects.push(new Entity(
+      const entity: Entity = new Entity(
         newPos.x,
         newPos.y,
         50, '',
-        this.draggedFighter, 16, 12));
-      this.stage.refreshCanvas();
+        this.draggedFighter, 16, 12, tkn_fighter);
+      this.stage.initiateObject(entity);
       const message: Message = new Message("fight", "arena_fighters" ,"" ,1 ,0,
         this.draggedFighter.id + "#" + newPos.x + "#" + newPos.y + "#" + 0);
       this.sendMessage(message);
@@ -237,60 +262,23 @@ export class ArenaComponent implements OnInit, OnDestroy {
     }
   }
 
-
-  private startOneFingerTouch(event: TouchEvent): void {
-    const touch: Touch = event.touches[0];
-    const touchPos: Vec2 = new Vec2(touch.clientX, touch.clientY);
-    const obj: Entity | null = this.stage.getNearestObjectWithinReach(30, touchPos);
-    if (obj != null) {
-      const position = this.stage.convertObjectPositionToCanvasPosition(this.stage.getCenterOfObject(obj));
-      this.stage.positionRadMenu(position);
-    } else {
-      this.stage.positionRadMenu(touchPos);
-    }
+  public createPositionRadMenu(): RadMenu {
+    const cancelImage: HTMLImageElement = document.getElementById('icon_x') as HTMLImageElement;
+    const rotate: HTMLImageElement = document.getElementById('icon_rotate') as HTMLImageElement;
+    const translate: HTMLImageElement = document.getElementById('icon_translate') as HTMLImageElement;
+    const cross: HTMLImageElement = document.getElementById('icon_cross') as HTMLImageElement;
+    const images: HTMLImageElement[] = [];
+    images.push(translate);
+    images.push(rotate);
+    images.push(cross);
+    const names = ['bewegen', 'rotieren', 'entfernen'];
+    const radMenu: RadMenu = new RadMenu();
+    radMenu.initializeNew(images, cancelImage, names);
+    this.stage.radMenus.push(radMenu);
+    return radMenu;
   }
 
-  private moveOneFingerTouch(event: TouchEvent): void {
-    const touch: Touch = event.touches[0];
-    const touchPos: Vec2 = new Vec2(touch.clientX, touch.clientY);
-    this.stage.moveTouch(touchPos);
-  }
-
-  private startTwoFingerTouch(event: TouchEvent): void {
-    const [avg, fingers] = this.getTouchesAvagePosition(event.touches);
-    this.pos = avg;
-    this.initialLength = fingers[0].substract(fingers[1]).length();
-    this.stage.refreshCanvas();
-  }
-
-  private moveTwoFingerTouch(event: TouchEvent): void {
-    this.stage.closeRadMenu();
-    const [avg, fingers] = this.getTouchesAvagePosition(event.touches);
-    const delta: Vec2 = avg.substract(this.pos);
-    this.pos = avg;
-    const fingerDist: number = fingers[0].substract(fingers[1]).length();
-    const ratio = 1 - (this.initialLength / fingerDist);
-    this.initialLength = fingerDist;
-    this.stage.touchZoomAndShift(delta, ratio);
-  }
-
-  private getTouchesAvagePosition(touches: TouchList): [Vec2, Vec2[]] {
-    const fingers: Vec2[] = [];
-    for (let i = 0; i < touches.length; i++) {
-      const item: Touch | null = touches.item(i);
-      if (item != null) {
-        fingers.push(new Vec2(item.screenX, item.screenY));
-      }
-    }
-    const avg: Vec2 = new Vec2(0, 0);
-    fingers.forEach(f => {
-      avg.addOtherToSelf(f);
-    });
-    avg.divideBy(fingers.length);
-    return [avg, fingers];
-  }
-
-  public createNewRadMenu(): void {
+  public createOtherRadMenu(): RadMenu {
     const cancelImage: HTMLImageElement = document.getElementById('icon_x') as HTMLImageElement;
     const swordImage: HTMLImageElement = document.getElementById('icon_sword') as HTMLImageElement;
     const bowImage: HTMLImageElement = document.getElementById('icon_bow') as HTMLImageElement;
@@ -299,6 +287,13 @@ export class ArenaComponent implements OnInit, OnDestroy {
     images.push(swordImage);
     images.push(bowImage);
     images.push(mapImage);
-    this.stage.radMenu.initializeNew(3, images, cancelImage);
+    const radMenu: RadMenu = new RadMenu();
+    radMenu.initializeNew(images, cancelImage);
+    this.stage.radMenus.push(radMenu);
+    return radMenu;
+  }
+
+  testFunc(stage: Stage): void {
+    console.warn(stage.ratio);
   }
 }

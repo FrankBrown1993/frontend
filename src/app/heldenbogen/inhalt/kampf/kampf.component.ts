@@ -8,6 +8,7 @@ import {Entity} from "../../../_classes/kampf/entity";
 import {Vec2} from "../../../_classes/kampf/vec2";
 import {RadMenu} from "../../../_classes/kampf/rad-menu";
 import {Stage} from "../../../_classes/canvas/stage";
+import {Control} from "../../../_classes/canvas/control";
 
 @Component({
   selector: 'app-kampf',
@@ -23,8 +24,11 @@ export class KampfComponent implements OnInit, OnDestroy  {
 
   /** Canvas */
   stage: Stage = new Stage();
+  control: Control = new Control();
 
   constructor(private websocket: WebsocketService) {
+    this.stage.control = this.control;
+    this.control.stage = this.stage;
   }
 
   ngOnDestroy(): void {
@@ -46,16 +50,18 @@ export class KampfComponent implements OnInit, OnDestroy  {
 
     addEventListener("resize", (event) => {
       this.stage.sizeCanvas(window.innerWidth);
-      this.stage.refreshCanvas();
+      // this.stage.refreshCanvas();
     });
     const canvas = document.getElementById('stage') as HTMLCanvasElement;
     this.initiateCanvas();
-    this.stage.initiateObjects();
+    // this.stage.initiateObjects();
   }
 
   private sendMessage(message: Message): void {
     this.websocket.sendMessage(message);
   }
+
+
 
 
   private initiateCanvas(): void {
@@ -71,94 +77,19 @@ export class KampfComponent implements OnInit, OnDestroy  {
         const closeImage: HTMLImageElement = document.getElementById('icon_x') as HTMLImageElement;
         // this.stage.radMenu.setCancelImage(closeImage);
         this.createNewRadMenu();
-        this.stage.refreshCanvas();
+        // this.stage.refreshCanvas();
       }
     }
   }
-
-  touchCount = 0;
-  pos: Vec2 = new Vec2(0,0);
-  initialLength: number = 0;
 
   public onTouchStart(event: TouchEvent) {
-    this.touchCount = event.touches.length;
     event.preventDefault();
-    if (this.touchCount == 1) {
+    this.stage.control.touchCount = event.touches.length;
+    this.stage.control.kindOfTouch = this.stage.control.touchCount;
+    if (this.stage.control.touchCount == 1) {
       this.startOneFingerTouch(event);
-    } else if (this.touchCount == 2) {
-      this.startTwoFingerTouch(event);
-    }
-  }
-
-  onTouchMove(event: TouchEvent) {
-    this.touchCount = event.touches.length;
-    if (this.touchCount == 1) {
-      this.moveOneFingerTouch(event);
-    } else if (this.touchCount == 2) {
-      this.moveTwoFingerTouch(event);
-    }
-  }
-
-  onTouchEnd(event: TouchEvent) {
-    this.touchCount = 0;
-    this.stage.closeRadMenu();
-    this.stage.refreshCanvas();
-  }
-
-  @HostListener('wheel', ['$event'])
-  onWheel(event: WheelEvent) {
-    this.stage.closeRadMenu();
-    event.preventDefault();
-    console.log(event.deltaY);
-    this.stage.zoomMouse(event.deltaY);
-  }
-
-  mousePos: Vec2 = new Vec2(0, 0);
-  leftPressed = false;
-  middlePressed = false;
-  onMouseDown(event: MouseEvent) {
-    event.preventDefault();
-    console.log(event);
-    if (event.button === 0) { // left mouse click
-      this.leftPressed = true;
-      const touchPos: Vec2 = new Vec2(event.x, event.y);
-      const obj: Entity | null = this.stage.getNearestObjectWithinReach(30, touchPos);
-      if (obj != null) {
-        const position = this.stage.convertObjectPositionToCanvasPosition(this.stage.getCenterOfObject(obj));
-        this.stage.positionRadMenu(position);
-      } else {
-        this.stage.positionRadMenu(touchPos);
-      }
-
-    } else if (event.button === 1) { // middle mouse click
-      this.stage.closeRadMenu();
-      this.middlePressed = true;
-      this.mousePos = new Vec2(event.x, event.y);
-    }
-  }
-
-  onMouseMove(event: MouseEvent) {
-    console.log(event);
-    if (this.middlePressed) {
-      this.stage.closeRadMenu();
-      const newPos: Vec2 = new Vec2(event.x, event.y);
-      const delta: Vec2 = newPos.substract(this.mousePos);
-      this.mousePos = newPos;
-      this.stage.shiftMouse(delta);
-    } else if (this.leftPressed){ // left mouse click
-      const touchPos: Vec2 = new Vec2(event.x, event.y);
-      this.stage.moveTouch(touchPos);
-    }
-  }
-
-  onMouseUp(event: MouseEvent) {
-    if (event.button === 0) {
-      this.stage.closeRadMenu();
-      this.leftPressed = false;
-      this.stage.refreshCanvas();
-    }
-    if (event.button === 1) {
-      this.middlePressed = false;
+    } else if (this.stage.control.touchCount == 2) {
+      this.stage.control.startTwoFingerTouch(event);
     }
   }
 
@@ -168,50 +99,56 @@ export class KampfComponent implements OnInit, OnDestroy  {
     const obj: Entity | null = this.stage.getNearestObjectWithinReach(30, touchPos);
     if (obj != null) {
       const position = this.stage.convertObjectPositionToCanvasPosition(this.stage.getCenterOfObject(obj));
+      this.stage.radIndex = 0;
       this.stage.positionRadMenu(position);
     } else {
+      this.stage.radIndex = 1;
       this.stage.positionRadMenu(touchPos);
     }
   }
 
-  private moveOneFingerTouch(event: TouchEvent): void {
-    const touch: Touch = event.touches[0];
-    const touchPos: Vec2 = new Vec2(touch.clientX, touch.clientY);
-    this.stage.moveTouch(touchPos);
+  onTouchMove(event: TouchEvent) {
+    this.control.onTouchMove(event);
   }
 
-  private startTwoFingerTouch(event: TouchEvent): void {
-    const [avg, fingers] = this.getTouchesAvagePosition(event.touches);
-    this.pos = avg;
-    this.initialLength = fingers[0].substract(fingers[1]).length();
-    this.stage.refreshCanvas();
+  onTouchEnd(event: TouchEvent) {
+    this.control.onTouchEnd(event);
   }
 
-  private moveTwoFingerTouch(event: TouchEvent): void {
-    this.stage.closeRadMenu();
-    const [avg, fingers] = this.getTouchesAvagePosition(event.touches);
-    const delta: Vec2 = avg.substract(this.pos);
-    this.pos = avg;
-    const fingerDist: number = fingers[0].substract(fingers[1]).length();
-    const ratio = 1 - (this.initialLength / fingerDist);
-    this.initialLength = fingerDist;
-    this.stage.touchZoomAndShift(delta, ratio);
+  @HostListener('wheel', ['$event'])
+  onWheel(event: WheelEvent) {
+    this.control.onWheel(event);
   }
 
-  private getTouchesAvagePosition(touches: TouchList): [Vec2, Vec2[]] {
-    const fingers: Vec2[] = [];
-    for (let i = 0; i < touches.length; i++) {
-      const item: Touch | null = touches.item(i);
-      if (item != null) {
-        fingers.push(new Vec2(item.screenX, item.screenY));
+  onMouseDown(event: MouseEvent) {
+    event.preventDefault();
+    console.log(event);
+    if (event.button === 0) { // left mouse click
+      this.stage.control.leftPressed = true;
+      const touchPos: Vec2 = new Vec2(event.x, event.y);
+      const obj: Entity | null = this.stage.getNearestObjectWithinReach(30, touchPos);
+      if (obj != null) {
+        const position = this.stage.convertObjectPositionToCanvasPosition(this.stage.getCenterOfObject(obj));
+        this.stage.radIndex = 0;
+        this.stage.positionRadMenu(position);
+      } else {
+        this.stage.radIndex = 0;
+        this.stage.positionRadMenu(touchPos);
       }
+
+    } else if (event.button === 1) { // middle mouse click
+      this.stage.closeRadMenu();
+      this.stage.control.middlePressed = true;
+      this.stage.control.mousePos = new Vec2(event.x, event.y);
     }
-    const avg: Vec2 = new Vec2(0, 0);
-    fingers.forEach(f => {
-      avg.addOtherToSelf(f);
-    });
-    avg.divideBy(fingers.length);
-    return [avg, fingers];
+  }
+
+  onMouseMove(event: MouseEvent) {
+    this.control.onMouseMove(event);
+  }
+
+  onMouseUp(event: MouseEvent) {
+    this.control.onMouseUp(event);
   }
 
   public createNewRadMenu(): void {
@@ -223,6 +160,6 @@ export class KampfComponent implements OnInit, OnDestroy  {
     images.push(swordImage);
     images.push(bowImage);
     images.push(mapImage);
-    this.stage.radMenu.initializeNew(3, images, cancelImage);
+    this.stage.radMenus[0].initializeNew(images, cancelImage);
   }
 }

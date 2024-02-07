@@ -7,6 +7,11 @@ export class Vec2 {
     this.y = y;
   }
 
+  public copy(other: Vec2): void {
+    this.x = other.x;
+    this.y = other.y;
+  }
+
   public add(other: Vec2): Vec2 {
     return new Vec2(this.x + other.x, this.y + other.y);
   }

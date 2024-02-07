@@ -7,12 +7,15 @@ export class Entity {
   width: number = 0;
   color: string = '';
 
+  tokenImage: HTMLImageElement;
+
   ini: number;
   iniBasis: number;
 
   fighter: Fighter;
 
-  constructor(posX: number, posY: number, width: number, color: string, fighter: Fighter, ini: number, iniBasis: number) {
+  constructor(posX: number, posY: number, width: number, color: string, fighter: Fighter, ini: number, iniBasis: number,
+              tokenAsImage: HTMLImageElement) {
     this.position = new Vec2(posX, posY);
     this.width = width;
     if (color != '') {
@@ -22,6 +25,7 @@ export class Entity {
     this.fighter.copy(fighter);
     this.ini = ini;
     this.iniBasis = iniBasis;
+    this.tokenImage = tokenAsImage;
   }
 
   public near(x: number, y: number, scale: number): boolean {

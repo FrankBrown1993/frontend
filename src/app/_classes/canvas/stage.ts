@@ -1,11 +1,19 @@
 import {Vec2} from "../kampf/vec2";
 import {Entity} from "../kampf/entity";
 import {RadMenu} from "../kampf/rad-menu";
+import {Control} from "./control";
 
 export class Stage {
+  control: Control;
+
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   ratio: number;
+
+  private fpsInterval: number = 1000 / 60; // 60 FPS
+  private then: number;
+  private startTime: number;
+
 
   zoomfactor = 1.0;
   mX = 0; // canvas width center
@@ -17,8 +25,33 @@ export class Stage {
   objects: Entity[] = [];
 
   /** Canvas Menus */
-  radMenu: RadMenu = new RadMenu();
+  radMenus: RadMenu[] = [];
+  radIndex = 0;
 
+
+  startAnimation() {
+    this.then = Date.now();
+    this.startTime = this.then;
+    this.animate();
+  }
+
+  animate() {
+    requestAnimationFrame(() => {
+      this.animate();
+    });
+
+    const now = Date.now();
+    const elapsed = now - this.then;
+
+    if (elapsed > this.fpsInterval) {
+      this.then = now - (elapsed % this.fpsInterval);
+      this.draw();
+    }
+  }
+
+  draw() {
+    this.refreshCanvas();
+  }
 
   public initialize(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void {
     this.canvas = canvas;
@@ -28,39 +61,15 @@ export class Stage {
     console.log(this.objects);
     this.sortEntities();
     console.log(this.objects);
-    this.refreshCanvas();
+    this.startAnimation();
+    // this.refreshCanvas();
   }
 
-  public initiateObjects(): void {
-    /*
-    const tkn_fianna: HTMLImageElement = document.getElementById('token_fianna') as HTMLImageElement;
-    const ptrt_fianna: HTMLImageElement = document.getElementById('portrait_fianna') as HTMLImageElement;
-    tkn_fianna.width = 50;
-    tkn_fianna.height = 50;
-    this.objects.push(new Entity(100, 200, 50, '', tkn_fianna, ptrt_fianna, 'Fianna', 16, 12));
-
-    const tkn_balrog: HTMLImageElement = document.getElementById('token_balrog') as HTMLImageElement;
-    const ptrt_balrog: HTMLImageElement = document.getElementById('portrait_balrog') as HTMLImageElement;
-    tkn_balrog.width = 50;
-    tkn_balrog.height = 50;
-    this.objects.push(new Entity(800, 400, 50, '', tkn_balrog, ptrt_balrog, 'Balrog', 14, 9));
-
-    const tkn_adrian: HTMLImageElement = document.getElementById('token_adrian') as HTMLImageElement;
-    const ptrt_adrian: HTMLImageElement = document.getElementById('portrait_adrian') as HTMLImageElement;
-    tkn_adrian.width = 50;
-    tkn_adrian.height = 50;
-    this.objects.push(new Entity(750, 50, 50, '', tkn_adrian, ptrt_adrian, 'Adrian', 14, 12));
-
-    let loaded = 0;
-    this.objects.forEach(obj => {
-      obj.token.onload = () => {
-        loaded++;
-        if (loaded === this.objects.length) {
-          this.refreshCanvas();
-        }
-      };
-    });
-    */
+  public initiateObject(entity: Entity): void {
+    this.objects.push(entity);
+    entity.tokenImage.onload = () => {
+      // this.refreshCanvas();
+    };
   }
 
   private sortEntities(): void {
@@ -84,6 +93,7 @@ export class Stage {
   }
 
   public sizeCanvas(innerWidth: number): void {
+    console.log("resize canvas", innerWidth);
     if (innerWidth <= 1024) {
       this.canvas.width = Math.round((innerWidth) / 2) * 2;
       this.canvas.height = Math.round((innerWidth * 0.5) / 2) * 2;
@@ -112,9 +122,12 @@ export class Stage {
     this.objects.forEach(o => {
       this.drawObject(o);
     });
-    if (this.radMenu.open) {
-      this.drawRadMenu();
-    }
+    this.radMenus.forEach(radMenu => {
+      if (radMenu.open) {
+        this.drawRadMenu(radMenu);
+      }
+    });
+
   }
 
   private drawObject(o: Entity): void {
@@ -157,105 +170,105 @@ export class Stage {
     ]
   }
 
-  private drawRadMenu(): void {
+  private drawRadMenu(radMenu: RadMenu): void {
     this.ctx.lineWidth = 0.5;
-    this.ctx.strokeStyle = this.radMenu.lineColor;
+    this.ctx.strokeStyle = radMenu.lineColor;
     // inner circle
     this.ctx.beginPath();
-    this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius / 3, 0, 2 * Math.PI);
+    this.ctx.arc(radMenu.pos.x, radMenu.pos.y, radMenu.radius / 3, 0, 2 * Math.PI);
     this.ctx.stroke();
-    const segmentRad = 2 * Math.PI / this.radMenu.segments;
-    if (this.radMenu.selectedSegment > 0) {
-      const startAngle = Math.PI * 1.5 - segmentRad / 2 + (segmentRad * this.radMenu.selectedSegment);
-      const endAngle = startAngle + (segmentRad * (this.radMenu.segments - 1));
+    const segmentRad = 2 * Math.PI / radMenu.segments;
+    if (radMenu.selectedSegment > 0) {
+      const startAngle = Math.PI * 1.5 - segmentRad / 2 + (segmentRad * radMenu.selectedSegment);
+      const endAngle = startAngle + (segmentRad * (radMenu.segments - 1));
       // unselected cirle
       this.ctx.beginPath();
-      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius,
+      this.ctx.arc(radMenu.pos.x, radMenu.pos.y, radMenu.radius,
         startAngle,
         endAngle);
       this.ctx.stroke();
 
       // selected circle
       this.ctx.beginPath();
-      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius * 1.25,
+      this.ctx.arc(radMenu.pos.x, radMenu.pos.y, radMenu.radius * 1.25,
         endAngle,
         endAngle + segmentRad);
       this.ctx.stroke();
 
       // fill unselected area
       this.ctx.beginPath();
-      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius / 3,
+      this.ctx.arc(radMenu.pos.x, radMenu.pos.y, radMenu.radius / 3,
         startAngle,
         endAngle);
-      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius,
+      this.ctx.arc(radMenu.pos.x, radMenu.pos.y, radMenu.radius,
         endAngle,
         startAngle,
         true);
-      this.ctx.fillStyle = this.radMenu.fillColor; // Farbe für den Kreisring
+      this.ctx.fillStyle = radMenu.fillColor; // Farbe für den Kreisring
       this.ctx.fill();
 
       // fill selected area
       this.ctx.beginPath();
-      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius / 3,
+      this.ctx.arc(radMenu.pos.x, radMenu.pos.y, radMenu.radius / 3,
         endAngle,
         startAngle);
-      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius * 1.25,
+      this.ctx.arc(radMenu.pos.x, radMenu.pos.y, radMenu.radius * 1.25,
         startAngle,
         endAngle,
         true);
-      this.ctx.fillStyle = this.radMenu.fillColor; // Farbe für den Kreisring
+      this.ctx.fillStyle = radMenu.fillColor; // Farbe für den Kreisring
       this.ctx.fill();
-      this.ctx.drawImage(this.radMenu.cancelImage,
-        this.radMenu.pos.x - (this.radMenu.cancelImage.width) / 2,
-        this.radMenu.pos.y - (this.radMenu.cancelImage.height) / 2,
-        this.radMenu.cancelImage.width,
-        this.radMenu.cancelImage.height);
+      this.ctx.drawImage(radMenu.cancelImage,
+        radMenu.pos.x - (radMenu.cancelImage.width) / 2,
+        radMenu.pos.y - (radMenu.cancelImage.height) / 2,
+        radMenu.cancelImage.width,
+        radMenu.cancelImage.height);
     } else {
       this.ctx.beginPath();
-      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius, 0, 2 * Math.PI);
+      this.ctx.arc(radMenu.pos.x, radMenu.pos.y, radMenu.radius, 0, 2 * Math.PI);
       this.ctx.stroke();
 
       // fill
       this.ctx.beginPath();
-      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius / 3, 0, 2 * Math.PI);
-      this.ctx.arc(this.radMenu.pos.x, this.radMenu.pos.y, this.radMenu.radius,0, 2 * Math.PI, true);
-      this.ctx.fillStyle = this.radMenu.fillColor; // Farbe für den Kreisring
+      this.ctx.arc(radMenu.pos.x, radMenu.pos.y, radMenu.radius / 3, 0, 2 * Math.PI);
+      this.ctx.arc(radMenu.pos.x, radMenu.pos.y, radMenu.radius,0, 2 * Math.PI, true);
+      this.ctx.fillStyle = radMenu.fillColor; // Farbe für den Kreisring
       this.ctx.fill();
-      this.ctx.drawImage(this.radMenu.cancelImage,
-        this.radMenu.pos.x - (this.radMenu.cancelImage.width * 1.25) / 2,
-        this.radMenu.pos.y - (this.radMenu.cancelImage.height * 1.25) / 2,
-        this.radMenu.cancelImage.width * 1.25,
-        this.radMenu.cancelImage.height * 1.25);
+      this.ctx.drawImage(radMenu.cancelImage,
+        radMenu.pos.x - (radMenu.cancelImage.width * 1.25) / 2,
+        radMenu.pos.y - (radMenu.cancelImage.height * 1.25) / 2,
+        radMenu.cancelImage.width * 1.25,
+        radMenu.cancelImage.height * 1.25);
     }
 
     // draw straight lines
     let i: number = 0;
-    this.radMenu.segmentBorderVectors.forEach(vec => {
+    radMenu.segmentBorderVectors.forEach(vec => {
       let mult = 1;
-      if (i === this.radMenu.selectedSegment
-          || i + 1 === this.radMenu.selectedSegment
-          || (i === 0 && this.radMenu.selectedSegment === this.radMenu.segments)) {
+      if (i === radMenu.selectedSegment
+          || i + 1 === radMenu.selectedSegment
+          || (i === 0 && radMenu.selectedSegment === radMenu.segments)) {
         mult = 1.25;
       }
-      if (this.radMenu.selectedSegment === 0) {
+      if (radMenu.selectedSegment === 0) {
         mult = 1;
       }
       this.ctx.beginPath(); // Start a new path
       this.ctx.moveTo(
-        this.radMenu.pos.x + vec.x * this.radMenu.radius / 3,
-        this.radMenu.pos.y + vec.y * this.radMenu.radius / 3);
+        radMenu.pos.x + vec.x * radMenu.radius / 3,
+        radMenu.pos.y + vec.y * radMenu.radius / 3);
       i++;
       this.ctx.lineTo(
-        this.radMenu.pos.x + vec.x * this.radMenu.radius * mult,
-        this.radMenu.pos.y + vec.y * this.radMenu.radius * mult); // Draw a line to (150, 100)
+        radMenu.pos.x + vec.x * radMenu.radius * mult,
+        radMenu.pos.y + vec.y * radMenu.radius * mult); // Draw a line to (150, 100)
       this.ctx.stroke(); // Render the path
     });
 
     i = 0;
     // draw icons
-    this.radMenu.segmentMiddleVectors.forEach(vec => {
+    radMenu.segmentMiddleVectors.forEach(vec => {
       let mult = 1;
-      if (this.radMenu.selectedSegment - 1 === i) {
+      if (radMenu.selectedSegment - 1 === i) {
         mult = 1.25;
       }
 
@@ -263,29 +276,46 @@ export class Stage {
         this.radMenu.pos.x - (this.radMenu.cancelImage.width * 1.25) / 2,
         this.radMenu.pos.y - (this.radMenu.cancelImage.height * 1.25) / 2,
        */
-      const scaledVec: Vec2 = vec.multiply(this.radMenu.radius * (2/3) * mult);
-      const position: Vec2 = this.radMenu.pos.add(scaledVec);
-      this.ctx.drawImage(this.radMenu.segmentIcons[i],
-        position.x - this.radMenu.segmentIcons[i].width * mult / 2,
-        position.y - this.radMenu.segmentIcons[i].height * mult / 2,
-        this.radMenu.segmentIcons[i].width * mult,
-        this.radMenu.segmentIcons[i].height * mult);
+      const scaledVec: Vec2 = vec.multiply(radMenu.radius * (2/3) * mult);
+      const position: Vec2 = radMenu.pos.add(scaledVec);
+      this.ctx.drawImage(radMenu.segmentIcons[i],
+        position.x - radMenu.segmentIcons[i].width * mult / 2,
+        position.y - radMenu.segmentIcons[i].height * mult / 2,
+        radMenu.segmentIcons[i].width * mult,
+        radMenu.segmentIcons[i].height * mult);
       i++;
     });
+    if (radMenu.selectedSegment > 0) {
+      const text: string = radMenu.segmentNames[radMenu.selectedSegment - 1];
+      if (text != null) {
+        this.ctx.font = "16px \"Aladin\", cursive"
+        let txtWidth = this.ctx.measureText(text).width;
+        this.ctx.textBaseline = "hanging";
+        this.ctx.fillStyle = 'black';
+        const vec: Vec2 = new Vec2(0, 0);
+        vec.copy(radMenu.segmentMiddleVectors[radMenu.selectedSegment - 1]);
+        const scaledVec = vec.multiply(radMenu.radius * 1.5);
+
+        const position: Vec2 = radMenu.pos.add(scaledVec);
+        this.ctx.fillText(text,position.x - txtWidth / 2, position.y);
+      }
+    }
   }
 
   public closeRadMenu(): void {
-    this.radMenu.close();
+    this.radMenus[this.radIndex];
+    this.radMenus[this.radIndex].close();
+    this.radIndex = 0;
   }
 
   public zoomMouse(deltaY: number) {
     this.zoom(deltaY);
-    this.refreshCanvas();
+    // this.refreshCanvas();
   }
 
   public shiftMouse(delta: Vec2) {
     this.shift(delta);
-    this.refreshCanvas();
+    // this.refreshCanvas();
   }
 
   public touchZoomAndShift(delta: Vec2, ratio: number): void {
@@ -299,7 +329,7 @@ export class Stage {
     if (this.zoomfactor > 4) {
       this.zoomfactor = 4;
     }
-    this.refreshCanvas();
+    // this.refreshCanvas();
   }
 
   private zoom(deltaY: number): void {
@@ -321,9 +351,9 @@ export class Stage {
     const rect: DOMRect = this.canvas.getBoundingClientRect();
     const cPos = new Vec2(rect.x, rect.y);
     const posOnCanvas = touchPos.substract(cPos);
-    this.radMenu.pos = posOnCanvas;
-    this.radMenu.startTimer();
-    this.refreshCanvas();
+    this.radMenus[this.radIndex].pos = posOnCanvas;
+    this.radMenus[this.radIndex].startTimer();
+    // this.refreshCanvas();
   }
 
 
@@ -332,9 +362,9 @@ export class Stage {
     const rect: DOMRect = this.canvas.getBoundingClientRect();
     const cPos = new Vec2(rect.x, rect.y);
     const posOnCanvas = touchPos.substract(cPos);
-    this.radMenu.selectSegment(posOnCanvas);
-    this.radMenu.openIfLongEnough();
-    this.refreshCanvas();
+    this.radMenus[this.radIndex].selectSegment(posOnCanvas);
+    this.radMenus[this.radIndex].openIfLongEnough();
+    // this.refreshCanvas();
   }
 
   public getNearestObjectWithinReach(reach: number, posRaw: Vec2): Entity | null {
@@ -365,5 +395,9 @@ export class Stage {
     const cPos = new Vec2(rect.x, rect.y);
     const position = oPos.add(cPos);
     return position;
+  }
+
+  public testFunction(func: (stage: Stage) => void, stage: Stage): void {
+    func(stage);
   }
 }

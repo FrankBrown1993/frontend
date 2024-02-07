@@ -11,6 +11,6 @@ export class IpService {
     // mac: *.32
     // jan pc: *.44
     // may pc: *.20
-    return '192.168.178.20';
+    return '192.168.178.44';
   }
 }

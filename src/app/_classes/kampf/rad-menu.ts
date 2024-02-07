@@ -1,4 +1,5 @@
 import {Vec2} from "./vec2";
+import {EventEmitter} from "@angular/core";
 
 export class RadMenu {
   pos: Vec2; // position of center
@@ -16,6 +17,10 @@ export class RadMenu {
   segmentIcons: HTMLImageElement[] = [];
   segmentBorderVectors: Vec2[] = [];
   segmentMiddleVectors: Vec2[] = [];
+
+  segmentNames: string[] = [];
+
+  eventEmitter: EventEmitter<number> = new EventEmitter<number>();
 
   constructor() {
     this.buildSegmentVecotrs();
@@ -40,14 +45,16 @@ export class RadMenu {
     }
   }
 
-  public initializeNew(segments: number, segmentIcons: HTMLImageElement[],
+  public initializeNew(segmentIcons: HTMLImageElement[],
                        cancelImage: HTMLImageElement,
+                       segmentNames?: string[],
                        pos?: Vec2, open?: boolean, delay?: number,
                        startTime?: number, radius?: number, selectedSegment?: number,
                        fillColor?: string, lineColor?: string): void  {
-    this.segments = segments;
+    this.segments = segmentIcons.length;
     this.segmentIcons = segmentIcons;
     this.cancelImage = cancelImage;
+    this.segmentNames = segmentNames ?? this.segmentNames;
     this.pos = pos ?? this.pos;
     this.open = open ?? this.open;
     this.delay = delay ?? this.delay;
@@ -108,6 +115,7 @@ export class RadMenu {
   }
 
   public close(): void {
+    this.eventEmitter.emit(this.selectedSegment);
     this.open = false;
     this.selectedSegment = 0;
     this.startTime = 0;
