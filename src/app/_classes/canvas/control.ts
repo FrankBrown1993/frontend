@@ -59,7 +59,7 @@ export class Control {
     if (this.actionAllowed()) {
       this.stage.closeRadMenu();
       console.log(event.deltaY);
-      this.stage.zoomMouse(event.deltaY);
+      this.stage.zoomMouse(event);
     }
   }
 
@@ -111,7 +111,7 @@ export class Control {
     const fingerDist: number = fingers[0].substract(fingers[1]).length();
     const ratio = 1 - (this.initialLength / fingerDist);
     this.initialLength = fingerDist;
-    this.stage.touchZoomAndShift(delta, ratio);
+    this.stage.touchZoomAndShift(delta, ratio, avg);
   }
 
   private getTouchesAvagePosition(touches: TouchList): [Vec2, Vec2[]] {

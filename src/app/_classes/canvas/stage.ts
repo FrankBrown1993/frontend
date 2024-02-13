@@ -10,6 +10,8 @@ export class Stage {
   ctx: CanvasRenderingContext2D;
   ratio: number;
 
+  fps: number = -1;
+
   private fpsInterval: number = 1000 / 60; // 60 FPS
   private then: number;
   private startTime: number;
@@ -39,14 +41,11 @@ export class Stage {
     requestAnimationFrame(() => {
       this.animate();
     });
-
     const now = Date.now();
     const elapsed = now - this.then;
-
-    if (elapsed > this.fpsInterval) {
-      this.then = now - (elapsed % this.fpsInterval);
-      this.draw();
-    }
+    this.fps = 1000 / elapsed;
+    this.then = now;
+    this.draw();
   }
 
   draw() {
@@ -308,43 +307,78 @@ export class Stage {
     this.radIndex = 0;
   }
 
-  public zoomMouse(deltaY: number) {
-    this.zoom(deltaY);
-    // this.refreshCanvas();
+  public zoomMouse(event: WheelEvent) {
+    const touchPos: Vec2 = new Vec2(event.x, event.y);
+    const rect: DOMRect = this.canvas.getBoundingClientRect();
+    const cPos = new Vec2(rect.x, rect.y);
+    const cCenter = new Vec2(rect.x + rect.width / 2, rect.y + rect.height / 2);
+    const posOnCanvas = touchPos.substract(cPos);
+
+    const deltaY = event.deltaY;
+
+    let delta  = 0;
+    // just zoom
+    if (deltaY < 0) {
+      delta = (deltaY / 1000) * this.zoomfactor;
+    } else {
+      delta = (deltaY / 1000) * (this.zoomfactor - (deltaY / 1000)) ;
+    }
+    console.log('zoomfactor:',this.zoomfactor,'delta:', delta)
+    this.zoomfactor -= delta;
+    if (this.zoomfactor < 0.25) {
+      let diff = 0.25 - this.zoomfactor;
+      delta -= diff;
+      this.zoomfactor = 0.25;
+    }
+    if (this.zoomfactor > 4) {
+      let diff = this.zoomfactor - 4;
+      delta += diff;
+      this.zoomfactor = 4;
+    }
+    if (delta != 0) {
+      const posFromCenter: Vec2 = posOnCanvas.substract(cCenter);
+      const posFromCenterScaled: Vec2 = posFromCenter.multiply(1 + delta);
+      const translate: Vec2 = posFromCenter.substract(posFromCenterScaled);
+      this.tX -= translate.x / this.zoomfactor;
+      this.tY -= translate.y / this.zoomfactor;
+    }
   }
 
   public shiftMouse(delta: Vec2) {
-    this.shift(delta);
-    // this.refreshCanvas();
-  }
-
-  public touchZoomAndShift(delta: Vec2, ratio: number): void {
     this.tX += (delta.x / this.zoomfactor);
     this.tY += (delta.y / this.zoomfactor);
+  }
 
-    this.zoomfactor += (ratio * this.zoomfactor);
+  public touchZoomAndShift(deltaVec: Vec2, ratio: number, pos: Vec2): void {
+    const rect: DOMRect = this.canvas.getBoundingClientRect();
+    const cPos = new Vec2(rect.x, rect.y);
+    const cCenter = new Vec2(rect.x + rect.width / 2, rect.y + rect.height / 2);
+    const posOnCanvas = pos.substract(cPos);
+
+    this.tX += (deltaVec.x / this.zoomfactor);
+    this.tY += (deltaVec.y / this.zoomfactor);
+
+
+    let delta = (ratio * this.zoomfactor);
+    this.zoomfactor += delta;
     if (this.zoomfactor < 0.25) {
+      let diff = 0.25 - this.zoomfactor;
+      delta -= diff;
       this.zoomfactor = 0.25;
     }
     if (this.zoomfactor > 4) {
+      let diff = this.zoomfactor - 4;
+      delta += diff;
       this.zoomfactor = 4;
     }
-    // this.refreshCanvas();
-  }
-
-  private zoom(deltaY: number): void {
-    this.zoomfactor -= (deltaY / 1000) * this.zoomfactor;
-    if (this.zoomfactor < 0.25) {
-      this.zoomfactor = 0.25;
-    }
-    if (this.zoomfactor > 4) {
-      this.zoomfactor = 4;
-    }
-  }
-
-  private shift(delta: Vec2): void {
-    this.tX += (delta.x / this.zoomfactor);
-    this.tY += (delta.y / this.zoomfactor);
+    // TodO
+    /*if (delta != 0) {
+      const posFromCenter: Vec2 = posOnCanvas.substract(cCenter);
+      const posFromCenterScaled: Vec2 = posFromCenter.multiply(1 + delta);
+      const translate: Vec2 = posFromCenter.substract(posFromCenterScaled);
+      this.tX += translate.x / this.zoomfactor;
+      this.tY += translate.y / this.zoomfactor;
+    }*/
   }
 
   public positionRadMenu(touchPos: Vec2): void {

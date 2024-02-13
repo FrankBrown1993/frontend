@@ -34,8 +34,8 @@ export class Vec2 {
     this.y = Math.round(this.y * s);
   }
 
-  public divide(v: Vec2, s: number): Vec2 {
-    return new Vec2(v.x / s, v.y / s);
+  public divide(s: number): Vec2 {
+    return new Vec2(this.x / s, this.y / s);
   }
 
   public divideBy(s: number): void {

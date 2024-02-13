@@ -28,6 +28,7 @@ export class Entity {
     this.tokenImage = tokenAsImage;
   }
 
+
   public near(x: number, y: number, scale: number): boolean {
     let near = true;
     console.log('x ',this.position.x, ' - ', this.position.x + this.width * scale)
