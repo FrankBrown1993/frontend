@@ -1,6 +1,17 @@
 <div class="verticalStart">
+  {{stage.zoomfactor}}
   <div class="horizontalCenter">
     <canvas id="stage" width="400" height="400"
+            (touchstart)="onTouchStart($event)"
+            (touchmove)="onTouch($event)"
+            (touchend)="onTouchEnd($event)"
+            (wheel)="onWheel($event)"
+            (mousedown)="onMouseDown($event)"
+            (mousemove)="onMouse($event)"
+            (mouseup)="onMouseUp($event)"
+            (dragover)="allowDrop($event)"
+            (drop)="onDrop($event)"></canvas>
+            <!--
             (touchstart)="onTouchStart($event)"
             (touchmove)="onTouchMove($event)"
             (touchend)="onTouchEnd($event)"
@@ -10,7 +21,9 @@
             (mouseup)="onMouseUp($event)"
             (dragover)="allowDrop($event)"
             (drop)="onDrop($event)"></canvas>
+            -->
   </div>
+
   <div class="horizontalStart" style="background: white">
     <div class="portrait" *ngFor="let fighter of fighters"
          [style.background-image]="'url(' + fighter.token + ')'"

@@ -134,6 +134,10 @@ export class ArenaComponent implements OnInit, OnDestroy {
     }
   }
 
+  public onTouch(event: TouchEvent): void {
+    this.stage.touchEventBuffer.push(event);
+  }
+
   public onTouchStart(event: TouchEvent) {
     event.preventDefault();
     this.stage.control.touchCount = event.touches.length;
@@ -172,18 +176,31 @@ export class ArenaComponent implements OnInit, OnDestroy {
   }
 
   onTouchEnd(event: TouchEvent) {
+    event.preventDefault();
     this.control.onTouchEnd(event);
   }
 
   @HostListener('wheel', ['$event'])
   onWheel(event: WheelEvent) {
-    this.stage.testFunction(this.testFunc, this.stage);
-    this.control.onWheel(event);
+    event.preventDefault();
+    this.stage.wheelEventBuffer.push(event);
+    /*this.stage.testFunction(this.testFunc, this.stage);
+    this.control.onWheel(event);*/
+
+  }
+
+  onMouse(event: MouseEvent): void {
+    event.preventDefault();
+    if (event.buttons > 0 || event.type === 'mouseup' ) {
+      this.stage.mouseEventBuffer.push(event);
+    }
   }
 
   onMouseDown(event: MouseEvent) {
     event.preventDefault();
-    console.log(event);
+    this.stage.mousePos = new Vec2(event.x, event.y);
+    this.stage.mouseButton = event.button;
+    // console.log(event);
     if (event.button === 0) { // left mouse click
       this.stage.control.leftPressed = true;
       const touchPos: Vec2 = new Vec2(event.x, event.y);
@@ -210,6 +227,7 @@ export class ArenaComponent implements OnInit, OnDestroy {
 
   onMouseUp(event: MouseEvent) {
     this.control.onMouseUp(event);
+    this.stage.mouseButton = -1;
   }
 
   draggedFighter: Fighter | null;

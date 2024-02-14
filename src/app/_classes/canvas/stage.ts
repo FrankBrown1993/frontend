@@ -30,6 +30,14 @@ export class Stage {
   radMenus: RadMenu[] = [];
   radIndex = 0;
 
+  public touchEventBuffer: TouchEvent[] = [];
+  public wheelEventBuffer: WheelEvent[] = [];
+  public zoomPosition: Vec2 = new Vec2(0, 0);
+  public zoomTranslate: Vec2 = new Vec2(0, 0);
+  public mouseEventBuffer: MouseEvent[] = [];
+  public mousePos: Vec2 = new Vec2(0, 0);
+  public mouseButton: number = -1;
+
 
   startAnimation() {
     this.then = Date.now();
@@ -48,8 +56,84 @@ export class Stage {
     this.draw();
   }
 
+  private getWheelEvents(): [Vec2, number] {
+    let deltaY: number = 0;
+    const count = this.wheelEventBuffer.length;
+    let pos: Vec2 = new Vec2(this.mX, this.mY);
+    if (count > 0) {
+      const event: WheelEvent = this.wheelEventBuffer.pop()!;
+      deltaY += event.deltaY;
+      const wheelPos: Vec2 = new Vec2(event.x, event.y);
+      const center: Vec2 = new Vec2(this.mX, this.mY);
+      const rect: DOMRect = this.canvas.getBoundingClientRect();
+      const cPos = new Vec2(rect.x, rect.y);
+      const posOnCanvas = wheelPos.substract(cPos);
+      pos = posOnCanvas;
+      this.zoomTranslate = wheelPos.substract(center);
+
+      this.wheelEventBuffer = [];
+    }
+    return [pos, deltaY];
+  }
+
+  private getMouseEvents(): Vec2 {
+    let delta: Vec2 = new Vec2(0, 0);
+    if (this.mouseEventBuffer.length > 0) {
+      const event: MouseEvent = this.mouseEventBuffer.pop()!;
+      this.mouseEventBuffer = [];
+      const pos: Vec2 = new Vec2(event.x, event.y);
+      delta = pos.substract(this.mousePos);
+      this.mousePos = new Vec2(pos.x, pos.y);
+    }
+    return delta;
+  }
+
   draw() {
-    this.refreshCanvas();
+    this.clearCanvas();
+    const [pos, scale] = this.getWheelEvents();
+    const translate: Vec2 = this.getMouseEvents();
+
+    const oldZoom = this.zoomfactor;
+    let delta = 0;
+    if (scale < 0) {
+      delta = (scale / 1000) * this.zoomfactor;
+    } else {
+      delta = (scale / 1000) * (this.zoomfactor - (scale / 1000)) ;
+    }
+    this.zoomfactor -= delta;
+    if (this.zoomfactor < 0.25) {
+      let diff = 0.25 - this.zoomfactor;
+      delta -= diff;
+      this.zoomfactor = 0.25;
+    }
+    if (this.zoomfactor > 4) {
+      let diff = this.zoomfactor - 4;
+      delta += diff;
+      this.zoomfactor = 4;
+    }
+    const oneMinusZoom: number = 1 - oldZoom;
+    delta = Math.round(delta * 1000) / 1000;
+    let zoomPosTranslation: Vec2 = new Vec2(0, 0);
+    if (delta != 0) {
+      zoomPosTranslation = this.zoomPosition.substract(pos);
+      console.log(zoomPosTranslation.x, zoomPosTranslation.y, zoomPosTranslation.length());
+
+      zoomPosTranslation.multiplyBy(oneMinusZoom);
+      console.log('oneMinusZoom', oneMinusZoom);
+      console.log(zoomPosTranslation.x, zoomPosTranslation.y, zoomPosTranslation.length());
+      this.zoomPosition = pos;
+      translate.addOtherToSelf(zoomPosTranslation);
+    }
+
+    //
+    translate.divideBy(oldZoom);
+
+    this.tX += translate.x;
+    this.tY += translate.y;
+
+
+    this.drawObjects();
+    this.drawMenus();
   }
 
   public initialize(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void {
@@ -104,6 +188,7 @@ export class Stage {
       this.mX = this.canvas.width / 2;
       this.mY = this.canvas.height / 2;
     }
+    this.zoomPosition = new Vec2(this.mX, this.mY);
     const rect: DOMRect = this.canvas.getBoundingClientRect();
     this.canvasPos = new Vec2(rect.x, rect.y);
   }
@@ -115,34 +200,30 @@ export class Stage {
     }
   }
 
-  public refreshCanvas(): void {
-    this.clearCanvas();
-
+  public drawObjects(): void {
     this.objects.forEach(o => {
       this.drawObject(o);
     });
+  }
+
+  public drawMenus(): void {
     this.radMenus.forEach(radMenu => {
       if (radMenu.open) {
         this.drawRadMenu(radMenu);
       }
     });
-
   }
 
   private drawObject(o: Entity): void {
-    if (this.canvas != null && this.ctx != null) {
+    if (this.canvas != null && this.ctx != null && o.fighter != null) {
+      let [widthScaled, posXNew, posYNew] = this.getObjectCoordinates(o);
 
-      const [widthScaled, posXNew, posYNew] = this.getObjectCoordinates(o);
+      // token
+      const tokenImage: HTMLImageElement = new Image(o.width, o.width);
+      tokenImage.src = o.fighter.token;
+      this.ctx.drawImage(tokenImage, posXNew - widthScaled / 2, posYNew - widthScaled / 2, widthScaled, widthScaled)
 
-      if (o.fighter != null) {
-        const tokenImage: HTMLImageElement = new Image(o.width, o.width);
-        tokenImage.src = o.fighter.token;
-        this.ctx.drawImage(tokenImage, posXNew - widthScaled / 2, posYNew - widthScaled / 2, widthScaled, widthScaled)
-      } else {
-        this.ctx.fillStyle = o.color;
-        this.ctx.fillRect(posXNew - widthScaled / 2, posYNew - widthScaled / 2, widthScaled, widthScaled);
-      }
-
+      // name
       this.ctx.font = "16px \"Aladin\", cursive"
       let txtWidth = this.ctx.measureText(o.fighter.name).width;
       this.ctx.textBaseline = "hanging";
@@ -152,16 +233,15 @@ export class Stage {
   }
 
   private getObjectCoordinates(o: Entity): [number, number, number] {
-    const width = o.width;
-    const posX = o.position.x + width / 2 - this.mX + this.tX;
-    const posY = o.position.y + width / 2 - this.mY + this.tY;
+    const posX = Math.round(o.position.x + o.width / 2 - this.zoomPosition.x + this.tX);
+    const posY = Math.round(o.position.y + o.width / 2 - this.zoomPosition.y + this.tY);
 
-    const widthScaled = width * this.zoomfactor;
-    const posXScaled = posX * this.zoomfactor;
-    const posYScaled = posY * this.zoomfactor;
+    const widthScaled = o.width * this.zoomfactor;
+    const posXScaled = Math.round(posX * this.zoomfactor);
+    const posYScaled = Math.round(posY * this.zoomfactor);
 
-    const posXNew = posXScaled + this.mX;
-    const posYNew = posYScaled + this.mY;
+    const posXNew = posXScaled + this.zoomPosition.x;
+    const posYNew = posYScaled + this.zoomPosition.y;
     return [
       widthScaled,
       posXNew,

@@ -25,8 +25,13 @@ export class Vec2 {
     return new Vec2(this.x - other.x, this.y - other.y);
   }
 
+  public substractOtherFromSelf(other: Vec2): void {
+    this.x -= other.x;
+    this.y -= other.y;
+  }
+
   public multiply(s: number): Vec2 {
-    return new Vec2(this.x * s, this.y * s);
+    return new Vec2(Math.round(this.x * s), Math.round(this.y * s));
   }
 
   public multiplyBy(s: number): void {
@@ -35,7 +40,7 @@ export class Vec2 {
   }
 
   public divide(s: number): Vec2 {
-    return new Vec2(this.x / s, this.y / s);
+    return new Vec2(Math.round(this.x / s), Math.round(this.y / s));
   }
 
   public divideBy(s: number): void {
