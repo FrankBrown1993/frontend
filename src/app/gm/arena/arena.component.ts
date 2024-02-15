@@ -135,11 +135,14 @@ export class ArenaComponent implements OnInit, OnDestroy {
   }
 
   public onTouch(event: TouchEvent): void {
-    this.stage.touchEventBuffer.push(event);
+    if (event.touches.length > 1) {
+      this.stage.touchEventBuffer.push(event);
+    }
   }
 
   public onTouchStart(event: TouchEvent) {
     event.preventDefault();
+
     this.stage.control.touchCount = event.touches.length;
     this.stage.control.kindOfTouch = this.stage.control.touchCount;
     if (this.stage.control.touchCount == 1) {
@@ -167,8 +170,6 @@ export class ArenaComponent implements OnInit, OnDestroy {
     } else if (this.mode === 1) {
 
     }
-
-
   }
 
   onTouchMove(event: TouchEvent) {

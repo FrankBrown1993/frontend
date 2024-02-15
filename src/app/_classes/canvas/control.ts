@@ -98,9 +98,8 @@ export class Control {
 
   public startTwoFingerTouch(event: TouchEvent): void {
     const [avg, fingers] = this.getTouchesAvagePosition(event.touches);
-    this.pos = avg;
+    this.stage.mousePos = avg;
     this.initialLength = fingers[0].substract(fingers[1]).length();
-    // this.stage.refreshCanvas();
   }
 
   private moveTwoFingerTouch(event: TouchEvent): void {
@@ -114,7 +113,7 @@ export class Control {
     this.stage.touchZoomAndShift(delta, ratio, avg);
   }
 
-  private getTouchesAvagePosition(touches: TouchList): [Vec2, Vec2[]] {
+  public getTouchesAvagePosition(touches: TouchList): [Vec2, Vec2[]] {
     const fingers: Vec2[] = [];
     for (let i = 0; i < touches.length; i++) {
       const item: Touch | null = touches.item(i);

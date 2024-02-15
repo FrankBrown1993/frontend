@@ -16,6 +16,8 @@ export class Stage {
   private then: number;
   private startTime: number;
 
+  maxZoom: number = 4;
+  minZoom: number = 0.25;
 
   zoomfactor = 1.0;
   mX = 0; // canvas width center
@@ -37,7 +39,6 @@ export class Stage {
   public mouseEventBuffer: MouseEvent[] = [];
   public mousePos: Vec2 = new Vec2(0, 0);
   public mouseButton: number = -1;
-
 
   startAnimation() {
     this.then = Date.now();
@@ -88,10 +89,35 @@ export class Stage {
     return delta;
   }
 
+  public getTouchEvents(): [Vec2, number, Vec2] {
+    let pos: Vec2 = new Vec2(0, 0);
+    let scale: number = 0;
+    let translate: Vec2 = new Vec2(0, 0);
+    if (this.touchEventBuffer.length > 0) {
+      const event: TouchEvent = this.touchEventBuffer.pop()!;
+      const [avg, fingers] = this.control.getTouchesAvagePosition(event.touches);
+      pos = avg;
+      translate = pos.substract(this.mousePos);
+      this.mousePos = pos;
+      const fingerDist: number = fingers[0].substract(fingers[1]).length();
+      scale = 1 - (this.control.initialLength / fingerDist);
+      this.control.initialLength = fingerDist;
+    }
+    return [pos,
+            scale,
+            translate];
+  }
+
+
   draw() {
     this.clearCanvas();
-    const [pos, scale] = this.getWheelEvents();
-    const translate: Vec2 = this.getMouseEvents();
+
+    let [pos, scale] = this.getWheelEvents();
+    let translate: Vec2 = this.getMouseEvents();
+    if (this.touchEventBuffer.length > 0) {
+      [pos, scale, translate] = this.getTouchEvents();
+      scale *= -1000;
+    }
 
     const oldZoom = this.zoomfactor;
     let delta = 0;
@@ -101,16 +127,18 @@ export class Stage {
       delta = (scale / 1000) * (this.zoomfactor - (scale / 1000)) ;
     }
     this.zoomfactor -= delta;
-    if (this.zoomfactor < 0.25) {
-      let diff = 0.25 - this.zoomfactor;
+    if (this.zoomfactor < this.minZoom) {
+      let diff = this.minZoom - this.zoomfactor;
       delta -= diff;
-      this.zoomfactor = 0.25;
+      this.zoomfactor = this.minZoom;
     }
-    if (this.zoomfactor > 4) {
-      let diff = this.zoomfactor - 4;
+    if (this.zoomfactor > this.maxZoom) {
+      let diff = this.zoomfactor - this.maxZoom;
       delta += diff;
-      this.zoomfactor = 4;
+      this.zoomfactor = this.maxZoom;
     }
+
+
     const oneMinusZoom: number = 1 - oldZoom;
     delta = Math.round(delta * 1000) / 1000;
     let zoomPosTranslation: Vec2 = new Vec2(0, 0);
@@ -405,15 +433,15 @@ export class Stage {
     }
     console.log('zoomfactor:',this.zoomfactor,'delta:', delta)
     this.zoomfactor -= delta;
-    if (this.zoomfactor < 0.25) {
-      let diff = 0.25 - this.zoomfactor;
+    if (this.zoomfactor < this.minZoom) {
+      let diff = this.minZoom - this.zoomfactor;
       delta -= diff;
-      this.zoomfactor = 0.25;
+      this.zoomfactor = this.minZoom;
     }
-    if (this.zoomfactor > 4) {
-      let diff = this.zoomfactor - 4;
+    if (this.zoomfactor > this.maxZoom) {
+      let diff = this.zoomfactor - this.maxZoom;
       delta += diff;
-      this.zoomfactor = 4;
+      this.zoomfactor = this.maxZoom;
     }
     if (delta != 0) {
       const posFromCenter: Vec2 = posOnCanvas.substract(cCenter);
@@ -441,15 +469,15 @@ export class Stage {
 
     let delta = (ratio * this.zoomfactor);
     this.zoomfactor += delta;
-    if (this.zoomfactor < 0.25) {
-      let diff = 0.25 - this.zoomfactor;
+    if (this.zoomfactor < this.minZoom) {
+      let diff = this.minZoom - this.zoomfactor;
       delta -= diff;
-      this.zoomfactor = 0.25;
+      this.zoomfactor = this.minZoom;
     }
-    if (this.zoomfactor > 4) {
-      let diff = this.zoomfactor - 4;
+    if (this.zoomfactor > this.maxZoom) {
+      let diff = this.zoomfactor - this.maxZoom;
       delta += diff;
-      this.zoomfactor = 4;
+      this.zoomfactor = this.maxZoom;
     }
     // TodO
     /*if (delta != 0) {

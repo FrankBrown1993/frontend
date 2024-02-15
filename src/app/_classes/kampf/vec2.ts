@@ -31,21 +31,21 @@ export class Vec2 {
   }
 
   public multiply(s: number): Vec2 {
-    return new Vec2(Math.round(this.x * s), Math.round(this.y * s));
+    return new Vec2(this.x * s, this.y * s);
   }
 
   public multiplyBy(s: number): void {
-    this.x = Math.round(this.x * s);
-    this.y = Math.round(this.y * s);
+    this.x = this.x * s;
+    this.y = this.y * s;
   }
 
   public divide(s: number): Vec2 {
-    return new Vec2(Math.round(this.x / s), Math.round(this.y / s));
+    return new Vec2(this.x / s, this.y / s);
   }
 
   public divideBy(s: number): void {
-    this.x = Math.round(this.x / s);
-    this.y = Math.round(this.y / s);
+    this.x = this.x / s;
+    this.y = this.y / s;
   }
 
   public length(): number {
