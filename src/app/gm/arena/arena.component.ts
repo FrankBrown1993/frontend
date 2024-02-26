@@ -27,10 +27,11 @@ export class ArenaComponent implements OnInit, OnDestroy {
 
   fighters: Fighter[] = [];
 
-  selectedEntity: Entity | null = null;
+  // selectedEntity: Entity | null = null;
 
   /* 0: standard
   *  1: move entity
+  *  2: rotate entity
   */
   mode: number = 0;
 
@@ -101,9 +102,15 @@ export class ArenaComponent implements OnInit, OnDestroy {
       if (data === 1) {
         this.mode = 1;
       } else if (data === 2) {
+        // rotate
         this.mode = 2;
+        if (this.stage.entityOfRadMenu != null) {
+          this.stage.entityOfRadMenu.mode = 1;
+          this.stage.entityToRotate = this.stage.entityOfRadMenu;
+        }
+        this.stage.mode = 2;
       } else if (data === 3) {
-        const id = this.selectedEntity?.fighter.id;
+        const id = this.stage.entityOfRadMenu?.fighter.id;
         const removeCharMsg: Message = new Message("fight", "arena_fighters", "", 3 ,5,id + '');
         this.sendMessage(removeCharMsg);
         const getAvailableCharsMsg: Message = new Message("fight", "arena_player_characters", "", 0 ,5,"");
@@ -135,16 +142,17 @@ export class ArenaComponent implements OnInit, OnDestroy {
   }
 
   public onTouch(event: TouchEvent): void {
-    if (event.touches.length > 1) {
-      this.stage.touchEventBuffer.push(event);
-    }
+    this.stage.touchEventBuffer.push(event);
   }
 
   public onTouchStart(event: TouchEvent) {
     event.preventDefault();
-
     this.stage.control.touchCount = event.touches.length;
     this.stage.control.kindOfTouch = this.stage.control.touchCount;
+    this.stage.touchIds = [];
+    for (let i = 0; i < event.touches.length; i++) {
+      this.stage.touchIds.push(event.touches.item(i)!.identifier);
+    }
     if (this.stage.control.touchCount == 1) {
       this.startOneFingerTouch(event);
     } else if (this.stage.control.touchCount == 2) {
@@ -153,22 +161,20 @@ export class ArenaComponent implements OnInit, OnDestroy {
   }
 
   private startOneFingerTouch(event: TouchEvent): void {
+    this.stage.eventType = 1;
     const touch: Touch = event.touches[0];
     const touchPos: Vec2 = new Vec2(touch.clientX, touch.clientY);
+    this.stage.mousePos = touchPos;
 
-    this.selectedEntity = this.stage.getNearestObjectWithinReach(30, touchPos);
+    this.stage.entityOfRadMenu = this.stage.getNearestObjectWithinReach(30, touchPos);
 
-    if (this.mode === 0) {
-      if (this.selectedEntity != null) {
-        const position = this.stage.convertObjectPositionToCanvasPosition(this.stage.getCenterOfObject(this.selectedEntity));
-        this.stage.radIndex = 0;
-        this.stage.positionRadMenu(position);
-      } else {
-        this.stage.radIndex = 1;
-        this.stage.positionRadMenu(touchPos);
-      }
-    } else if (this.mode === 1) {
-
+    if (this.stage.entityOfRadMenu != null) {
+      const position = this.stage.convertRealToCanvas(this.stage.getCenterOfObject(this.stage.entityOfRadMenu));
+      this.stage.radIndex = 0;
+      this.stage.positionRadMenu(position);
+    } else {
+      this.stage.radIndex = 1;
+      this.stage.positionRadMenu(touchPos);
     }
   }
 
@@ -178,6 +184,9 @@ export class ArenaComponent implements OnInit, OnDestroy {
 
   onTouchEnd(event: TouchEvent) {
     event.preventDefault();
+    this.stage.touchIds = [];
+    // this.stage.eventType = -1;
+    this.stage.eventType = 0;
     this.control.onTouchEnd(event);
   }
 
@@ -192,23 +201,28 @@ export class ArenaComponent implements OnInit, OnDestroy {
 
   onMouse(event: MouseEvent): void {
     event.preventDefault();
+    // keine Maus-Events ohne Drücken einer Taste
     if (event.buttons > 0 || event.type === 'mouseup' ) {
       this.stage.mouseEventBuffer.push(event);
     }
   }
 
   onMouseDown(event: MouseEvent) {
+    console.log('onMouseDown')
     event.preventDefault();
     this.stage.mousePos = new Vec2(event.x, event.y);
     this.stage.mouseButton = event.button;
     // console.log(event);
     if (event.button === 0) { // left mouse click
+      this.stage.eventType = 1;
       this.stage.control.leftPressed = true;
       const touchPos: Vec2 = new Vec2(event.x, event.y);
-      this.selectedEntity = this.stage.getNearestObjectWithinReach(30, touchPos);
-      if (this.selectedEntity != null) {
-        const position = this.stage.convertObjectPositionToCanvasPosition(this.stage.getCenterOfObject(this.selectedEntity));
+      this.stage.entityOfRadMenu = this.stage.getNearestObjectWithinReach(30, touchPos);
+      console.log(this.stage.entityOfRadMenu);
+      if (this.stage.entityOfRadMenu != null) {
+        const position = this.stage.convertRealToCanvas(this.stage.getCenterOfObject(this.stage.entityOfRadMenu));
         this.stage.radIndex = 0;
+        // this.stage.mode = 0;
         this.stage.positionRadMenu(position);
       } else {
         this.stage.radIndex = 1;
@@ -216,6 +230,7 @@ export class ArenaComponent implements OnInit, OnDestroy {
       }
 
     } else if (event.button === 1) { // middle mouse click
+      this.stage.eventType = 0;
       this.stage.closeRadMenu();
       this.stage.control.middlePressed = true;
       this.stage.control.mousePos = new Vec2(event.x, event.y);
@@ -228,7 +243,16 @@ export class ArenaComponent implements OnInit, OnDestroy {
 
   onMouseUp(event: MouseEvent) {
     this.control.onMouseUp(event);
+    // this.stage.eventType = -1;
+    this.stage.eventType = 0;
     this.stage.mouseButton = -1;
+    if (this.stage.entityToRotate != null && this.stage.entityToRotate.rotated) {
+      this.stage.entityToRotate.mode = 0;
+      this.stage.entityToRotate.ref = new Vec2(0, 0);
+      this.stage.entityToRotate.rotated = false;
+      this.stage.entityToRotate = null;
+      this.stage.mode = 0;
+    }
   }
 
   draggedFighter: Fighter | null;
@@ -267,8 +291,8 @@ export class ArenaComponent implements OnInit, OnDestroy {
       const newPos: Vec2 = canvasCenter.add(centerToPosTranslated);
 
       const entity: Entity = new Entity(
-        newPos.x,
-        newPos.y,
+        Math.round(newPos.x),
+        Math.round(newPos.y),
         50, '',
         this.draggedFighter, 16, 12, tkn_fighter);
       this.stage.initiateObject(entity);

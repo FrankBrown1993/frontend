@@ -12,6 +12,10 @@ export class Vec2 {
     this.y = other.y;
   }
 
+  public makeCopy(): Vec2 {
+    return new Vec2(this.x, this.y);
+  }
+
   public add(other: Vec2): Vec2 {
     return new Vec2(this.x + other.x, this.y + other.y);
   }
@@ -61,5 +65,11 @@ export class Vec2 {
     const dotProduct = this.x * other.x + this.y * other.y;
     const angleRadians = Math.atan2(crossProduct, dotProduct);
     return angleRadians;
+  }
+
+  public normalize(): void {
+    const length = this.length();
+    this.x /= length;
+    this.y /= length;
   }
 }

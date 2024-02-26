@@ -98,7 +98,7 @@ export class KampfComponent implements OnInit, OnDestroy  {
     const touchPos: Vec2 = new Vec2(touch.clientX, touch.clientY);
     const obj: Entity | null = this.stage.getNearestObjectWithinReach(30, touchPos);
     if (obj != null) {
-      const position = this.stage.convertObjectPositionToCanvasPosition(this.stage.getCenterOfObject(obj));
+      const position = this.stage.convertRealToCanvas(this.stage.getCenterOfObject(obj));
       this.stage.radIndex = 0;
       this.stage.positionRadMenu(position);
     } else {
@@ -128,7 +128,7 @@ export class KampfComponent implements OnInit, OnDestroy  {
       const touchPos: Vec2 = new Vec2(event.x, event.y);
       const obj: Entity | null = this.stage.getNearestObjectWithinReach(30, touchPos);
       if (obj != null) {
-        const position = this.stage.convertObjectPositionToCanvasPosition(this.stage.getCenterOfObject(obj));
+        const position = this.stage.convertRealToCanvas(this.stage.getCenterOfObject(obj));
         this.stage.radIndex = 0;
         this.stage.positionRadMenu(position);
       } else {

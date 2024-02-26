@@ -97,6 +97,7 @@ export class Control {
   }
 
   public startTwoFingerTouch(event: TouchEvent): void {
+    this.stage.eventType = 0;
     const [avg, fingers] = this.getTouchesAvagePosition(event.touches);
     this.stage.mousePos = avg;
     this.initialLength = fingers[0].substract(fingers[1]).length();

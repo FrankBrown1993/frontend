@@ -1,5 +1,5 @@
 <div class="verticalStart">
-  {{stage.zoomfactor}}
+  stage mode: {{stage.mode}}, stage event type: {{stage.eventType}}, mode name: {{stage.modeName}}
   <div class="horizontalCenter">
     <canvas id="stage" width="400" height="400"
             (touchstart)="onTouchStart($event)"
@@ -29,6 +29,13 @@
          [style.background-image]="'url(' + fighter.token + ')'"
          draggable="true"
          (dragstart)="onDragStart($event, fighter)"></div>
+  </div>
+  <div *ngIf="stage.objects.length > 0 && stage.objects[0].fighter != null">
+
+    {{stage.objects[0]!.fighter!.name}}: {{stage.objects[0]!.position}}
+    <label *ngIf="stage.entityToRotate != null && stage.entityToRotate.fighter != null">
+      rotate: {{stage.entityToRotate.fighter.name}}
+    </label>
   </div>
 </div>
 <div class="iconLoader">

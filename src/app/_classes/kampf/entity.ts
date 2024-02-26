@@ -4,8 +4,10 @@ import {Fighter} from "../comm/payload/fighter";
 
 export class Entity {
   position: Vec2 = new Vec2(0,0);
+  drawPosition: Vec2 = new Vec2(0, 0);
   width: number = 0;
   color: string = '';
+  rotation: number = 0; // from -Math.PI to Math.PI
 
   tokenImage: HTMLImageElement;
 
@@ -13,6 +15,15 @@ export class Entity {
   iniBasis: number;
 
   fighter: Fighter;
+
+  // debug
+  ref: Vec2 = new Vec2(0, 0);
+  rotated: boolean = false;
+  /*
+  * 0: normal
+  * 1: rotation
+  */
+  mode: number = 0;
 
   constructor(posX: number, posY: number, width: number, color: string, fighter: Fighter, ini: number, iniBasis: number,
               tokenAsImage: HTMLImageElement) {
@@ -59,5 +70,20 @@ export class Entity {
     const posXNew = posXScaled + canvasCenter.x;
     const posYNew = posYScaled + canvasCenter.y;
     return new Vec2(posXNew, posYNew);
+  }
+
+  public rotate(ref: Vec2): void {
+    this.ref = ref;
+    this.rotated = true;
+    let forward: Vec2 = new Vec2(0, 1);
+    const newForward: Vec2 = ref.substract(this.drawPosition);
+    newForward.normalize();
+    let angle: number = forward.directedAngleToVector(newForward);
+    if (angle < 0) {
+      angle = Math.PI * 2 + angle;
+    }
+    this.rotation = angle;
+
+
   }
 }
