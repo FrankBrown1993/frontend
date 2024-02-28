@@ -255,6 +255,7 @@ export class ArenaComponent implements OnInit, OnDestroy {
     // this.stage.eventType = -1;
     this.stage.eventType = 0;
     this.stage.mouseButton = -1;
+    this.stage.mouseEventBuffer = [];
     this.endEvent();
   }
 

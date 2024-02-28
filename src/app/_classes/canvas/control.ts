@@ -119,7 +119,11 @@ export class Control {
     for (let i = 0; i < touches.length; i++) {
       const item: Touch | null = touches.item(i);
       if (item != null) {
-        fingers.push(new Vec2(item.screenX, item.screenY));
+        const pos = new Vec2(item.clientX, item.clientY);
+        const rect: DOMRect = this.stage.canvas.getBoundingClientRect();
+        const cPos = new Vec2(rect.x, rect.y);
+        const posOnCanvas = pos.substract(cPos);
+        fingers.push(posOnCanvas);
       }
     }
     const avg: Vec2 = new Vec2(0, 0);

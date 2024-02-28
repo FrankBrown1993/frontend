@@ -1,5 +1,5 @@
 <!-- Background -->
-<div>
+<div *ngIf="werte.region != null">
   <div class="background"
        *ngIf="werte.ohnmacht"
        [style.background-image]="'url(\'assets/images/conditions/faint.png\')'">
@@ -35,7 +35,7 @@
   </div>
 </div>
 <!-- Content -->
-<div class="horizontalStart" id="body">
+<div class="horizontalStart" id="body" *ngIf="werte.region != null">
 
   <!-- Info-Box on the left side -->
   <div id="leftBlock" class="horizontalCenter">
@@ -46,17 +46,25 @@
             <h4 id="titel">{{titel}}</h4>
           </div>
         </div>
-        <div class="horizontalStart">
-          <div id="tempbox" [style.background-image]="'url(\'assets/images/weather/' + werte.aktTemp + '.png\')'"></div>
-          <div id="wetterbox" [style.background-image]="'url(\'assets/images/weather/' + werte.niederschlag + '.png\')'">
-            <div id="wolkenbox" [style.background-image]="'url(\'assets/images/weather/' + werte.bewoelkung + '.png\')'"></div>
+        <div class="horizontalStart" *ngIf="werte != null">
+          <div id="tempbox"
+               [style.background-image]="'url(\'assets/images/weather/' + werte.aktTemp + '.png\')'"
+               *ngIf="werte.aktTemp != null"></div>
+          <div id="wetterbox"
+               [style.background-image]="'url(\'assets/images/weather/' + werte.niederschlag + '.png\')'"
+               *ngIf="werte.niederschlag != null">
+            <div id="wolkenbox"
+                 [style.background-image]="'url(\'assets/images/weather/' + werte.bewoelkung + '.png\')'"
+                 *ngIf="werte.bewoelkung != null"></div>
           </div>
           <div class="verticalStart" id="dateTime">
             <div id="date">{{datum}}</div>
             <div id="timebox">{{zeit}}</div>
 
           </div>
-          <div id="mondbox" [style.background-image]="'url(\'assets/images/weather/mond' + werte.mond + '.png\')'"></div>
+          <div id="mondbox"
+               [style.background-image]="'url(\'assets/images/weather/mond' + werte.mond + '.png\')'"
+               *ngIf="werte.mond != null"></div>
         </div>
 
       </div>

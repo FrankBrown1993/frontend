@@ -53,8 +53,8 @@ export class Stage {
   public touchIds: number[] = [];
 
   /*
-   * 0: left click / one finger     -> radMenu
-   * 1: middle mouse / two fingers  -> pan
+   * 0: middle mouse / two fingers  -> pan
+   * 1: left click / one finger     -> radMenu
    */
   public eventType: number = 0;
   public eventPos: Vec2 = new Vec2(0,0);
@@ -66,6 +66,7 @@ export class Stage {
     this.animate();
   }
 
+  //Guten Tag Mr. Stinkemann heftig
   animate() {
     requestAnimationFrame(() => {
       this.animate();
@@ -107,12 +108,14 @@ export class Stage {
         delta = pos.substract(this.mousePos);
         this.mousePos = new Vec2(pos.x, pos.y);
       } else if (this.eventType === 1) {
+
         this.eventPos = new Vec2(event.x, event.y);
       }
     }
     return delta;
   }
 
+  // Wer das liest ist cool
   public getTouchEvents(): [Vec2, number, Vec2] {
     let pos: Vec2 = new Vec2(0, 0);
     let scale: number = 0;
@@ -133,7 +136,7 @@ export class Stage {
       }
       const [avg, fingers] = this.control.getTouchesAvagePosition(event.touches);
       if (sameTouch) {
-        if (this.eventType === 0) {
+        if (this.eventType === 0) { // two fingers
           pos = avg;
           translate = pos.substract(this.mousePos);
           this.mousePos = pos;
@@ -142,8 +145,14 @@ export class Stage {
             scale = 1 - (this.control.initialLength / fingerDist);
             this.control.initialLength = fingerDist;
           }
-        } else if (this.eventType === 1) {
-          this.eventPos = avg;
+        } else if (this.eventType === 1) { // one finger
+
+          const rect: DOMRect = this.canvas.getBoundingClientRect();
+          const cPos = new Vec2(rect.x, rect.y);
+          const posOnCanvas = avg.add(cPos);
+
+          this.eventPos = posOnCanvas;
+          pos = this.eventPos;
         }
       }
     }
@@ -152,7 +161,7 @@ export class Stage {
             translate];
   }
 
-
+ //I love you hehe
   draw() {
     this.clearCanvas();
 
@@ -177,15 +186,10 @@ export class Stage {
     }
 
     const oneMinusZoom: number = 1 - oldZoom;
-    delta = Math.round(delta * 1000) / 1000;
     let zoomPosTranslation: Vec2 = new Vec2(0, 0);
     if (scale != 0) {
       zoomPosTranslation = this.zoomPosition.substract(pos);
-      // console.log(zoomPosTranslation.x, zoomPosTranslation.y, zoomPosTranslation.length());
-
       zoomPosTranslation.multiplyBy(oneMinusZoom);
-      // console.log('oneMinusZoom', oneMinusZoom);
-      // console.log(zoomPosTranslation.x, zoomPosTranslation.y, zoomPosTranslation.length());
       this.zoomPosition = pos;
       console.log('translate',translate)
       translate.addOtherToSelf(zoomPosTranslation);
@@ -219,6 +223,7 @@ export class Stage {
     this.drawObjects();
     this.drawScale();
     this.drawMenus();
+    this.drawDebug();
   }
 
   private pan(translate: Vec2, oldZoom: number): void {
@@ -904,5 +909,20 @@ export class Stage {
 
     const posNew: Vec2 = new Vec2(posX, posY);
     return posNew;
+  }
+
+  drawDebug(): void {
+    this.ctx.strokeStyle = 'darkblue';
+    this.ctx.beginPath();
+    this.ctx.moveTo(0, 0);
+    this.ctx.lineTo(this.zoomPosition.x, this.zoomPosition.y);
+    this.ctx.stroke();
+
+    this.ctx.strokeStyle = 'darkred';
+    this.ctx.beginPath();
+    this.ctx.moveTo(0, 0);
+    this.ctx.lineTo(this.mousePos.x, this.mousePos.y);
+    this.ctx.stroke();
+    this.ctx.strokeStyle = 'black';
   }
 }

@@ -1,14 +1,16 @@
 <div class="verticalStart">
   stage mode: {{stage.mode}}, stage event type: {{stage.eventType}}, mode name: {{stage.modeName}}
   <div class="horizontalCenter">
-    <canvas id="stage" width="400" height="400" style="outline: 1px solid black"
+    <canvas id="stage2" width="400" height="400"
             (touchstart)="onTouchStart($event)"
             (touchmove)="onTouch($event)"
             (touchend)="onTouchEnd($event)"
             (wheel)="onWheel($event)"
             (mousedown)="onMouseDown($event)"
             (mousemove)="onMouse($event)"
-            (mouseup)="onMouseUp($event)"></canvas>
+            (mouseup)="onMouseUp($event)"
+            (dragover)="allowDrop($event)"
+            (drop)="onDrop($event)"></canvas>
     <!--
     (touchstart)="onTouchStart($event)"
     (touchmove)="onTouchMove($event)"
@@ -20,6 +22,20 @@
     (dragover)="allowDrop($event)"
     (drop)="onDrop($event)"></canvas>
     -->
+  </div>
+
+  <div class="horizontalStart" style="background: white">
+    <div class="portrait" *ngFor="let fighter of fighters"
+         [style.background-image]="'url(' + fighter.token + ')'"
+         draggable="true"
+         (dragstart)="onDragStart($event, fighter)"></div>
+  </div>
+  <div *ngIf="stage.objects.length > 0 && stage.objects[0].fighter != null">
+
+    {{stage.objects[0]!.fighter!.name}}: {{stage.objects[0]!.position}}
+    <label *ngIf="stage.entityToManipuilate != null && stage.entityToManipuilate.fighter != null">
+      rotate: {{stage.entityToManipuilate.fighter.name}}
+    </label>
   </div>
 </div>
 <div class="iconLoader">

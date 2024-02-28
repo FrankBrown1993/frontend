@@ -84,6 +84,8 @@ export class MenuComponent implements OnInit, OnDestroy {
     console.log('menu ngOnInit:',nav);
     if (nav != null) {
       this.nav = Number.parseInt(nav, 10);
+    } else {
+      this.nav = 1;
     }
     // this.nav = 0;
   }
