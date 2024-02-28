@@ -33,8 +33,8 @@
   <div *ngIf="stage.objects.length > 0 && stage.objects[0].fighter != null">
 
     {{stage.objects[0]!.fighter!.name}}: {{stage.objects[0]!.position}}
-    <label *ngIf="stage.entityToRotate != null && stage.entityToRotate.fighter != null">
-      rotate: {{stage.entityToRotate.fighter.name}}
+    <label *ngIf="stage.entityToManipuilate != null && stage.entityToManipuilate.fighter != null">
+      rotate: {{stage.entityToManipuilate.fighter.name}}
     </label>
   </div>
 </div>

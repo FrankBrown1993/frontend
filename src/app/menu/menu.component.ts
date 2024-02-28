@@ -19,7 +19,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   id = 'id_test';
 
   /** other */
-  nav = 1;
+  nav = -1;
   userDevice: string = '';
   viewport: string = '';
   resizeObservable$: Observable<Event>;
@@ -29,14 +29,7 @@ export class MenuComponent implements OnInit, OnDestroy {
               private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
-    const websocket = this.websocket.connect(this.id).pipe(
-      takeUntil(this.destroyed),
-    );
 
-    websocket.subscribe((raw: string) => {
-      const message: Message = JSON.parse(raw);
-      console.log(message);
-    });
 
     const userAgent: string = navigator.userAgent || navigator.vendor;
     const isMobileDevice = (): boolean => {
@@ -85,13 +78,22 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.nav = newNav;
   }
 
-  public login(event: BooleanEvent): void {
-    if (event.value) {
-      // alert('logged in!')
+  public login(val: string): void {
+    this.id = val;
+    const nav = sessionStorage.getItem('nav');
+    console.log('menu ngOnInit:',nav);
+    if (nav != null) {
+      this.nav = Number.parseInt(nav, 10);
+    }
+    // this.nav = 0;
+  }
 
-    } else {
+  next() {
+    this.nav ++;
+    if (this.nav > 1) {
       this.nav = 0;
     }
+    sessionStorage.setItem('nav', this.nav + "");
   }
 
   onFileChanged(event: Event): void {

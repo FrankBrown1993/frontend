@@ -30,6 +30,9 @@ export class AllgemeinComponent implements OnInit, OnDestroy  {
   }
 
   ngOnInit(): void {
+    this.id = sessionStorage.getItem('user_id')!;
+    console.log(sessionStorage);
+
     const websocket = this.websocket.connect(this.id).pipe(
       takeUntil(this.destroyed),
     );

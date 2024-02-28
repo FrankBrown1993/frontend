@@ -34,7 +34,7 @@ export class Stage {
 
   /** universal settings */
   entityOfRadMenu: Entity | null = null;
-  entityToRotate: Entity | null = null;
+  entityToManipuilate: Entity | null = null;
 
   modeName: string = 'default';
   /*
@@ -204,6 +204,7 @@ export class Stage {
             this.openRadMenu();
             break;
           case 1:
+            this.translateSelectedEntity();
             break;
           case 2: // rotate
             this.rotateSelectedEntity();
@@ -235,13 +236,23 @@ export class Stage {
   }
 
   private rotateSelectedEntity(): void {
-    console.log(this.entityToRotate);
-    if (this.entityToRotate != null) {
+    console.log(this.entityToManipuilate);
+    if (this.entityToManipuilate != null) {
       // const pos = this.convertRealToCanvas(this.eventPos);
       const rect: DOMRect = this.canvas.getBoundingClientRect();
       const cPos = new Vec2(rect.x, rect.y);
       const posOnCanvas = this.eventPos.substract(cPos);
-      this.entityToRotate.rotate(posOnCanvas);
+      this.entityToManipuilate.rotate(posOnCanvas);
+    }
+  }
+  private translateSelectedEntity(): void {
+    console.log(this.entityToManipuilate);
+    if (this.entityToManipuilate != null) {
+      // const pos = this.convertRealToCanvas(this.eventPos);
+      const rect: DOMRect = this.canvas.getBoundingClientRect();
+      const cPos = new Vec2(rect.x, rect.y);
+      const posOnCanvas = this.eventPos.substract(cPos);
+      this.entityToManipuilate.translate(posOnCanvas);
     }
   }
 
@@ -333,19 +344,68 @@ export class Stage {
       const posX = posNew.x;
       const posY = posNew.y;
 
-      if (o.mode === 1) {
+      if (o.mode === 1) { // translation
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeStyle = 'rgba(0, 153, 255, 0.2)'
+        this.ctx.fillStyle = 'rgba(0, 153, 255, 0.2)'
+        this.ctx.beginPath();
+        let mult = 1;
+        if (this.zoomfactor > 1) {
+          mult = this.zoomfactor;
+        }
+        const a = 30 * mult;
+        const b = 5 * mult;
+        const c = 10 * mult;
+        const d = 40 * mult;
+        this.ctx.moveTo(posNew.x + b, posNew.y - b);
+        this.ctx.lineTo(posNew.x + a, posNew.y - b);
+
+        this.ctx.lineTo(posNew.x + a, posNew.y - c);
+        this.ctx.lineTo(posNew.x + d, posNew.y);
+        this.ctx.lineTo(posNew.x + a, posNew.y + c);
+        this.ctx.lineTo(posNew.x + a, posNew.y + b);
+        this.ctx.lineTo(posNew.x + b, posNew.y + b);
+
+        this.ctx.lineTo(posNew.x + b, posNew.y + a);
+        this.ctx.lineTo(posNew.x + c, posNew.y + a);
+        this.ctx.lineTo(posNew.x, posNew.y + d);
+        this.ctx.lineTo(posNew.x - c, posNew.y + a);
+        this.ctx.lineTo(posNew.x - b, posNew.y + a);
+        this.ctx.lineTo(posNew.x - b, posNew.y + b);
+
+        this.ctx.lineTo(posNew.x - a, posNew.y + b);
+        this.ctx.lineTo(posNew.x - a, posNew.y + c);
+        this.ctx.lineTo(posNew.x - d, posNew.y);
+        this.ctx.lineTo(posNew.x - a, posNew.y - c);
+        this.ctx.lineTo(posNew.x - a, posNew.y - b);
+        this.ctx.lineTo(posNew.x - b, posNew.y - b);
+
+        this.ctx.lineTo(posNew.x - b, posNew.y - a);
+        this.ctx.lineTo(posNew.x - c, posNew.y - a);
+        this.ctx.lineTo(posNew.x, posNew.y - d);
+        this.ctx.lineTo(posNew.x + c, posNew.y - a);
+        this.ctx.lineTo(posNew.x + b, posNew.y - a);
+        this.ctx.lineTo(posNew.x + b, posNew.y - b);
+        this.ctx.stroke();
+        this.ctx.fill();
+        this.ctx.strokeStyle = 'black'
+        this.ctx.lineWidth = 0.5;
+      } else if (o.mode === 2) { // rotation
         this.ctx.lineWidth = 2;
         this.ctx.strokeStyle = 'rgba(0, 153, 255, 0.2)'
         this.ctx.beginPath();
         const angle = Math.PI / 180 * 60;
-        const vectorL = new Vec2(Math.sin(o.rotation + Math.PI - angle), -Math.cos(o.rotation + Math.PI - angle));
-        const vectorM = new Vec2(Math.sin(o.rotation + Math.PI), -Math.cos(o.rotation + Math.PI));
-        const vectorR = new Vec2(Math.sin(o.rotation + Math.PI + angle), -Math.cos(o.rotation + Math.PI + angle));
-
-
+        const angleM = o.rotation + Math.PI;
+        const angleL = angleM - angle;
+        const angleR = angleM + angle;
+        const vectorL = new Vec2(Math.sin(angleL), -Math.cos(angleL));
+        const vectorM = new Vec2(Math.sin(angleM), -Math.cos(angleM));
+        const vectorR = new Vec2(Math.sin(angleR), -Math.cos(angleR));
+        const angleA = o.rotation + Math.PI / 2 + angle;
+        const angleB = o.rotation + Math.PI / 2 - angle;
         this.ctx.arc(posX, posY, widthScaled * 0.75,
-          o.rotation + Math.PI / 2 + angle,
-          o.rotation + Math.PI / 2 - angle);
+          angleA,
+          angleB);
         this.ctx.stroke();
         this.ctx.moveTo(posX, posY);
         const vectorLStart: Vec2 = vectorL.multiply(widthScaled * 0.75);
@@ -358,7 +418,6 @@ export class Stage {
         vectorM.addOtherToSelf(new Vec2(posX, posY));
         vectorR.multiplyBy(5000);
         vectorR.addOtherToSelf(new Vec2(posX, posY));
-
         this.ctx.moveTo(vectorLStart.x, vectorLStart.y);
         this.ctx.lineTo(vectorL.x, vectorL.y);
         this.ctx.moveTo(vectorRStart.x, vectorRStart.y);
@@ -372,22 +431,51 @@ export class Stage {
         this.ctx.setLineDash([]);
         this.ctx.strokeStyle = 'black'
         this.ctx.lineWidth = 0.5;
-
         this.ctx.beginPath();
         this.ctx.arc(posX, posY, widthScaled * 0.75,
-          Math.PI / 2 + o.rotation + angle,
-          Math.PI / 2 + o.rotation - angle);
-        this.ctx.arc(posX, posY, 1000,
-          Math.PI / 2 + o.rotation - angle,
-          Math.PI / 2 + o.rotation + angle,
+          angleA,
+          angleB);
+        this.ctx.arc(posX, posY, 2000,
+          angleB,
+          angleA,
           true);
         this.ctx.fillStyle = 'rgba(0,0,0,0.25)';
         this.ctx.fill();
+      }
+
+      // distanzklasse
+      if (o.zeigeNkRw && o.mode !== 1) {
+        const colors: string[] = ['red', '#ff6600', 'darkgreen'];
+
+        this.ctx.strokeStyle = 'darkgrey';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        let radius = widthScaled / 2;
+        radius -= 2 * widthScaled / 10;
+        this.ctx.arc(posX, posY, radius,
+          0,
+          Math.PI * 2);
+        this.ctx.stroke();
+        this.ctx.lineWidth = 0.5;
+        this.ctx.strokeStyle = 'black';
+
+        this.ctx.strokeStyle = colors[o.nkRw];
+        this.ctx.beginPath();
+        radius = widthScaled / 2;
+        radius += o.nkRw * widthScaled / 10;
+        this.ctx.arc(posX, posY, radius,
+          0,
+          Math.PI * 2);
+        this.ctx.stroke();
+        this.ctx.strokeStyle = 'black';
 
       }
 
       // save current context situation
       this.ctx.save();
+      if (o.manipulation === 1) {
+        this.ctx.globalAlpha = 0.5;
+      }
       this.ctx.translate(posX, posY);
       this.ctx.rotate(o.rotation);
       this.ctx.drawImage(tokenImage,0 - widthScaled / 2, 0 - widthScaled / 2, widthScaled, widthScaled)
@@ -403,7 +491,45 @@ export class Stage {
         this.ctx.fillText(o.fighter.name,posNew.x  - txtWidth / 2, posNew.y + widthScaled / 2);
       }
 
-      if (o.ref.x !== 0 || o.ref.y !== 0) {
+      if (o.manipulation === 1) {
+        this.ctx.save();
+        this.ctx.translate(o.ref.x, o.ref.y);
+        this.ctx.rotate(o.rotation);
+        this.ctx.drawImage(tokenImage,0 - widthScaled / 2, 0 - widthScaled / 2, widthScaled, widthScaled)
+        // restore saved context
+        this.ctx.restore();
+        this.ctx.strokeStyle = 'purple'
+        this.ctx.beginPath();
+        this.ctx.moveTo(posNew.x, posNew.y);
+        this.ctx.lineTo(o.ref.x, o.ref.y);
+        this.ctx.stroke();
+        this.ctx.strokeStyle = 'black'
+
+        if (o.zeigeNkRw) {
+          const colors: string[] = ['red', '#ff6600', 'darkgreen'];
+
+          this.ctx.strokeStyle = '#660000';
+          this.ctx.beginPath();
+          let radius = widthScaled / 2;
+          radius -= 2 * widthScaled / 10;
+          this.ctx.arc(o.ref.x, o.ref.y, radius,
+            0,
+            Math.PI * 2);
+          this.ctx.stroke();
+          this.ctx.strokeStyle = 'black';
+
+          this.ctx.strokeStyle = colors[o.nkRw];
+          this.ctx.beginPath();
+          radius = widthScaled / 2;
+          radius += o.nkRw * widthScaled / 10;
+          this.ctx.arc(o.ref.x, o.ref.y, radius,
+            0,
+            Math.PI * 2);
+          this.ctx.stroke();
+          this.ctx.strokeStyle = 'black';
+
+        }
+        /*
         this.ctx.strokeStyle = 'red'
         this.ctx.beginPath();
         this.ctx.moveTo(o.ref.x - 10, o.ref.y - 10);
@@ -417,6 +543,7 @@ export class Stage {
         this.ctx.lineTo(o.ref.x, o.ref.y);
         this.ctx.stroke();
         this.ctx.strokeStyle = 'black'
+        */
       }
 
 
@@ -756,11 +883,26 @@ export class Stage {
     return position;
   }
 
-  private convertCanvasToReal(pos: Vec2): Vec2 {
+  public convertCanvasToReal(posRaw: Vec2): Vec2 {
+
+    const rect: DOMRect = this.canvas.getBoundingClientRect();
+    const cPos = new Vec2(rect.x, rect.y);
+    const position = posRaw.substract(cPos);
+
+    const canvasCenter: Vec2 = new Vec2(this.zoomPosition.x, this.zoomPosition.y);
     const translation: Vec2 = new Vec2(this.tX, this.tY);
-    const posTransl: Vec2 = pos.substract(this.zoomPosition).substract(translation);
-    const posScaled = posTransl.multiply(this.zoomfactor);
-    const posNew = posScaled.add(this.zoomPosition);
+
+    const pos: Vec2 = posRaw.substract(canvasCenter);
+    const posScaled: Vec2 = pos.multiply(this.zoomfactor);
+
+    const o: Entity = this.entityToManipuilate!;
+    const width = o.width;// * this.zoomfactor;
+    const posX = posScaled.x - width / 2 + canvasCenter.x - translation.x;
+    const posY = posScaled.y - width / 2 + canvasCenter.y - translation.y;
+
+
+
+    const posNew: Vec2 = new Vec2(posX, posY);
     return posNew;
   }
 }

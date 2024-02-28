@@ -10,6 +10,9 @@ import {Message} from "../_classes/comm/message";
   styleUrls: ['./heldenbogen.component.sass']
 })
 export class HeldenbogenComponent implements OnInit, OnDestroy {
+  /** ToDo: change this to dynamic */
+  id = 'id_test';
+  charId = 5;
 
   destroyed = new Subject();
   public categories: string[] = ['Allgemein', 'Talente', 'Ausrüstung', 'Kampf', 'Notizen'];
@@ -46,7 +49,10 @@ export class HeldenbogenComponent implements OnInit, OnDestroy {
   constructor(private websocket: WebsocketService) { }
 
   ngOnInit(): void {
-    const websocket = this.websocket.connect('15').pipe(
+    this.id = sessionStorage.getItem('user_id')!;
+    console.log(sessionStorage);
+
+    const websocket = this.websocket.connect(this.id).pipe(
       takeUntil(this.destroyed),
     );
 

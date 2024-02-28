@@ -1,23 +1,25 @@
 <div class="verticalStart">
-  <div class="initiative">
-    <div class="roundPortrait" *ngFor="let char of stage.objects">
-    </div>
-  </div>
+  stage mode: {{stage.mode}}, stage event type: {{stage.eventType}}, mode name: {{stage.modeName}}
   <div class="horizontalCenter">
-    <canvas id="stage" width="400" height="400"
+    <canvas id="stage" width="400" height="400" style="outline: 1px solid black"
             (touchstart)="onTouchStart($event)"
-            (touchmove)="onTouchMove($event)"
+            (touchmove)="onTouch($event)"
             (touchend)="onTouchEnd($event)"
             (wheel)="onWheel($event)"
             (mousedown)="onMouseDown($event)"
-            (mousemove)="onMouseMove($event)"
+            (mousemove)="onMouse($event)"
             (mouseup)="onMouseUp($event)"></canvas>
-  </div>
-  <div class="canvasBar">
-    Aktionen: <img class="icon" src="assets/images/icons/circle_green.png"> freie Aktionen 🔵 Verteidigungen bisher 🛡️
-  </div>
-  <div>
-    |
+    <!--
+    (touchstart)="onTouchStart($event)"
+    (touchmove)="onTouchMove($event)"
+    (touchend)="onTouchEnd($event)"
+    (wheel)="onWheel($event)"
+    (mousedown)="onMouseDown($event)"
+    (mousemove)="onMouseMove($event)"
+    (mouseup)="onMouseUp($event)"
+    (dragover)="allowDrop($event)"
+    (drop)="onDrop($event)"></canvas>
+    -->
   </div>
 </div>
 <div class="iconLoader">
@@ -25,11 +27,8 @@
   <img id="icon_sword" src="assets/images/icons/upg_sword.png">
   <img id="icon_map" src="assets/images/icons/map.png">
   <img id="icon_x" src="assets/images/icons/x.png">
+  <img id="icon_rotate" src="assets/images/icons/rotate.png">
+  <img id="icon_translate" src="assets/images/icons/translate.png">
+  <img id="icon_cross" src="assets/images/icons/cross-mark.png">
   <img id="icon_null" src="assets/images/icons/placeholder.png">
-  <img id="token_fianna" src="assets/images/test/tokens/fianna.png">
-  <img id="token_balrog" src="assets/images/test/tokens/balrog.png">
-  <img id="token_adrian" src="assets/images/test/tokens/adrian.png">
-  <img id="portrait_fianna" src="assets/images/test/portraits/fianna.jpg">
-  <img id="portrait_balrog" src="assets/images/test/portraits/balrog.jpg">
-  <img id="portrait_adrian" src="assets/images/test/portraits/adrian.jpg">
 </div>

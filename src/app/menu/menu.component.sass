@@ -9,6 +9,9 @@
 app-heldenbogen
   width: 100%
 
+.arrow
+  cursor: pointer
+
 // mobile
 @media (max-width: 480px), (max-height: 480px)
   #middle
@@ -23,6 +26,8 @@ app-heldenbogen
 @media (max-width: 1024px) and (max-height: 1024px) and (min-width: 481px) and (min-height: 481px)
   #middle
     width: 100vw
+  .arrow
+    font-size: 5vw
 // tablet portrait
 @media (min-width: 481px) and (max-width: 768px) and (min-height: 481px)
 
@@ -33,6 +38,8 @@ app-heldenbogen
 @media (min-width: 1025px)
   #middle
     width: $cube * 128
+  .arrow
+    font-size: 5 * $vwCube
 
 
 // tablet height (portrait): 128 cubes

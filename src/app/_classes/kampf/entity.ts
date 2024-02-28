@@ -18,12 +18,27 @@ export class Entity {
 
   // debug
   ref: Vec2 = new Vec2(0, 0);
-  rotated: boolean = false;
+
   /*
   * 0: normal
-  * 1: rotation
+  * 1: translation
+  * 2: rotation
+  */
+  manipulation: number = 0;
+
+  /*
+  * 0: normal
+  * 1: translation
+  * 2: rotation
   */
   mode: number = 0;
+
+  // visual
+  /*
+   * 0: nah, 1: mittel, 2: lang
+   */
+  zeigeNkRw: boolean = true;
+  nkRw: number = 1;
 
   constructor(posX: number, posY: number, width: number, color: string, fighter: Fighter, ini: number, iniBasis: number,
               tokenAsImage: HTMLImageElement) {
@@ -74,7 +89,7 @@ export class Entity {
 
   public rotate(ref: Vec2): void {
     this.ref = ref;
-    this.rotated = true;
+    this.manipulation = 2;
     let forward: Vec2 = new Vec2(0, 1);
     const newForward: Vec2 = ref.substract(this.drawPosition);
     newForward.normalize();
@@ -83,7 +98,18 @@ export class Entity {
       angle = Math.PI * 2 + angle;
     }
     this.rotation = angle;
+  }
 
-
+  public translate(ref: Vec2): void {
+    this.ref = ref;
+    this.manipulation = 1;
+    /*let forward: Vec2 = new Vec2(0, 1);
+    const newForward: Vec2 = ref.substract(this.drawPosition);
+    newForward.normalize();
+    let angle: number = forward.directedAngleToVector(newForward);
+    if (angle < 0) {
+      angle = Math.PI * 2 + angle;
+    }
+    this.rotation = angle;*/
   }
 }

@@ -72,6 +72,9 @@ export class TitelbereichComponent implements OnInit, OnDestroy  {
   public modValPopup: Modvaluepopup = new Modvaluepopup();
 
   ngOnInit(): void {
+    this.id = sessionStorage.getItem('user_id')!;
+    console.log(sessionStorage);
+
     const websocket = this.websocket.connect(this.id).pipe(
       takeUntil(this.destroyed),
     );

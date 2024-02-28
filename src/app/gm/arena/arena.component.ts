@@ -16,8 +16,6 @@ import {RadMenu} from "../../_classes/kampf/rad-menu";
   styleUrls: ['./arena.component.sass']
 })
 export class ArenaComponent implements OnInit, OnDestroy {
-  id = 'id_test';
-
   /** Websocket */
   destroyed = new Subject();
 
@@ -45,7 +43,12 @@ export class ArenaComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const websocket = this.websocket.connect(this.id).pipe(
+
+    const id: string = sessionStorage.getItem('user_id')!;
+    console.log('get id from session', id);
+    console.log(sessionStorage);
+
+    const websocket = this.websocket.connect(id).pipe(
       takeUntil(this.destroyed),
     );
 
@@ -78,7 +81,6 @@ export class ArenaComponent implements OnInit, OnDestroy {
           tkn_fighter.height = 50;
 
           const entity = new Entity(f.posX, f.posY, 50, '', fighter, 0, 0, tkn_fighter);
-          // Todo image onload
           this.stage.initiateObject(entity);
         });
         // this.stage.refreshCanvas();
@@ -100,13 +102,19 @@ export class ArenaComponent implements OnInit, OnDestroy {
     this.sendMessage(getFightersMsg);
     posRadMenu.eventEmitter.subscribe(data => {
       if (data === 1) {
+        // translate
         this.mode = 1;
+        if (this.stage.entityOfRadMenu != null) {
+          this.stage.entityOfRadMenu.mode = 1;
+          this.stage.entityToManipuilate = this.stage.entityOfRadMenu;
+        }
+        this.stage.mode = 1;
       } else if (data === 2) {
         // rotate
         this.mode = 2;
         if (this.stage.entityOfRadMenu != null) {
-          this.stage.entityOfRadMenu.mode = 1;
-          this.stage.entityToRotate = this.stage.entityOfRadMenu;
+          this.stage.entityOfRadMenu.mode = 2;
+          this.stage.entityToManipuilate = this.stage.entityOfRadMenu;
         }
         this.stage.mode = 2;
       } else if (data === 3) {
@@ -188,9 +196,10 @@ export class ArenaComponent implements OnInit, OnDestroy {
     // this.stage.eventType = -1;
     this.stage.eventType = 0;
     this.control.onTouchEnd(event);
+    this.endEvent();
   }
 
-  @HostListener('wheel', ['$event'])
+  //@HostListener('wheel', ['$event'])
   onWheel(event: WheelEvent) {
     event.preventDefault();
     this.stage.wheelEventBuffer.push(event);
@@ -246,11 +255,21 @@ export class ArenaComponent implements OnInit, OnDestroy {
     // this.stage.eventType = -1;
     this.stage.eventType = 0;
     this.stage.mouseButton = -1;
-    if (this.stage.entityToRotate != null && this.stage.entityToRotate.rotated) {
-      this.stage.entityToRotate.mode = 0;
-      this.stage.entityToRotate.ref = new Vec2(0, 0);
-      this.stage.entityToRotate.rotated = false;
-      this.stage.entityToRotate = null;
+    this.endEvent();
+  }
+
+  endEvent() {
+    const obj: Entity | null = this.stage.entityToManipuilate;
+    if (obj != null && obj.manipulation !== 0) {
+      if (obj.manipulation === 1) {
+        const translate: Vec2 = obj.ref.substract(obj.drawPosition);
+        translate.divideBy(this.stage.zoomfactor);
+        obj.position.addOtherToSelf(translate);
+      }
+      obj.mode = 0;
+      obj.ref = new Vec2(0, 0);
+      obj.manipulation = 0;
+      this.stage.entityToManipuilate = null;
       this.stage.mode = 0;
     }
   }
@@ -334,9 +353,5 @@ export class ArenaComponent implements OnInit, OnDestroy {
     radMenu.initializeNew(images, cancelImage);
     this.stage.radMenus.push(radMenu);
     return radMenu;
-  }
-
-  testFunc(stage: Stage): void {
-    console.warn(stage.ratio);
   }
 }
