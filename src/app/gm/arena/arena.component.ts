@@ -172,17 +172,22 @@ export class ArenaComponent implements OnInit, OnDestroy {
     this.stage.eventType = 1;
     const touch: Touch = event.touches[0];
     const touchPos: Vec2 = new Vec2(touch.clientX, touch.clientY);
-    this.stage.mousePos = touchPos;
 
-    this.stage.entityOfRadMenu = this.stage.getNearestObjectWithinReach(30, touchPos);
+    const rect: DOMRect = this.stage.canvas.getBoundingClientRect();
+    const cPos = new Vec2(rect.x, rect.y);
+    const posOnCanvas = touchPos.substract(cPos);
+
+    this.stage.mousePos = posOnCanvas;
+
+    this.stage.entityOfRadMenu = this.stage.getNearestObjectWithinReach(30, posOnCanvas);
 
     if (this.stage.entityOfRadMenu != null) {
-      const position = this.stage.convertRealToCanvas(this.stage.getCenterOfObject(this.stage.entityOfRadMenu));
+      const position = this.stage.getCenterOfObject(this.stage.entityOfRadMenu);
       this.stage.radIndex = 0;
       this.stage.positionRadMenu(position);
     } else {
       this.stage.radIndex = 1;
-      this.stage.positionRadMenu(touchPos);
+      this.stage.positionRadMenu(posOnCanvas);
     }
   }
 
@@ -219,30 +224,37 @@ export class ArenaComponent implements OnInit, OnDestroy {
   onMouseDown(event: MouseEvent) {
     console.log('onMouseDown')
     event.preventDefault();
-    this.stage.mousePos = new Vec2(event.x, event.y);
+    const pos: Vec2 = new Vec2(event.x, event.y);
+    const rect: DOMRect = this.stage.canvas.getBoundingClientRect();
+    const cPos = new Vec2(rect.x, rect.y);
+    const posOnCanvas = pos.substract(cPos);
+
+    this.stage.mousePos = posOnCanvas;
     this.stage.mouseButton = event.button;
     // console.log(event);
     if (event.button === 0) { // left mouse click
       this.stage.eventType = 1;
       this.stage.control.leftPressed = true;
-      const touchPos: Vec2 = new Vec2(event.x, event.y);
-      this.stage.entityOfRadMenu = this.stage.getNearestObjectWithinReach(30, touchPos);
+
+
+      this.stage.entityOfRadMenu = this.stage.getNearestObjectWithinReach(30, posOnCanvas);
       console.log(this.stage.entityOfRadMenu);
       if (this.stage.entityOfRadMenu != null) {
-        const position = this.stage.convertRealToCanvas(this.stage.getCenterOfObject(this.stage.entityOfRadMenu));
+        const position = this.stage.getCenterOfObject(this.stage.entityOfRadMenu);
         this.stage.radIndex = 0;
         // this.stage.mode = 0;
         this.stage.positionRadMenu(position);
       } else {
         this.stage.radIndex = 1;
-        this.stage.positionRadMenu(touchPos);
+        this.stage.positionRadMenu(posOnCanvas);
       }
 
     } else if (event.button === 1) { // middle mouse click
       this.stage.eventType = 0;
       this.stage.closeRadMenu();
       this.stage.control.middlePressed = true;
-      this.stage.control.mousePos = new Vec2(event.x, event.y);
+
+      this.stage.control.mousePos = posOnCanvas;
     }
   }
 

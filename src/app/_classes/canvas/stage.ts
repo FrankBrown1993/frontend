@@ -104,7 +104,13 @@ export class Stage {
       console.log('mouse event type:', event.type);
       this.mouseEventBuffer = [];
       if (this.eventType === 0) {
-        const pos: Vec2 = new Vec2(event.x, event.y);
+        const posRaw: Vec2 = new Vec2(event.x, event.y);
+
+        const rect: DOMRect = this.canvas.getBoundingClientRect();
+        const cPos = new Vec2(rect.x, rect.y);
+        const pos = posRaw.substract(cPos);
+
+
         delta = pos.substract(this.mousePos);
         this.mousePos = new Vec2(pos.x, pos.y);
       } else if (this.eventType === 1) {
@@ -150,7 +156,6 @@ export class Stage {
           const rect: DOMRect = this.canvas.getBoundingClientRect();
           const cPos = new Vec2(rect.x, rect.y);
           const posOnCanvas = avg.add(cPos);
-
           this.eventPos = posOnCanvas;
           pos = this.eventPos;
         }
@@ -838,10 +843,7 @@ export class Stage {
   }
 
   public positionRadMenu(touchPos: Vec2): void {
-    const rect: DOMRect = this.canvas.getBoundingClientRect();
-    const cPos = new Vec2(rect.x, rect.y);
-    const posOnCanvas = touchPos.substract(cPos);
-    this.radMenus[this.radIndex].pos = posOnCanvas;
+    this.radMenus[this.radIndex].pos = touchPos;
     this.radMenus[this.radIndex].startTimer();
     // this.refreshCanvas();
   }
@@ -857,10 +859,7 @@ export class Stage {
     // this.refreshCanvas();
   }
 
-  public getNearestObjectWithinReach(reach: number, posRaw: Vec2): Entity | null {
-    const rect: DOMRect = this.canvas.getBoundingClientRect();
-    const cPos = new Vec2(rect.x, rect.y);
-    const position = posRaw.substract(cPos);
+  public getNearestObjectWithinReach(reach: number, position: Vec2): Entity | null {
     let obj: Entity | null = null;
     let minDist = Number.MAX_VALUE;
     this.objects.forEach(o => {
