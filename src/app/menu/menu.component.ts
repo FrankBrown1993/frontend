@@ -85,7 +85,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     if (nav != null) {
       this.nav = Number.parseInt(nav, 10);
     } else {
-      this.nav = 1;
+      this.nav = 2;
     }
     // this.nav = 0;
   }

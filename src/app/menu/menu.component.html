@@ -8,11 +8,13 @@
       <app-arena *ngIf="nav === 0"></app-arena>
       <app-heldenbogen *ngIf="nav === 1"></app-heldenbogen>
     </div>
-    <div class="horizontalSpaceAround">
+    <div class="horizontalSpaceAround" *ngIf="nav < 2">
       <div class="arrow" (click)="next()">←</div>
       <div class="arrow" (click)="next()">→</div>
     </div>
+    <app-heldenerschaffung *ngIf="nav == 2"></app-heldenerschaffung>
   </div>
+
 </div>
 
 

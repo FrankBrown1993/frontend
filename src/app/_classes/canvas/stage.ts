@@ -2,8 +2,13 @@ import {Vec2} from "../kampf/vec2";
 import {Entity} from "../kampf/entity";
 import {RadMenu} from "../kampf/rad-menu";
 import {Control} from "./control";
+import {WebsocketService} from "../../_services/websocket.service";
+import {EventEmitter} from "@angular/core";
 
 export class Stage {
+
+  eventEmitter: EventEmitter<[string, Entity]> = new EventEmitter<[string, Entity]>();
+
   control: Control;
 
   canvas: HTMLCanvasElement;
@@ -228,7 +233,7 @@ export class Stage {
     this.drawObjects();
     this.drawScale();
     this.drawMenus();
-    this.drawDebug();
+    // this.drawDebug();
   }
 
   private pan(translate: Vec2, oldZoom: number): void {
@@ -253,6 +258,8 @@ export class Stage {
       const cPos = new Vec2(rect.x, rect.y);
       const posOnCanvas = this.eventPos.substract(cPos);
       this.entityToManipuilate.rotate(posOnCanvas);
+      // Todo: messages too early -> wait for rotation to finish!
+      this.eventEmitter.emit(['update', this.entityToManipuilate]);
     }
   }
   private translateSelectedEntity(): void {
@@ -263,6 +270,8 @@ export class Stage {
       const cPos = new Vec2(rect.x, rect.y);
       const posOnCanvas = this.eventPos.substract(cPos);
       this.entityToManipuilate.translate(posOnCanvas);
+      // Todo: messages too early -> wait for translation to finish!
+      this.eventEmitter.emit(['update', this.entityToManipuilate]);
     }
   }
 
@@ -455,7 +464,7 @@ export class Stage {
 
       // distanzklasse
       if (o.zeigeNkRw && o.mode !== 1) {
-        const colors: string[] = ['red', '#ff6600', 'darkgreen'];
+        const colors: string[] = ['red', '#ff6600', '#336600'];
 
         this.ctx.strokeStyle = 'darkgrey';
         this.ctx.lineWidth = 2;
@@ -467,12 +476,11 @@ export class Stage {
           Math.PI * 2);
         this.ctx.stroke();
         this.ctx.lineWidth = 0.5;
-        this.ctx.strokeStyle = 'black';
 
         this.ctx.strokeStyle = colors[o.nkRw];
         this.ctx.beginPath();
         radius = widthScaled / 2;
-        radius += o.nkRw * widthScaled / 10;
+        radius += o.nkRw * widthScaled / 5;
         this.ctx.arc(posX, posY, radius,
           0,
           Math.PI * 2);
@@ -516,7 +524,7 @@ export class Stage {
         this.ctx.strokeStyle = 'black'
 
         if (o.zeigeNkRw) {
-          const colors: string[] = ['red', '#ff6600', 'darkgreen'];
+          const colors: string[] = ['red', '#ff6600', '#336600'];
 
           this.ctx.strokeStyle = '#660000';
           this.ctx.beginPath();
@@ -531,7 +539,7 @@ export class Stage {
           this.ctx.strokeStyle = colors[o.nkRw];
           this.ctx.beginPath();
           radius = widthScaled / 2;
-          radius += o.nkRw * widthScaled / 10;
+          radius += o.nkRw * widthScaled / 5;
           this.ctx.arc(o.ref.x, o.ref.y, radius,
             0,
             Math.PI * 2);
@@ -923,5 +931,6 @@ export class Stage {
     this.ctx.lineTo(this.mousePos.x, this.mousePos.y);
     this.ctx.stroke();
     this.ctx.strokeStyle = 'black';
+
   }
 }

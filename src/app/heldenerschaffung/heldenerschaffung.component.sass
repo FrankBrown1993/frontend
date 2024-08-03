@@ -1,0 +1,24 @@
+@import "../../sass/var"
+#body
+  width: 100%
+.button
+  background: $light_solid
+  cursor: pointer
+
+.button:hover
+  font-weight: bold
+
+// not-pc
+@media (max-width: 1024px)
+  .button
+    padding: 1vw
+    margin-top: 5vw
+    border: 0.3vw solid $brown
+    border-radius: 4vw
+// pc
+@media (min-width: 1025px)
+  .button
+    padding: 1 * $vwCube
+    margin-top: 5 * $vwCube
+    border: 0.3 * $vwCube solid $brown
+    border-radius: 4 * $vwCube

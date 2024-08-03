@@ -19,6 +19,7 @@ import { ModValuesComponent } from './heldenbogen/mod-values/mod-values.componen
 import { OverlayComponent } from './heldenbogen/overlay/overlay.component';
 import { PortraitComponent } from './heldenbogen/subcomponents/portrait/portrait.component';
 import { ArenaComponent } from './gm/arena/arena.component';
+import { HeldenerschaffungComponent } from './heldenerschaffung/heldenerschaffung.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ArenaComponent } from './gm/arena/arena.component';
     ModValuesComponent,
     OverlayComponent,
     PortraitComponent,
-    ArenaComponent
+    ArenaComponent,
+    HeldenerschaffungComponent
   ],
   imports: [
     BrowserModule,

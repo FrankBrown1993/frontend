@@ -38,11 +38,12 @@ export class Entity {
    * 0: nah, 1: mittel, 2: lang
    */
   zeigeNkRw: boolean = true;
-  nkRw: number = 1;
+  nkRw: number = 2;
 
-  constructor(posX: number, posY: number, width: number, color: string, fighter: Fighter, ini: number, iniBasis: number,
+  constructor(posX: number, posY: number, rotation: number, width: number, color: string, fighter: Fighter, ini: number, iniBasis: number,
               tokenAsImage: HTMLImageElement) {
     this.position = new Vec2(posX, posY);
+    this.rotation = rotation;
     this.width = width;
     if (color != '') {
       this.color = color;

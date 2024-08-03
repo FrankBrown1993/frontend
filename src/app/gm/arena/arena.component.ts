@@ -36,6 +36,15 @@ export class ArenaComponent implements OnInit, OnDestroy {
   constructor(private websocket: WebsocketService) {
     this.stage.control = this.control;
     this.control.stage = this.stage;
+    this.stage.eventEmitter.subscribe(data => {
+      const [type, entity] = data;
+      if (type === 'update') {
+        console.log('update', data);
+        const message: Message = new Message("fight", "arena_fighters" ,"" ,4 ,0,
+          entity.fighter.id + "#" + entity.position.x + "#" + entity.position.y + "#" + entity.rotation);
+        this.sendMessage(message);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -80,7 +89,7 @@ export class ArenaComponent implements OnInit, OnDestroy {
           tkn_fighter.width = 50;
           tkn_fighter.height = 50;
 
-          const entity = new Entity(f.posX, f.posY, 50, '', fighter, 0, 0, tkn_fighter);
+          const entity = new Entity(f.posX, f.posY, f.rotation, 50, '', fighter, 0, 0, tkn_fighter);
           this.stage.initiateObject(entity);
         });
         // this.stage.refreshCanvas();
@@ -325,6 +334,7 @@ export class ArenaComponent implements OnInit, OnDestroy {
       const entity: Entity = new Entity(
         Math.round(newPos.x),
         Math.round(newPos.y),
+        0,
         50, '',
         this.draggedFighter, 16, 12, tkn_fighter);
       this.stage.initiateObject(entity);
