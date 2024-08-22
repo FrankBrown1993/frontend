@@ -1,5 +1,28 @@
 <div class="verticalStart" id="body">
-    <div class="horizontalCenter">
-      <div class="button" *ngIf="step == 0" (click)="startHeldenerschaffung()">erstelle neuen Helden</div>
-    </div>
+  <div class="horizontalCenter" *ngIf="step == 0">
+    <div class="button" (click)="startHeldenerschaffung()">erstelle neuen Helden</div>
+  </div>
+  <div class="horizontalSpaceAround">
+    <button class="navButton" style="color: darkred" (click)="resetHeldenerschaffung()" *ngIf="step == 1">🗴</button>
+    <button class="navButton" (click)="zurueck()" *ngIf="step > 1 && step != 5">←</button>
+    <button class="navButton" (click)="weiter()" *ngIf="step > 0 && step != 5">→</button>
+  </div>
+  <div class="horizontalCenter" *ngIf="step == 1">
+    <app-erfahrung></app-erfahrung>
+  </div>
+  <div class="horizontalCenter" *ngIf="step == 2">
+    <app-spezies></app-spezies>
+  </div>
+  <div class="horizontalCenter" *ngIf="step == 3">
+    <app-kultur></app-kultur>
+  </div>
+  <div class="horizontalCenter" *ngIf="step == 4">
+    <app-profession></app-profession>
+  </div>
+  <div class="horizontalCenter" *ngIf="step == 5">
+    <app-werte (zurueck)="zurueck()"></app-werte>
+  </div>
+</div>
+<div class="top_bar" *ngIf="step != 5">
+  <div class="ap_anzeige" *ngIf="start_ap != null" >{{start_ap - ap}} / {{start_ap}}</div>
 </div>

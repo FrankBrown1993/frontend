@@ -17,14 +17,14 @@ export class WebsocketService implements OnDestroy {
   connect(id: string): Observable<any> {
     this.id = id;
     if (this.connection == null) {
-      console.info('[WebsocketService] Connection not yet established. Connect to Websocket.');
+      console.log('[WebsocketService] Connection not yet established. Connect to Websocket.');
       const ip: string = this.ipService.getIp();
       this.connection = webSocket({
-        url: 'ws://' + ip + ':8080/ws/' + this.id,
+        url: 'ws://' + ip + ':8081/ws/' + this.id,
         deserializer: ({data}) => data,
       });
     } else {
-      console.info('[WebsocketService] Connection already established.');
+      console.log('[WebsocketService] Connection already established.');
     }
     return this.connection;
   }
@@ -32,14 +32,14 @@ export class WebsocketService implements OnDestroy {
   connectFirst(id: string): Observable<any> {
     this.id = id;
     if (this.firstConnection == null) {
-      console.info('[WebsocketService] Connection not yet established. Connect to Websocket.');
+      console.log('[WebsocketService] Connection not yet established. Connect to Websocket.');
       const ip: string = this.ipService.getIp();
       this.firstConnection = webSocket({
-        url: 'ws://' + ip + ':8080/ws/' + this.id,
+        url: 'ws://' + ip + ':8081/ws/' + this.id,
         deserializer: ({data}) => data,
       });
     } else {
-      console.info('[WebsocketService] Connection already established.');
+      console.log('[WebsocketService] Connection already established.');
     }
     return this.firstConnection;
   }

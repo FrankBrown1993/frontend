@@ -1,0 +1,216 @@
+<div class="verticalCenter">
+  <h3>Wähle deine Profession</h3>
+  <div class="legende">
+    <div>zeige folgende Professionen: </div>
+    <select [(ngModel)]="typischeProfessionen" (ngModelChange)="getList()">
+      <option [value]="0">alle Professionen</option>
+      <option [value]="1">typische Professionen</option>
+    </select>
+  </div>
+  <div class="horizontalSpaceAround" *ngFor="let sublist of list index as i">
+    <select [(ngModel)]="chosenKeys[i]" (ngModelChange)="getKeys(i+1)">
+      <option value="" disabled selected>-</option>
+      <option *ngFor="let key of sublist" [value]="key" [class]="classes[i][sublist.indexOf(key)]">{{key}}</option>
+    </select>
+    <button *ngIf="i > 0 && chosenKeys[i]!==''" (click)="removeChoice(i)">X</button>
+  </div>
+  <div class="infos" *ngIf="infos != null">
+    <div class="infobox">
+      <div class="horizontalStart">
+        <h3>{{infos.name_w}}</h3><h3>&nbsp;|&nbsp;</h3><h3>{{infos.name_m}}</h3>
+      </div>
+      <div class="eintrag"><label>AP-Wert:</label> {{infos.ap}} Abenteuerpunkte</div>
+      <div class="eintrag">
+        <label>Voraussetzungen:</label>
+        <div *ngFor="let data of infos.voraussetzungen index as i" class="aufzaehlung">
+          {{data}}
+          <span *ngIf="i == infos.voraussetzungen.length - 2">&nbsp;und&nbsp;</span>
+          <span *ngIf="i < infos.voraussetzungen.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag">
+        <label>Sonderfertigkeiten:</label>
+        <div *ngFor="let data of infos.sonderfertigkeiten index as i" class="aufzaehlung">
+          <div *ngIf="data.name==='Sprachen und Schriften'">
+            {{data.name}} für {{data.stufe}} AP,
+          </div>
+          <div *ngIf="data.name==='Sprachen'">
+            {{data.name}} für {{data.stufe}} AP,
+          </div>
+          <div *ngIf="data.name!=='Sprachen und Schriften' && data.name!=='Sprachen'">
+            {{data.name}}
+            <span>
+              <span *ngIf="data.spezialisierungen.length > 0">&nbsp;[</span><!--
+           --><span *ngFor="let spez of data.spezialisierungen index as si"><!--
+             -->{{spez}}<!--
+             --><span *ngIf="si < data.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+           --></span><!--
+           --><span *ngIf="data.spezialisierungen.length > 0">]</span>
+            </span>
+            <span *ngIf="data.stufe > 0">{{romanLetters[data.stufe - 1]}}</span>
+            <span *ngIf="i < infos.sonderfertigkeiten.length - 1">,&nbsp;</span>
+          </div>
+        </div>
+      </div>
+      <div class="eintrag">
+        <label>Kampftechniken:</label>
+        <div *ngFor="let data of infos.kampftechniken index as i" class="aufzaehlung">
+          <div *ngIf="data.talente.length > 1" class="line">
+            (<div *ngFor="let w of data.werte index as i">{{w}}<span *ngIf="i<data.werte.length-1">,&nbsp;</span></div>) auf
+            folgende Kampftechniken verteilen:&nbsp;
+            <div *ngFor="let t of data.talente index as i">{{t}}<span *ngIf="i<data.talente.length-1">,&nbsp;</span></div>
+          </div>
+          <div *ngIf="data.talente.length == 1">
+            {{data.talente[0]}} <span *ngIf="data.talente[0]!=='-'">{{data.werte[0]}}</span>
+          </div>
+          <span *ngIf="i <= infos.kampftechniken.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <h4>Talente</h4>
+      <div class="eintrag">
+        <label>Körper:</label>
+        <div *ngFor="let data of infos.talente_koerper index as i" class="aufzaehlung">
+          <span *ngIf="data.wert <= 0">-</span>{{data.name}}&nbsp;<span *ngIf="data.wert > 0">{{data.wert}}</span>
+          <span *ngIf="i <= infos.talente_koerper.length - 2">,&nbsp;</span>
+        </div>
+        <div *ngIf="infos.talente_koerper == null">-</div>
+      </div>
+      <div class="eintrag">
+        <label>Gesellschaft:</label>
+        <div *ngFor="let data of infos.talente_gesellschaft index as i" class="aufzaehlung">
+          <span *ngIf="data.wert <= 0">-</span>{{data.name}}&nbsp;<span *ngIf="data.wert > 0">{{data.wert}}</span>
+          <span *ngIf="i <= infos.talente_gesellschaft.length - 2">,&nbsp;</span>
+        </div>
+        <div *ngIf="infos.talente_gesellschaft == null">-</div>
+      </div>
+      <div class="eintrag">
+        <label>Natur:</label>
+        <div *ngFor="let data of infos.talente_natur index as i" class="aufzaehlung">
+          <span *ngIf="data.wert <= 0">-</span>{{data.name}}&nbsp;<span *ngIf="data.wert > 0">{{data.wert}}</span>
+          <span *ngIf="i <= infos.talente_natur.length - 2">,&nbsp;</span>
+        </div>
+        <div *ngIf="infos.talente_natur == null">-</div>
+      </div>
+      <div class="eintrag">
+        <label>Wissen:</label>
+        <div *ngFor="let data of infos.talente_wissen index as i" class="aufzaehlung">
+          <span *ngIf="data.wert <= 0">-</span>{{data.name}}&nbsp;<span *ngIf="data.wert > 0">{{data.wert}}</span>
+          <span *ngIf="i <= infos.talente_wissen.length - 2">,&nbsp;</span>
+        </div>
+        <div *ngIf="infos.talente_wissen == null">-</div>
+      </div>
+      <div class="eintrag">
+        <label>Handwerk:</label>
+        <div *ngFor="let data of infos.talente_handwerk index as i" class="aufzaehlung">
+          <span *ngIf="data.wert <= 0">-</span>{{data.name}}&nbsp;<span *ngIf="data.wert > 0">{{data.wert}}</span>
+          <span *ngIf="i <= infos.talente_handwerk.length - 2">,&nbsp;</span>
+        </div>
+        <div *ngIf="infos.talente_handwerk == null">-</div>
+      </div>
+
+      <div class="eintrag" *ngIf="infos.typischevorteile.length > 0"><label>Typische Vorteile:</label>
+        <div *ngFor="let vun of infos.typischevorteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.typischevorteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.typischenachteile.length > 0"><label>Typische Nachteile:</label>
+        <div *ngFor="let vun of infos.typischenachteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.typischenachteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.untypischevorteile.length > 0"><label>Untypische Vorteile:</label>
+        <div *ngFor="let vun of infos.untypischevorteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.untypischevorteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.untypischenachteile.length > 0"><label>Untypische Nachteile:</label>
+        <div *ngFor="let vun of infos.untypischenachteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.untypischenachteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+
+    </div>
+
+    <h4>{{infos.name}}</h4>
+    <div *ngIf="(infos.beschreibung == null || infos.beschreibung === '') && infos.publikation != null && infos.publikation !== ''">
+      Beschreibung vorerst hier: {{infos.publikation}}
+    </div>
+    <div *ngIf="(infos.beschreibung != null && infos.beschreibung !== '')">
+      {{infos.beschreibung}}
+    </div>
+    <h4 *ngIf="infos.ausruestung != null && infos.ausruestung !== ''">Ausrüstung & Tracht</h4>
+    <div *ngIf="infos.ausruestung != null && infos.ausruestung !== ''">
+      {{infos.ausruestung}}
+    </div>
+    <h4 *ngIf="infos.anmerkung != null && infos.anmerkung !== ''">Anmerkung</h4>
+    <div *ngIf="infos.anmerkung != null && infos.anmerkung !== ''">
+      {{infos.anmerkung}}
+    </div>
+  </div>
+
+
+  <!--
+  <div class="horizontalSpaceAround" *ngIf="list[0] != null">
+    <select [(ngModel)]="chosenKeys[0]">
+      <option value="" disabled selected>-</option>
+      <option *ngFor="let key of list[0]" [value]="key" [class]="classes[0][list[0].indexOf(key)]">{{key}}</option>
+    </select>
+  </div>
+  {{chosenKeys[0]}}-->
+</div>

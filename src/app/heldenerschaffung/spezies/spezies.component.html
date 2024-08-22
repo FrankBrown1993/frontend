@@ -1,0 +1,193 @@
+<div class="verticalCenter" *ngIf="artenMap != null">
+  <h3>Wähle deine Spezies</h3>
+  <select [(ngModel)]="oberArt" (ngModelChange)="createUnterartList()">
+    <option [value]="s" *ngFor="let s of artenMap.keys()">{{s}}</option>
+  </select>
+  <select [(ngModel)]="unterArt" (ngModelChange)="setUnterart(unterArt)">
+    <option [value]="s" *ngFor="let s of unterArten">{{s}}</option>
+  </select>
+  <div class="infos" *ngIf="infos != null">
+    <div class="infobox">
+      <h3>{{oberArt}}</h3>
+      <div class="eintrag" *ngIf="infos.begruessung.length > 0"><label>Begrüßung:</label> <i>{{infos.begruessung}}</i></div>
+      <div class="eintrag" *ngIf="infos.verabschiedung.length > 0"><label>Verabschiedung:</label> <i>{{infos.verabschiedung}}</i></div>
+      <div class="eintrag"><label>AP-Wert:</label> {{infos.ap}} Abenteuerpunkte</div>
+      <div class="eintrag"><label>Lebenserwartung:</label>
+        <span *ngIf="infos.lebenserwartung > 500">bis zur Erfüllung der Lebensaufgabe</span>
+        <span *ngIf="infos.lebenserwartung <= 500">etwa {{infos.lebenserwartung}} Jahre</span>
+      </div>
+      <div class="eintrag"><label>Erwachsenenalter:</label> bei etwa {{infos.erwachsenenalter}} Jahren</div>
+      <div class="eintrag"><label>Lebensenergie-Grundwert:</label> {{infos.lepgrundwert}}</div>
+      <div class="eintrag"><label>Seelenkraft-Grundwert:</label> {{infos.skgrundwert}}</div>
+      <div class="eintrag"><label>Zähigkeit-Grundwert:</label> {{infos.zkgrundwert}}</div>
+      <div class="eintrag"><label>Geschwindigkeit-Grundwert:</label> {{infos.gsgrundwert}}</div>
+      <div class="eintrag"><label>Eigenschaftsänderungen:</label>
+        <div *ngFor="let array of infos.eigenschaftsaenderungen index as idx" class="aufzaehlung">
+          <div *ngFor="let eMod of array index as i">
+            <span *ngIf="array.length > 1 && i == 0">eine der folgenden <span *ngIf="array[0].wert > 0">+</span>{{array[0].wert}}:</span>
+            <span>
+              {{eMod.name}}<span *ngIf="array.length == 1">: <span *ngIf="eMod.wert > 0">+</span>{{eMod.wert}}</span>
+              <span *ngIf="i == array.length - 2">&nbsp;oder&nbsp;</span>
+              <span *ngIf="i < array.length - 2">,&nbsp;</span>
+            </span>
+          </div>
+          <span *ngIf="idx < infos.eigenschaftsaenderungen.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.ueblichekulturen.length > 0"><label>Übliche Kulturen:</label>
+        <div *ngFor="let kultur of infos.ueblichekulturen index as i" class="aufzaehlung">
+          {{kultur}}
+          <span *ngIf="i == infos.ueblichekulturen.length - 2">&nbsp;oder&nbsp;</span>
+          <span *ngIf="i < infos.ueblichekulturen.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.restlichekulturen.length > 0"><label>Restliche Kulturen:</label>
+        <div *ngFor="let kultur of infos.restlichekulturen index as i" class="aufzaehlung">
+          {{kultur}}
+          <span *ngIf="i == infos.restlichekulturen.length - 2">&nbsp;oder&nbsp;</span>
+          <span *ngIf="i < infos.restlichekulturen.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.automatischevorteile.length > 0"><label>Automatische Vorteile:</label>
+        <div *ngFor="let vun of infos.automatischevorteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.automatischevorteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.dringendempfohlenevorteile.length > 0"><label>Dringend empfohlene Vorteile:</label>
+        <div *ngFor="let vun of infos.dringendempfohlenevorteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.dringendempfohlenevorteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.dringendempfohlenenachteile.length > 0"><label>Dringend empfohlene Nachteile:</label>
+        <div *ngFor="let vun of infos.dringendempfohlenenachteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.dringendempfohlenenachteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.typischevorteile.length > 0"><label>Typische Vorteile:</label>
+        <div *ngFor="let vun of infos.typischevorteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.typischevorteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.typischenachteile.length > 0"><label>Typische Nachteile:</label>
+        <div *ngFor="let vun of infos.typischenachteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.typischenachteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.untypischevorteile.length > 0"><label>Untypische Vorteile:</label>
+        <div *ngFor="let vun of infos.untypischevorteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.untypischevorteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.untypischenachteile.length > 0"><label>Untypische Nachteile:</label>
+        <div *ngFor="let vun of infos.untypischenachteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.untypischenachteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+    </div>
+    <h4>Herkunft und Verbreitung</h4>
+    <div>{{infos.herkunftundverbreitung}}</div>
+    <h4>Körperbau und Aussehen</h4>
+    <div>{{infos.koerperbauundaussehen}}</div>
+    <h4>Vermehrung und Alterung</h4>
+    <div>{{infos.vermehrungundalterung}}</div>
+  </div>
+
+</div>

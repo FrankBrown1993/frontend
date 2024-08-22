@@ -1,0 +1,60 @@
+@import "../../../sass/var"
+
+.infobox
+  background: $pergamentdark
+  display: flex
+  flex-flow: column
+  float: right
+  h3
+    text-align: left
+  .eintrag
+    display: flex
+    flex-flow: row
+    flex-wrap: wrap
+    label
+      font-weight: bold
+.aufzaehlung
+  display: flex
+  flex-flow: row
+  flex-wrap: wrap
+h4
+  text-align: left
+  padding: 0px
+  margin: 0px
+  margin-top: 1 * $vwCube
+// not-pc
+@media (max-width: 1024px)
+  .infos
+    font-size: 2vw
+    width: 98vw
+  .infobox
+    width: 40vw
+    margin-left: 1vw
+    margin-bottom: 1vw
+    padding: 1vw
+    min-height: 20vw
+    h3
+      margin: 0px
+      margin-bottom: 0.5vw
+    .eintrag
+      width: 38vw
+      label
+        margin-right: 0.5vw
+// pc
+@media (min-width: 1025px)
+  .infos
+    font-size: 2 * $vwCube
+    width: 98 * $vwCube
+  .infobox
+    width: 40 * $vwCube
+    margin-left: 1 * $vwCube
+    margin-bottom: 1 * $vwCube
+    padding: 1 * $vwCube
+    min-height: 20 * $vwCube
+    h3
+      margin: 0px
+      margin-bottom: 0.5 * $vwCube
+    .eintrag
+      width: 38 * $vwCube
+      label
+        margin-right: 0.5 * $vwCube

@@ -20,6 +20,12 @@ import { OverlayComponent } from './heldenbogen/overlay/overlay.component';
 import { PortraitComponent } from './heldenbogen/subcomponents/portrait/portrait.component';
 import { ArenaComponent } from './gm/arena/arena.component';
 import { HeldenerschaffungComponent } from './heldenerschaffung/heldenerschaffung.component';
+import { ErfahrungComponent } from './heldenerschaffung/erfahrung/erfahrung.component';
+import { SpeziesComponent } from './heldenerschaffung/spezies/spezies.component';
+import { KulturComponent } from './heldenerschaffung/kultur/kultur.component';
+import { AussehenComponent } from './heldenerschaffung/aussehen/aussehen.component';
+import { ProfessionComponent } from './heldenerschaffung/profession/profession.component';
+import { WerteComponent } from './heldenerschaffung/werte/werte.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +45,13 @@ import { HeldenerschaffungComponent } from './heldenerschaffung/heldenerschaffun
     OverlayComponent,
     PortraitComponent,
     ArenaComponent,
-    HeldenerschaffungComponent
+    HeldenerschaffungComponent,
+    ErfahrungComponent,
+    SpeziesComponent,
+    KulturComponent,
+    AussehenComponent,
+    ProfessionComponent,
+    WerteComponent
   ],
   imports: [
     BrowserModule,

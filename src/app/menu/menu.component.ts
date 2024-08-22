@@ -29,8 +29,6 @@ export class MenuComponent implements OnInit, OnDestroy {
               private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
-
-
     const userAgent: string = navigator.userAgent || navigator.vendor;
     const isMobileDevice = (): boolean => {
       const regexs = [/(Android)(.+)(Mobile)/i, /BlackBerry/i, /iPhone|iPod/i, /Opera Mini/i, /IEMobile/i]
@@ -81,7 +79,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   public login(val: string): void {
     this.id = val;
     const nav = sessionStorage.getItem('nav');
-    console.log('menu ngOnInit:',nav);
+    // console.log('menu ngOnInit:',nav);
     if (nav != null) {
       this.nav = Number.parseInt(nav, 10);
     } else {

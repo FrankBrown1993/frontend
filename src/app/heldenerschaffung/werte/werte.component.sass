@@ -1,0 +1,772 @@
+@import "../../../sass/var"
+.body
+  display: flex
+  flex-flow: column
+  justify-content: flex-start
+
+.true
+  color: #e60000
+
+
+.koerper0
+  background: #ffe6e6
+.koerper1
+  background: #f7eded
+.gesellschaft0
+  background: #e6f2ff
+.gesellschaft1
+  background: #edf2f7
+.natur0
+  background: #edf7ed
+.natur1
+  background: #e5ffe5
+.wissen0
+  background: #f0e6ff
+.wissen1
+  background: #f1edf7
+.handwerk0
+  background: #fffae6
+.handwerk1
+  background: #f7f5ed
+.kampf0
+  background: #ffeee6
+.kampf1
+  background: #ffdccc
+.magic0
+  background: #f0e6ff
+.magic1
+  background: #e0ccff
+.magic2
+  background: #f1ecf9
+.arrow
+  color: $brownalphahalf
+  cursor: pointer
+.arrow:hover
+  color: $brown
+.ap_anzeige
+  display: flex
+  flex-flow: column
+  justify-content: center
+  text-align: center
+  background: $light_solid
+.light
+  background: $light_solid
+h3, h5
+  padding: 0px
+  margin: 0px
+.einzeiler
+  display: flex
+  flex-flow: row
+  justify-content: flex-start
+.attributeList
+  display: flex
+  flex-flow: row
+  justify-content: space-around
+.attributeBox
+  background: $light
+  display: flex
+  flex-flow: column
+  justify-content: flex-start
+
+  .badmax
+    border-color: #e60000
+    color: #e60000
+  .max
+    border-color: $brown
+  .max, .badmax
+    border-style: solid
+    display: flex
+    flex-flow: row
+    justify-content: space-around
+    text-align: center
+    label
+      font-weight: bold
+    .positive
+      color: darkgreen
+      background: rgba(0,255,0,0.1)
+    .negative
+      color: darkred
+      background: rgba(255,0,0,0.1)
+
+  h5
+    text-align: left
+  h3
+    padding: 0px
+    margin: 0px
+    text-align: center
+    font-weight: normal
+  .modOverlayBad, .modOverlayGood
+    display: flex
+    flex-flow: column
+    justify-content: center
+    text-align: left
+    position: absolute
+    opacity: 0.25
+  .modOverlayBad
+    color: darkred
+  .modOverlayGood
+    color: darkgreen
+.attrButton
+  border: none
+  outline: none
+  background-color: $light
+  cursor: pointer
+.attrButton:hover
+  background: white
+.top_bar
+  height: 0px
+  position: fixed
+  display: flex
+  flex-flow: row
+  justify-content: flex-end
+.vunBox
+  display: flex
+  flex-flow: column
+  justify-content: flex-start
+.textfeld
+  display: flex
+  flex-flow: column
+  justify-content: start
+  background: $light_solid
+  h6
+    text-align: left
+    margin-bottom: 0px
+.eintrag
+  background: $light_solid
+  cursor: pointer
+
+.choiceGood, .chosenGood
+  background: rgba(0,255,0,0.1)
+.choiceBad, .chosenBad
+  background: rgba(255,0,0,0.1)
+
+.choiceGood
+  cursor: pointer
+.choiceBad
+  cursor: pointer
+
+.headRow
+  display: flex
+  flex-flow: row
+  justify-content: flex-start
+.headRow select, .headRow input
+  outline: none
+  border: none
+  text-align: center
+  background: none
+.headRow .mainselect
+  background: $light_solid
+
+.typisch
+  color: darkgreen
+  background: rgba(0,255,0,0.1)
+.untypisch
+  color: darkred
+  background: rgba(255,0,0,0.1)
+
+.empfehlungen > div
+  flex-wrap: wrap
+.table
+  display: flex
+  flex-flow: column
+  justify-content: flex-start
+  .head
+    text-align: center
+    font-weight: bold
+  .t_row, .t_head_row
+    display: flex
+    flex-flow: row
+    justify-content: flex-start
+    .t_name, .t_name2
+      display: flex
+      flex-flow: column
+      justify-content: center
+      font-weight: bold
+      text-align: center
+    .t_small, .t_3, .t_4, .t_9, .t_16, .t_18, .t_20, .t_25
+      display: flex
+      flex-flow: column
+      justify-content: center
+      text-align: center
+    .t_radio
+      display: flex
+      flex-flow: row
+      justify-content: center
+    .t_text, .t_text_small
+      display: flex
+      flex-flow: column
+      justify-content: center
+// not-pc
+@media (max-width: 1024px)
+  h1
+    font-size: 4vw
+  h2
+    font-size: 3.5vw
+  h3
+    font-size: 3vw
+  h4
+    font-size: 2.5vw
+  h5
+    font-size: 2vw
+  h6
+    font-size: 2vw
+  .small-font
+    font-size: 1.6vw
+  .body
+    width: 96vw
+    font-size: 2vw
+  .einzeiler
+    margin-top: 1vw
+  .attributeList
+    width: 96vw
+  .attributeBox
+    width: 10vw
+    height: 11vw
+    .max, .badmax
+      height: 3vw
+      line-height: 3vw
+      font-size: 1.8vw
+      border-width: 0.25vw
+      .wert
+        height: 3vw
+        line-height: 3vw
+      label
+        line-height: 3vw
+        padding-left: 0.5vw
+        padding-right: 0.5vw
+      .mod
+        line-height: 3vw
+        width: 3vw
+        height: 3vw
+        -moz-box-shadow:    inset 0.5vw 0 0.5vw 0.25vw $light_solid, inset -0.5vw 0 0.5vw 0.25vw $light_solid
+        -webkit-box-shadow: inset 0.5vw 0 0.5vw 0.25vw $light_solid, inset -0.5vw 0 0.5vw 0.25vw $light_solid
+        box-shadow:         inset 0.5vw 0 0.5vw 0.25vw $light_solid, inset -0.5vw 0 0.5vw 0.25vw $light_solid
+    .attrName
+      padding-left: 0.5vw
+      padding-top: 0.5vw
+      font-size: 2vw
+    h3
+      font-size: 4vw
+    .modOverlayBad, .modOverlayGood
+      font-size: 10vw
+      width: 10vw
+      height: 10vw
+  .attrButton
+    margin: 1vw
+    width: 4vw
+    height: 4vw
+    border-radius: 2vw
+    border: 0.2vw solid $brownalpha3rd
+    font-size: 2vw
+    line-height: 2vw
+  .top_bar
+    top: 1vw
+    width: 96vw
+    font-size: 2vw
+  .ap_anzeige
+    padding: 0.5vw 1vw
+    margin-right: 1vw
+    width: 10vw
+    height: 3vw
+    border: 0.2vw solid $brown
+    border-radius: 2vw
+
+  .choiceGood
+    outline: 0.25vw dashed darkgreen
+  .choiceBad
+    outline: 0.25vw dashed darkred
+  .headRow select, .headRow input
+    font-size: 2vw
+  .headRow .mainselect
+    width: 40vw
+    -moz-box-shadow:    inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+    -webkit-box-shadow: inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+    box-shadow:         inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+  .headRow > div
+    margin-right: 1vw
+  .textfeld
+    padding: 2vw
+    -moz-box-shadow:    inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+    -webkit-box-shadow: inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+    box-shadow:         inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+  .eintrag
+    padding: .5vw 1.5vw
+    -moz-box-shadow:    inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+    -webkit-box-shadow: inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+    box-shadow:         inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+  .sf_extras
+    background: $light_solid
+    display: flex
+    flex-flow: column
+    justify-content: flex-start
+    margin-top: 1vw
+    width: 96vw
+    -moz-box-shadow:    inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+    -webkit-box-shadow: inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+    box-shadow:         inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+  .sf_eintrag
+    display: flex
+    flex-flow: row
+    justify-content: flex-start
+    padding: 1vw
+    label
+      margin-left: 1vw
+      font-weight: bold
+    input
+      margin-left: 1vw
+      width: 60vw
+      background: $light
+      -moz-box-shadow:    inset 0.5vw 0 0.5vw 0.25vw $light_solid, inset -0.5vw 0 0.5vw 0.25vw $light_solid
+      -webkit-box-shadow: inset 0.5vw 0 0.5vw 0.25vw $light_solid, inset -0.5vw 0 0.5vw 0.25vw $light_solid
+      box-shadow:         inset 0.5vw 0 0.5vw 0.25vw $light_solid, inset -0.5vw 0 0.5vw 0.25vw $light_solid
+    .artefakt
+      width: 40vw
+    .check
+      width: 2vw
+    .sf_eintrag_wert
+      display: flex
+      flex-flow: row
+      justify-content: center
+      margin-left: 1vw
+    .spacer
+      width: 2vw
+    .spacer2
+      width: 4vw
+    .spacer4
+      width: 8vw
+    .spacer8
+      width: 16vw
+  .sf_mod
+    width: 2vw
+    height: 2vw
+    text-align: center
+    line-height: 2vw
+    margin-left: 0.5vw
+    margin-right: 0.5vw
+    outline: 0.1vw solid $brown
+    border-radius: 1vw
+    cursor: pointer
+  .sf_mod:hover
+    outline: 0.2vw solid $brown
+    background: $light
+  .empfehlungen
+    width: 45vw
+    padding: 1vw
+    font-size: 2vw
+  h3
+    margin-top: 2vw
+  h5
+    margin-top: 1vw
+  .navButton
+    color: $brown
+    cursor: pointer
+    width: 8vw
+    height: 4vw
+    line-height: 4vw
+    font-size: 4vw
+    text-align: center
+    background: $light_solid
+    outline: none
+    border-radius: 2vw
+    border: none
+    -moz-box-shadow:    inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+    -webkit-box-shadow: inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+    box-shadow:         inset 0.5vw 0 0.5vw 0.25vw $pergament, inset -0.5vw 0 0.5vw 0.25vw $pergament
+  .navButton:hover
+    background: white
+    color: black
+  .table
+    width: 94vw
+    border: 0.2vw solid $brown
+    border-bottom-width: 0.1vw
+    margin: 1vw
+    .t_row
+      padding-top: 0.5vw
+      padding-bottom: 0.5vw
+      border-bottom: 0.1vw solid $brown
+      .t_name, .t_small
+        width: 14vw
+      .t_name2
+        width: 18vw
+      .t_radio
+        width: 3vw
+      .t_3
+        width: 3vw
+      .t_4
+        width: 4vw
+      .t_9
+        width: 9vw
+      .t_16
+        width: 16vw
+      .t_18
+        width: 18vw
+      .t_20
+        width: 20vw
+      .t_25
+        width: 25vw
+      .t_text
+        padding-left: 1vw
+        padding-right: 1vw
+        width: 32vw
+      .t_text_small
+        padding-left: 1vw
+        padding-right: 1vw
+        width: 29vw
+// pc
+@media (min-width: 1025px)
+  h1
+    font-size: 4 * $vwCube
+  h2
+    font-size: 3.5 * $vwCube
+  h3
+    font-size: 3 * $vwCube
+  h4
+    font-size: 2.5 * $vwCube
+  h5
+    font-size: 2 * $vwCube
+  h6
+    font-size: 2 * $vwCube
+  .small-font
+    font-size: 1.6 * $vwCube
+  .body
+    width: 96 * $vwCube
+    font-size: 2 * $vwCube
+  .einzeiler
+    margin-top: 1 * $vwCube
+  .attributeList
+    width: 96 * $vwCube
+  .attributeBox
+    width: 10 * $vwCube
+    height: 11 * $vwCube
+    .max, .badmax
+      height: 3 * $vwCube
+      line-height: 3 * $vwCube
+      font-size: 1.8 * $vwCube
+      border-width: 0.25 * $vwCube
+      .wert
+        height: 3 * $vwCube
+        line-height: 3 * $vwCube
+      label
+        line-height: 3 * $vwCube
+        padding-left: 0.5 * $vwCube
+        padding-right: 0.5 * $vwCube
+      .mod
+        line-height: 3 * $vwCube
+        width: 3 * $vwCube
+        height: 3 * $vwCube
+        -moz-box-shadow:    inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $light_solid, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $light_solid
+        -webkit-box-shadow: inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $light_solid, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $light_solid
+        box-shadow:         inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $light_solid, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $light_solid
+    .attrName
+      padding-left: 0.5 * $vwCube
+      padding-top: 0.5 * $vwCube
+    .modOverlayBad, .modOverlayGood
+      font-size: 10 * $vwCube
+      width: 10 * $vwCube
+      height: 10 * $vwCube
+  .attrButton
+    margin: 1 * $vwCube
+    width: 4 * $vwCube
+    height: 4 * $vwCube
+    border-radius: 2 * $vwCube
+    border: 0.2 * $vwCube solid $brownalpha3rd
+    font-size: 2 * $vwCube
+    line-height: 2 * $vwCube
+  .mod
+    width: 2 * $vwCube
+    height: 2 * $vwCube
+  .top_bar
+    top: 1 * $vwCube
+    width: 96 * $vwCube
+    font-size: 2 * $vwCube
+  .ap_anzeige
+    padding: 0.5 * $vwCube 1 * $vwCube
+    margin-top: 2 * $vwCube
+    margin-right: 1 * $vwCube
+    width: 10 * $vwCube
+    height: 3 * $vwCube
+    border: 0.2 * $vwCube solid $brown
+    border-radius: 2 * $vwCube
+  .choiceGood
+    outline: 0.25 * $vwCube dashed darkgreen
+  .choiceBad
+    outline: 0.25 * $vwCube dashed darkred
+  .headRow > div
+    margin-right: 1 * $vwCube
+  .headRow select, .headRow input
+    font-size: 2 * $vwCube
+  .headRow .mainselect
+    width: 40 * $vwCube
+    -moz-box-shadow:    inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+    -webkit-box-shadow: inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+    box-shadow:         inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+  .textfeld
+    padding: 2 * $vwCube
+    -moz-box-shadow:    inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+    -webkit-box-shadow: inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+    box-shadow:         inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+  .empfehlungen
+    width: 45 * $vwCube
+    padding: 1 * $vwCube
+  h3
+    margin-top: 2 * $vwCube
+  h5
+    margin-top: 1 * $vwCube
+  .eintrag
+    padding: .5 * $vwCube 1.5 * $vwCube
+    -moz-box-shadow:    inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+    -webkit-box-shadow: inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+    box-shadow:         inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+  .sf_extras
+    background: $light_solid
+    display: flex
+    flex-flow: column
+    justify-content: flex-start
+    margin-top: 1 * $vwCube
+    width: 96 * $vwCube
+    -moz-box-shadow:    inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+    -webkit-box-shadow: inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+    box-shadow:         inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+  .sf_eintrag
+    display: flex
+    flex-flow: row
+    justify-content: flex-start
+    padding: 1 * $vwCube
+    label
+      margin-left: 1 * $vwCube
+      font-weight: bold
+    input
+      margin-left: 1 * $vwCube
+      width: 60 * $vwCube
+      background: $light
+      -moz-box-shadow:    inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $light_solid, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $light_solid
+      -webkit-box-shadow: inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $light_solid, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $light_solid
+      box-shadow:         inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $light_solid, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $light_solid
+    .artefakt
+      width: 40 * $vwCube
+    .check
+      width: 2 * $vwCube
+    .sf_eintrag_wert
+      display: flex
+      flex-flow: row
+      justify-content: center
+      margin-left: 1 * $vwCube
+    .spacer
+      width: 2 * $vwCube
+    .spacer2
+      width: 4 * $vwCube
+    .spacer4
+      width: 8 * $vwCube
+    .spacer8
+      width: 16 * $vwCube
+  .sf_mod
+    width: 2 * $vwCube
+    height: 2 * $vwCube
+    text-align: center
+    line-height: 2 * $vwCube
+    margin-left: 0.5 * $vwCube
+    margin-right: 0.5 * $vwCube
+    outline: 0.1 * $vwCube solid $brown
+    border-radius: 1 * $vwCube
+    cursor: pointer
+  .sf_mod:hover
+    outline: 0.2 * $vwCube solid $brown
+    background: $light
+  .navButton
+    color: $brown
+    cursor: pointer
+    width: 8 * $vwCube
+    height: 4 * $vwCube
+    line-height: 4 * $vwCube
+    font-size: 4 * $vwCube
+    text-align: center
+    background: $light_solid
+    outline: none
+    border-radius: 2 * $vwCube
+    border: none
+    -moz-box-shadow:    inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+    -webkit-box-shadow: inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+    box-shadow:         inset 0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament, inset -0.5 * $vwCube 0 0.5 * $vwCube 0.25 * $vwCube $pergament
+  .navButton:hover
+    background: white
+    color: black
+  .table
+    width: 94 * $vwCube
+    border: 0.2 * $vwCube solid $brown
+    border-bottom-width: 0.1 * $vwCube
+    margin: 1 * $vwCube
+    .t_row
+      padding-top: 0.5 * $vwCube
+      padding-bottom: 0.5 * $vwCube
+      border-bottom: 0.1 * $vwCube solid $brown
+      .t_name, .t_small
+        width: 14 * $vwCube
+      .t_name2
+        width: 18 * $vwCube
+      .t_radio
+        width: 3 * $vwCube
+      .t_3
+        width: 3 * $vwCube
+      .t_4
+        width: 4 * $vwCube
+      .t_9
+        width: 9 * $vwCube
+      .t_16
+        width: 16 * $vwCube
+      .t_18
+        width: 18 * $vwCube
+      .t_20
+        width: 20 * $vwCube
+      .t_25
+        width: 25 * $vwCube
+      .t_text
+        padding-left: 1 * $vwCube
+        padding-right: 1 * $vwCube
+        width: 32 * $vwCube
+      .t_text_small
+        padding-left: 1 * $vwCube
+        padding-right: 1 * $vwCube
+        width: 29 * $vwCube
+
+// Magie
+.magie_box
+  display: flex
+  flex-flow: column
+  justify-content: flex-start
+  border-color: $brown
+  border-style: solid
+.magie_box label
+  font-weight: bold
+.z_name
+  border-color: $brown
+  font-weight: bold
+  outline: none
+  border-top: none
+  border-left: none
+.z_merkmal
+  border-color: $brown
+  border-style: solid
+  border-top: none
+  border-left: none
+  border-right: none
+  text-align: center
+.z_attr, .z_4, .z_5, .z_20, .z_30, .z_60
+  text-align: center
+.z_button
+  outline: none
+  border: none
+  background: #e0ccff
+  cursor: pointer
+.z_button:hover
+  font-weight: bold
+// not-pc
+@media (max-width: 1024px)
+  .magie_box
+    width: 94vw
+    border-width: 0.2vw
+  .z_name
+    width: 53vw
+    font-size: 2vw
+    border-right-width: 0.2vw
+    border-bottom-width: 0.2vw
+  .z_merkmal
+    text-align: center
+    width: 17vw
+    border-bottom-width: 0.2vw
+  .magie_box label
+    padding-left: 1vw
+    padding-right: 0.5vw
+  .z_attr
+    width: 3vw
+  .z_4
+    width: 4vw
+  .z_5
+    width: 5vw
+  .z_20
+    width: 20vw
+  .z_30
+    width: 30vw
+  .z_60
+    width: 60vw
+  .line
+    width: 94vw
+  .border_right
+    border-right: 0.2vw solid $brown
+  .border_bottom
+    border-bottom: 0.2vw solid $brown
+  .border_bottom_thin
+    border-bottom: 0.1vw $brown
+  .border_top_thin
+    border-top: 0.1vw solid $brown
+  .z_text
+    display: flex
+    flex-flow: column
+    justify-content: flex-start
+    background: #f1ecf9
+    padding: 1vw
+    width: 92vw
+  .erweiterung
+    padding-top: 0.5vw
+    padding-bottom: 0.5vw
+  .erw_check
+    width: 2vw
+    height: 2vw
+  .z_button
+    font-size: 2vw
+// pc
+@media (min-width: 1025px)
+  .magie_box
+    width: 94 * $vwCube
+    border-width: 0.2 * $vwCube
+  .z_name
+    width: 53 * $vwCube
+    font-size: 2 * $vwCube
+    border-right-width: 0.2 * $vwCube
+    border-bottom-width: 0.2 * $vwCube
+  .z_merkmal
+    text-align: center
+    width: 17 * $vwCube
+    border-bottom-width: 0.2 * $vwCube
+  .magie_box label
+    padding-left: 1 * $vwCube
+    padding-right: 0.5 * $vwCube
+  .z_attr
+    width: 3 * $vwCube
+  .z_4
+    width: 4 * $vwCube
+  .z_5
+    width: 5 * $vwCube
+  .z_20
+    width: 20 * $vwCube
+  .z_30
+    width: 30 * $vwCube
+  .z_60
+    width: 60 * $vwCube
+  .line
+    width: 94 * $vwCube
+  .ziel
+    width: 41.5 * $vwCube
+    padding-left: 1 * $vwCube
+  .border_right
+    border-right: 0.2 * $vwCube solid $brown
+  .border_bottom
+    border-bottom: 0.2 * $vwCube solid $brown
+  .border_bottom_thin
+    border-bottom: 0.1 * $vwCube solid $brown
+  .border_top_thin
+    border-top: 0.1 * $vwCube solid $brown
+  .z_text
+    display: flex
+    flex-flow: column
+    justify-content: flex-start
+    background: #f1ecf9
+    padding: 1 * $vwCube
+    width: 92 * $vwCube
+  .erweiterung
+    padding-top: 0.5 * $vwCube
+    padding-bottom: 0.5 * $vwCube
+  .erw_check
+    width: 2 * $vwCube
+    height: 2 * $vwCube
+  .z_button
+    font-size: 2 * $vwCube

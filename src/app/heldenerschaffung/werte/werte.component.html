@@ -1,0 +1,870 @@
+<div class="body" *ngIf="infos == null">
+  <div class="verticalCenter">
+    <div class="horizontalCenter">
+      <i>lade Daten...</i>
+    </div>
+  </div>
+</div>
+
+<!-- Voraussetzugen -->
+<div class="body">
+  <div class="horizontalSpaceAround" *ngIf="werte.nav > 0">
+    <button class="navButton" (click)="navZurueck()">←</button>
+    <button class="navButton" (click)="navWeiter()">→</button>
+  </div>
+  <div class="horizontalSpaceAround" *ngIf="werte.nav === 0">
+    <button class="navButton" (click)="parentZurueck()">←</button>
+    <button class="navButton" (click)="navWeiter()">→</button>
+  </div>
+  <h4>Voraussetzungen aus Profession</h4>
+  <div style="text-align: center" *ngFor="let v of infos.profession['voraussetzungen']">
+    <div>{{v}}</div>
+  </div>
+</div>
+<!-- Attribute -->
+<div class="body" *ngIf="werte.nav === 0 && infos != null">
+  <h3>Eigenschaftspunkte verteilen</h3>
+  <h4>{{eigModString}}</h4>
+  <div class="attributeList" *ngIf="werte.attributes != null">
+    <div *ngFor="let attr of werte.attributes index as i" class="verticalEnd">
+      <div class="horizontalCenter" *ngIf="isInMods(attr['name'])">
+        <input class="mod" type="radio" name="mod" checked (change)="chooseMod(attr)" *ngIf="attr['name'] === werte['chosenMod']">
+        <input class="mod" type="radio" name="mod" (change)="chooseMod(attr)" *ngIf="attr['name'] !== werte['chosenMod']">
+      </div>
+      <div class="horizontalCenter">
+        <button class="attrButton" (click)="decreaseEigWert(attr)">-</button>
+      </div>
+      <div class="attributeBox">
+        <h5 class="attrName">{{attr['name']}}</h5>
+        <h3>{{attr['wert']}}</h3>
+        <div [class]="getFwMaxClass(attr)"> <!--  *ngIf="isInMods(attr['name']) !== 0 && attr['name'] === werte['chosenMod']" -->
+          <label>max:</label>
+          <div class="wert">{{getEigMax(attr)}}</div>
+          <div class="mod positive" *ngIf="getEigMod(attr) > 0">
+            (+{{getEigMod(attr)}})
+          </div>
+          <div class="mod negative" *ngIf="getEigMod(attr) < 0">
+            ({{getEigMod(attr)}})
+          </div>
+          <div class="mod" *ngIf="getEigMod(attr) === 0">
+          </div>
+        </div>
+      </div>
+      <div class="horizontalCenter">
+        <button class="attrButton" (click)="increaseEigWert(attr)">+</button>
+      </div>
+    </div>
+  </div>
+  <h5 *ngIf="eigPunkte <= infos.erfahrung.max_summe_eigenschaftspunkte">
+    {{eigPunkte}} / {{infos.erfahrung.max_summe_eigenschaftspunkte}} Punkte verteilt
+  </h5>
+  <h5 style="color: darkred" *ngIf="eigPunkte > infos.erfahrung.max_summe_eigenschaftspunkte">
+    {{eigPunkte}} / {{infos.erfahrung.max_summe_eigenschaftspunkte}} Punkte verteilt
+  </h5>
+</div>
+<!-- Vor- und Nachteile -->
+<div class="body" *ngIf="werte.nav === 1">
+  <h3>Vor und Nachteile wählen</h3>
+  <div class="verticalStart">
+    <div class="horizontalSpaceAround">
+      <div class="empfehlungen">
+        <h5>typisch</h5>
+        <div *ngFor="let vun of infos.spezies['typischevorteile'].concat(infos.kultur['typischevorteile'])
+    .concat(infos.profession['typischevorteile']).concat(infos.spezies['typischenachteile'])
+    .concat(infos.kultur['typischenachteile']).concat(infos.profession['typischenachteile'])">
+          <div class="eintrag" (click)="quickVorteil(vun['name'])">
+            {{vun['name']}}
+            <span>
+            <span *ngIf="vun['spezialisierungen'].length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun['spezialisierungen'] index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun['spezialisierungen'].length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun['spezialisierungen'].length > 0">]</span>
+          </span>
+            <span *ngIf="vun['stufen'].length > 0">&nbsp;</span>
+            <span *ngFor="let stufe of vun['stufen'] index as si">
+            {{romanLetters[stufe-1]}}
+              <span *ngIf="si < vun['stufen'].length - 1">/</span>
+          </span>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="empfehlungen">
+        <h5>untypisch</h5>
+        <div *ngFor="let vun of infos.spezies['untypischevorteile'].concat(infos.kultur['untypischevorteile'])
+    .concat(infos.profession['untypischevorteile']).concat(infos.spezies['untypischenachteile'])
+    .concat(infos.kultur['untypischenachteile']).concat(infos.profession['untypischenachteile'])">
+          <div class="eintrag" (click)="quickVorteil(vun['name'])">
+            {{vun['name']}}
+            <span>
+            <span *ngIf="vun['spezialisierungen'].length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun['spezialisierungen'] index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun['spezialisierungen'].length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun['spezialisierungen'].length > 0">]</span>
+          </span>
+            <span *ngIf="vun['stufen'].length > 0">&nbsp;</span>
+            <span *ngFor="let stufe of vun['stufen'] index as si">
+            {{romanLetters[stufe-1]}}
+              <span *ngIf="si < vun['stufen'].length - 1">/</span>
+          </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h5>Vorteil / Nachteil</h5>
+    <div class="verticalStart">
+      <div class="vunBox">
+        <div class="headRow">
+          <div class="horizontalCenter">
+            <select class="mainselect" [(ngModel)]="vorteilIndex" (ngModelChange)="vorteilChange()">
+              <option [class]="vunNames.get(vun.name)" [value]="infos.vun.indexOf(vun)" *ngFor="let vun of infos.vun">{{vun.name}}</option>
+            </select>
+          </div>
+          <div class="horizontalCenter" *ngIf="infos.vun[vorteilIndex].stufen > 1">
+            <select [(ngModel)]="vorteil_to_add['stufe']">
+              <option [value]="stufe + 1"
+                      *ngFor="let d of [].constructor(infos.vun[vorteilIndex].stufen) index as stufe">
+                {{stufe + 1}}
+              </option>
+            </select>
+          </div>
+
+          <div *ngIf="infos.vun[vorteilIndex].kategorie_kosten.length === 0">
+            {{infos.vun[vorteilIndex].kosten * vorteil_to_add['stufe']}} AP
+          </div>
+          <div *ngIf="infos.vun[vorteilIndex].kategorie_kosten.length > 0">
+            {{vorteilKatKosten}} AP
+          </div>
+          <div>
+            Kategorie: <i>{{infos.vun[vorteilIndex].kategorie}}</i>
+          </div>
+        </div>
+        <div class="headRow">
+          <div class="horizontalCenter"
+               *ngIf="infos.vun[vorteilIndex].kategorie_kosten.length > 0
+           && infos.vun[vorteilIndex].kategorie_kosten[0]['kategorie'] !== 'Fertigkeit'
+           && infos.vun[vorteilIndex].kategorie_kosten[0]['kategorie'] !== 'Kampftechnik'">
+            <select [(ngModel)]="vorteil_to_add['kategorie']" (ngModelChange)="vorteilKatChange()">
+              <option [value]="kat_kosten['stufe']"
+                      *ngFor="let kat_kosten of infos.vun[vorteilIndex].kategorie_kosten">
+                {{kat_kosten['stufe']}}
+              </option>
+            </select>
+          </div>
+          <div class="horizontalCenter"
+               *ngIf="infos.vun[vorteilIndex].kategorie_kosten.length > 0
+           && infos.vun[vorteilIndex].kategorie_kosten[0]['kategorie'] === 'Fertigkeit'">
+            <select [(ngModel)]="vorteil_to_add['kategorie']" (ngModelChange)="vorteilKatChange()">
+              <option [value]="fertigkeit['name']"
+                      *ngFor="let fertigkeit of infos.talente_koerper.concat(infos.talente_gesellschaft)
+                  .concat(infos.talente_natur).concat(infos.talente_wissen).concat(infos.talente_handwerk)
+                  .concat(infos.magie).concat(infos.geweiht)">
+                {{fertigkeit['name']}} ({{fertigkeit['art']}})
+              </option>
+            </select>
+          </div>
+          <div class="horizontalCenter"
+               *ngIf="infos.vun[vorteilIndex].kategorie_kosten.length > 0
+           && infos.vun[vorteilIndex].kategorie_kosten[0]['kategorie'] === 'Kampftechnik'">
+            <select [(ngModel)]="vorteil_to_add['kategorie']" (ngModelChange)="vorteilKatChange()">
+              <option [value]="fertigkeit['name']"
+                      *ngFor="let fertigkeit of infos.kampftechniken">
+                {{fertigkeit['name']}}
+              </option>
+            </select>
+          </div>
+          <div *ngIf="infos.vun[vorteilIndex]['spezifizierung']">
+            <label>Spezifizierung:</label> <input class="mainselect" type="text" [(ngModel)]="vorteil_to_add['spezifikation']">
+          </div>
+        </div>
+        <div class="textfeld">
+          <div>{{infos.vun[vorteilIndex].beschreibung}}</div>
+          <h6>Regel</h6>
+          <div>{{infos.vun[vorteilIndex].regel}}</div>
+          <h6 *ngIf="infos.vun[vorteilIndex].voraussetzungen.length > 0">Voraussetzungen</h6>
+          <div *ngFor="let v of infos.vun[vorteilIndex].voraussetzungen">
+            {{v}}
+          </div>
+        </div>
+        <button (click)="addVuN()">hinzufügen</button>
+      </div>
+      <div class="textfeld vunBox">
+        <div *ngFor="let vun of werte['vun']">
+          <button class="remove" style="visibility: hidden" *ngIf="vun['kosten'] === 0"></button>
+          <button class="remove" *ngIf="vun['kosten'] !== 0" (click)="removeVuN(vun)">-</button>
+          {{vun['name']}}
+          <span *ngIf="vun['hatstufen']">{{vun['stufe']}}</span>
+          {{vun['kategorie']}}
+          {{vun['spezifikation']}}
+          <span *ngIf="vun['kosten'] !== 0">[{{vun['kosten']}} AP]</span>
+          <span *ngIf="vun['kosten'] === 0">(durch Spezies)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Sonderfertigkeiten -->
+<div class="body" *ngIf="werte.nav === 2">
+  <h3>Sonderfertigkeiten wählen</h3>
+  <h4>Aus Profession</h4>
+  <div class="horizontalCenter">
+    <div class="sf_extras">
+      <div class="sf_eintrag" *ngIf="!werte.ortskenntnis_added">
+        <div class="sf_mod" (click)="addOrtskenntnis()">✓</div>
+        <label>Ortskenntnis:</label>
+        <input type="text" [(ngModel)]="ortskenntnis_to_add['spezifikation']" [placeholder]="infos['kultur']['ortskenntnis']">
+      </div>
+      <div class="sf_eintrag" *ngFor="let sf_prof of werte.prof_sf_without_spez">
+        <div class="sf_mod" (click)="addProfSfWithoutSpez(sf_prof)">✓</div>
+        <label>{{sf_prof['name']}} {{sf_prof['kategorie']}}</label>
+        <div class="spacer"></div>
+        <select [(ngModel)]="sf_prof['spezifikation']">
+          <option [value]="spez" *ngFor="let spez of sf_prof['anwendungen']">{{spez}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <h4>neue Sonderfertigkeiten hinzufügen</h4>
+  <div class="verticalStart">
+    <div class="verticalStart">
+      <div class="vunBox">
+        <div class="headRow" *ngFor="let sublist of sf_map index as i">
+          <select class="mainselect"  [(ngModel)]="sf_chosenKeys[i]" (ngModelChange)="getKeys(i+1)">
+            <option *ngFor="let key of sublist" [value]="key">{{key}}</option>
+          </select>
+        </div>
+        <div class="headRow">
+          <div class="horizontalCenter">
+            <select class="mainselect" [(ngModel)]="sf_index" (ngModelChange)="getSF()">
+              <option *ngFor="let sf_name of sf_list" [value]="sf_list.indexOf(sf_name)">{{sf_name}}</option>
+            </select>
+          </div>
+          <div class="horizontalCenter" *ngIf="sf['stufen'] > 0">
+            <select [(ngModel)]="sf_to_add['stufe']" (ngModelChange)="getSfKosten()">
+              <option [value]="stufe + 1"
+                      *ngFor="let d of [].constructor(sf['stufen']) index as stufe">
+                {{stufe + 1}}
+              </option>
+            </select>
+          </div>
+
+          <div>
+            {{sf_to_add['kosten']}} AP
+          </div>
+          <div class="horizontalStart" *ngIf="sf['spezifikation'] != null &&
+          !['Talent','Gesellschaftstalent','Handwerkstalent','Körpertalent',
+          'Naturtalent','Wissenstalent','Liturgie','Zauber', 'Merkmal'].includes(sf['spezifikation'])">
+            <b>{{sf['spezifikation']}}:&nbsp;</b>
+            <input class="mainselect" type="text" [(ngModel)]="sf_to_add['spezifikation']">
+          </div>
+          <div class="horizontalStart" *ngIf="sf['spezifikation'] != null && sf['spezifikation'] === 'Merkmal'">
+            <b>{{sf['spezifikation']}}:&nbsp;</b>
+            <select class="mainselect" [(ngModel)]="sf_to_add['spezifikation']">
+              <option *ngFor="let m of merkmale" [value]="m">
+                {{m}}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="headRow" *ngIf="sf_spezialisierungen.length > 0">
+          <select class="mainselect" [(ngModel)]="sf_spez_index" (ngModelChange)="getFertigkeitsspezialisierungen()">
+            <option *ngFor="let spez of sf_spezialisierungen" [value]="sf_spezialisierungen.indexOf(spez)">
+              {{spez.name}}
+            </option>
+          </select>
+          <div class="verticalCenter" *ngIf="fertigkeitsspezialisierungen.length > 0">
+            <select class="mainselect" [(ngModel)]="fert_spez_index" (ngModelChange)="setSFName()">
+              <option *ngFor="let fert_spez of fertigkeitsspezialisierungen" [value]="fertigkeitsspezialisierungen.indexOf(fert_spez)">
+                {{fert_spez}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="textfeld">
+          <div class="einzeiler" *ngIf="sf['kampfsftyp'] != null">
+            <i>{{sf['kampfsftyp']}}</i>
+          </div>
+          <div *ngIf="sf['wirkung'] != null" style="white-space: pre-wrap">{{sf['wirkung']}}</div>
+          <h6 *ngIf="sf['regel'] != null && sf['regel'] != ''">Regel</h6>
+          <div *ngIf="sf['regel'] != null && sf['regel'] != ''">{{sf['regel']}}</div>
+
+          <div class="einzeiler" *ngIf="sf['erschwernis'] != null">
+            <b>Erschwernis:&nbsp;</b>
+            <div>{{sf['erschwernis']}}</div>
+          </div>
+
+
+          <h6 *ngIf="sf['passender_liturgiestil'] != null">Benötigte Liturgiestilsonderfertigkeit</h6>
+          <div *ngIf="sf['passender_liturgiestil'] != null">{{sf['passender_liturgiestil']}}</div>
+          <h6 *ngIf="sf['passender_zauberstil'] != null">Benötigte Zauberstilsonderfertigkeit</h6>
+          <div *ngIf="sf['passender_zauberstil'] != null">{{sf['passender_zauberstil']}}</div>
+          <h6 *ngIf="sf['leiteigenschaft'] != null">Leiteigenschaft der Tradition</h6>
+          <div *ngIf="sf['leiteigenschaft'] != null">{{sf['leiteigenschaft']}}</div>
+          <h6 *ngIf="sf['wohlgefaellige_talente'] != null">Wohlgefaellige Talente</h6>
+          <div *ngIf="sf['wohlgefaellige_talente'] != null">{{sf['wohlgefaellige_talente']}}</div>
+
+
+          <h6 *ngIf="sf['wohlgefaellige_kampftechniken'] != null">Wohlgefaellige Kampftechniken</h6>
+          <div *ngIf="sf['wohlgefaellige_kampftechniken'] != null">{{sf['wohlgefaellige_kampftechniken']}}</div>
+
+          <h6 *ngIf="sf['erweiterte_liturgiesonderfertigkeiten'] != null">schaltet folgende erweiterte Liturgiesonderfertigkeiten frei:</h6>
+          <div *ngIf="sf['erweiterte_liturgiesonderfertigkeiten'] != null">{{sf['erweiterte_liturgiesonderfertigkeiten']}}</div>
+
+          <h6 *ngIf="sf['erweiterte_zaubersonderfertigkeiten'] != null">schaltet folgende erweiterte Zauberstilsonderfertigkeit frei:</h6>
+          <div *ngIf="sf['erweiterte_zaubersonderfertigkeiten'] != null">{{sf['erweiterte_zaubersonderfertigkeiten']}}</div>
+
+          <h6 *ngIf="sf['erweiterte_kampfsonderfertigkeiten'] != null">schaltet folgende erweiterte Kampfstilsonderfertigkeiten frei:</h6>
+          <div *ngIf="sf['erweiterte_kampfsonderfertigkeiten'] != null">{{sf['erweiterte_kampfsonderfertigkeiten']}}</div>
+
+          <h6 *ngIf="sf['erweiterte_talentsonderfertigkeiten'] != null">schaltet folgende erweiterte Talentstilsonderfertigkeiten frei:</h6>
+          <div *ngIf="sf['erweiterte_talentsonderfertigkeiten'] != null">{{sf['erweiterte_talentsonderfertigkeiten']}}</div>
+
+          <h6 *ngIf="sf['schutzkreis'] != null">Schutzkreis</h6>
+          <div *ngIf="sf['schutzkreis'] != null">{{sf['schutzkreis']}}</div>
+
+          <h6 *ngIf="sf['bannkreis'] != null">Bannkreis</h6>
+          <div *ngIf="sf['bannkreis'] != null">{{sf['bannkreis']}}</div>
+
+          <h6 *ngIf="sf['tricks'] != null">Tricks</h6>
+          <div *ngIf="sf['tricks'] != null">{{sf['tricks']}}</div>
+
+          <h6 *ngIf="sf['boni'] != null">Boni</h6>
+          <div *ngIf="sf['boni'] != null">{{sf['boni']}}</div>
+
+          <div class="einzeiler" *ngIf="sf['verbreitung'] != null">
+            <b>Verbreitung:&nbsp;</b>
+            <div>{{sf['verbreitung']}}</div>
+          </div>
+
+          <div class="einzeiler" *ngIf="sf['kreis'] != null">
+            <b>Benötigter Kreis der Verdammnis:&nbsp;</b>
+            <div>{{sf_to_add['kdv']}}</div>
+          </div>
+
+          <div class="einzeiler" *ngIf="sf['gebraeu'] != null">
+            <b>Gebraeu:&nbsp;</b>
+            <div>{{sf['gebraeu']}}</div>
+          </div>
+
+          <div class="einzeiler" *ngIf="sf['zeremonialgegenstand'] != null">
+            <b>Zeremonialgegenstand:&nbsp;</b>
+            <div>{{sf['zeremonialgegenstand']}}</div>
+          </div>
+
+          <div class="einzeiler" *ngIf="sf['tradition'] != null">
+            <b>Tradition:&nbsp;</b>
+            <div>{{sf['tradition']}}</div>
+          </div>
+
+          <div class="einzeiler" *ngIf="sf['traditionsartefakt'] != null">
+            <b>Traditionsartefakt:&nbsp;</b>
+            <div>{{sf['traditionsartefakt']}}</div>
+          </div>
+
+          <div class="einzeiler" *ngIf="sf['bindungskosten'] != null">
+            <b>Bindungskosten:&nbsp;</b>
+            <div>{{sf['bindungskosten']}} permanente AsP</div>
+          </div>
+
+          <div class="einzeiler" *ngIf="sf['volumen'] != null">
+            <b>Volumen:&nbsp;</b>
+            <div>{{sf['volumen']}}</div>
+          </div>
+
+          <div class="einzeiler" *ngIf="sf['tierarten'] != null">
+            <b>Tierarten:&nbsp;</b>
+            <div>{{sf['tierarten']}}</div>
+          </div>
+
+          <div class="einzeiler" *ngIf="sf['asp-kosten'] != null">
+            <b>AsP-Kosten:&nbsp;</b>
+            <div>{{sf['asp-kosten']}}</div>
+          </div>
+
+          <div class="einzeiler" *ngIf="sf['merkmal'] != null">
+            <b>Merkmal:&nbsp;</b>
+            <div>{{sf['merkmal']}}</div>
+          </div>
+
+          <div class="einzeiler" *ngIf="sf['aspekt'] != null">
+            <b>Aspekt:&nbsp;</b>
+            <div>{{sf['aspekt']}}</div>
+          </div>
+
+          <div class="einzeiler" *ngIf="sf['kampftechnik'] != null && sf['kampftechnik'] !== 'keine'">
+            <b>Kampftechnik:&nbsp;</b>
+            <div>{{sf['kampftechnik']}}</div>
+          </div>
+          <div class="einzeiler" *ngIf="sf['kampftechniken'] != null && sf['kampftechniken'] !== 'keine'">
+            <b>kampftechniken:&nbsp;</b>
+            <div>{{sf['kampftechniken']}}</div>
+          </div>
+          <div class="einzeiler" *ngIf="sf['wirkungsdauer'] != null && sf['wirkungsdauer'] !== 'keine'">
+            <b>Wirkungsdauer:&nbsp;</b>
+            <div>{{sf['wirkungsdauer']}}</div>
+          </div>
+
+          <h6 *ngIf="sf['voraussetzungen'] != null && sf['voraussetzungen'] != '' && sf['voraussetzungen'] != 'keine'">Voraussetzungen</h6>
+          <div *ngIf="sf['voraussetzungen'] != 'keine'">{{sf['voraussetzungen']}}</div>
+
+          <h6 *ngIf="sf['anmerkung'] != null">Anmerkung</h6>
+          <div *ngIf="sf['anmerkung'] != null">{{sf['anmerkung']}}</div>
+
+          <a style="text-align: right" [href]="sf['url']" target="_blank">im online Regelwerk nachlesen</a>
+        </div>
+
+        <button (click)="addSF()">hinzufügen</button>
+      </div>
+      <div class="textfeld vunBox">
+        <div *ngFor="let sonderfertigkeit of werte['sf']">
+          <button class="attrButton" style="visibility: hidden" *ngIf="sonderfertigkeit['kosten'] === 0"></button>
+          <button class="attrButton" *ngIf="sonderfertigkeit['kosten'] !== 0" (click)="removeSF(sonderfertigkeit)">-</button>
+          {{sonderfertigkeit['name']}}
+          <span *ngIf="sonderfertigkeit['hatstufen']">{{sonderfertigkeit['stufe']}}</span>
+          {{sonderfertigkeit['kategorie']}}
+          {{sonderfertigkeit['spezifikation']}}
+          {{sonderfertigkeit['kosten']}} AP
+        </div>
+      </div>
+      <div class="horizontalCenter" *ngIf="werte['kdv'] > 0">
+        <i>Du befindtest dich im {{werte['kdv']}}. Kreis der Verdammnis</i>
+      </div>
+      <div class="horizontalCenter">
+        <div class="sf_extras">
+          <div class="sf_eintrag" *ngIf="werte['pAsP'] > 0">
+            <label>Investierte permanente AsP:</label>
+            <div class="sf_eintrag_wert">{{werte['pAsP']}}</div>
+            <div class="spacer4"></div>
+            <label>davon zurückgekauft:</label>
+            <div class="sf_eintrag_wert">
+              <div class="sf_mod" (click)="buyPAsPBackRevert()">-</div>
+              {{werte['pAsPBack']}}
+              <div class="sf_mod" (click)="buyPAsPBack()">+</div>
+            </div>
+            <div class="spacer4"></div>
+            <label>AP-Wert:</label>
+            <div class="sf_eintrag_wert">{{werte['pAsPBack'] * 2}}</div>
+          </div>
+
+          <div class="sf_eintrag" *ngFor=" let artefakt of werte['traditionsartefakte']">
+            <label class="artefakt">Traditionsartefakt {{artefakt['name']}}</label>
+            <div class="sf_eintrag_wert">{{artefakt['volumen']}} Volumenpunkte</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Sprachen und Schriften -->
+<div class="body" *ngIf="werte.nav === 3">
+  <h3>Sprachen und Schriften</h3>
+  <h5 style="text-align: center" *ngIf="werte.sprachen_sf != null">Wähle kostenlos {{werte.sprachen_sf['name']}} für {{werte.sprachen_sf['stufe']}} AP</h5>
+  <div class="table">
+    <h3>Sprachen</h3>
+    <div class="t_row head">
+      <div class="t_name">Name</div>
+      <div>
+        <div>Stufe</div>
+        <div class="horizontalCenter">
+          <div class="t_radio">0</div>
+          <div class="t_radio">1</div>
+          <div class="t_radio">2</div>
+          <div class="t_radio">3</div>
+        </div>
+      </div>
+      <div class="t_text">Beschreibung</div>
+      <div class="t_text">Anmerkung</div>
+    </div>
+    <div [class]="!sprache['muttersprache'] ? 't_row' : 't_row light'" *ngFor="let sprache of werte.sprachen">
+      <div class="t_name">
+        <div>{{sprache['name']}}</div>
+        <div *ngIf="sprache['muttersprache']"><i>Herkunftssprache</i></div>
+      </div>
+      <div class="t_radio">
+        <input type="radio" [value]=0 [name]="sprache['name']" checked [(ngModel)]="sprache['stufe']" (ngModelChange)="getSchriftenUndSprachenAp()">
+      </div>
+      <div class="t_radio">
+        <input type="radio" [value]=1 [name]="sprache['name']" [(ngModel)]="sprache['stufe']" (ngModelChange)="getSchriftenUndSprachenAp()">
+      </div>
+      <div class="t_radio">
+        <input type="radio" [value]=2 [name]="sprache['name']" [(ngModel)]="sprache['stufe']" (ngModelChange)="getSchriftenUndSprachenAp()">
+      </div>
+      <div class="t_radio" *ngIf="sprache['max_stufe'] === 3">
+        <input type="radio" [value]=3 [name]="sprache['name']" [(ngModel)]="sprache['stufe']" (ngModelChange)="getSchriftenUndSprachenAp()">
+      </div>
+      <div class="t_radio" *ngIf="sprache['max_stufe'] < 3">
+      </div>
+      <div class="t_text">{{sprache['beschreibung']}}</div>
+      <div class="t_text"><i>{{sprache['anmerkung']}}</i></div>
+    </div>
+    <h3>Schriften</h3>
+    <div class="t_row head">
+      <div class="t_name">Name</div>
+      <div>
+        <div>Stufe</div>
+        <div class="horizontalCenter">
+          <div class="t_radio">0</div>
+          <div class="t_radio">1</div>
+          <div class="t_radio">2</div>
+          <div class="t_radio">3</div>
+          <div class="t_radio">4</div>
+          <div class="t_radio">5</div>
+        </div>
+      </div>
+      <div class="t_small">
+        <div>Kosten pro</div>
+        <div>Stufe</div>
+      </div>
+      <div class="t_text">Alphabet</div>
+      <div class="t_small">Sprache</div>
+    </div>
+
+    <div [class]="!schrift['kulturschrift'] ? 't_row' : 't_row light'" *ngFor="let schrift of werte.schriften">
+      <div class="t_name">
+        <div>{{schrift['name']}}</div>
+        <div *ngIf="schrift['kulturschrift']"><i>aus deiner Kultur</i></div>
+      </div>
+      <div class="t_radio">
+        <input type="radio" [value]=0 [name]="schrift['name']" checked [(ngModel)]="schrift['stufe']" (ngModelChange)="getSchriftenUndSprachenAp()">
+      </div>
+      <div class="t_radio">
+        <input type="radio" [value]=1 [name]="schrift['name']" [(ngModel)]="schrift['stufe']" (ngModelChange)="getSchriftenUndSprachenAp()">
+      </div>
+      <div class="t_radio">
+        <input type="radio" [value]=2 [name]="schrift['name']" [(ngModel)]="schrift['stufe']" (ngModelChange)="getSchriftenUndSprachenAp()">
+      </div>
+      <div class="t_radio">
+        <input type="radio" [value]=3 [name]="schrift['name']" [(ngModel)]="schrift['stufe']" (ngModelChange)="getSchriftenUndSprachenAp()">
+      </div>
+      <div class="t_radio">
+        <input type="radio" [value]=4 [name]="schrift['name']" [(ngModel)]="schrift['stufe']" (ngModelChange)="getSchriftenUndSprachenAp()">
+      </div>
+      <div class="t_radio">
+        <input type="radio" [value]=5 [name]="schrift['name']" [(ngModel)]="schrift['stufe']" (ngModelChange)="getSchriftenUndSprachenAp()">
+      </div>
+      <div class="t_small">{{schrift['steigerungskosten'] / 2}} AP</div>
+      <div class="t_text">{{schrift['alphabet']}}</div>
+      <div class="t_small">
+        <div *ngFor="let s of schrift['sprachen']">{{s}}</div>
+      </div>
+    </div>
+
+    <div class="t_row">
+      <div class="t_name">gesamt AP:</div>
+      <div class="t_name">{{sprachen_ap}}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Fertigkeiten -->
+<div class="body" *ngIf="werte.nav === 4">
+  <h3>Talente</h3>
+  <div class="table">
+    <div class="t_row head">
+      <div class="t_name2">Name</div>
+      <div class="t_4">FW</div>
+      <div class="t_9">Attribute</div>
+      <div class="t_4">BE</div>
+      <div class="t_4">Stg.</div>
+      <div class="t_20">Anwendungen</div>
+      <div class="t_text">Beschreibung</div>
+    </div>
+    <div [class]="'t_row koerper' + (i%2) + ' ' + (t['fw'] > t['max'] || t['fw'] < t['min'])" *ngFor="let t of werte.talente_koerper index as i">
+      <div class="t_name2">
+        {{t['name']}}
+        <div *ngIf="t['fw'] > t['max']">max. {{t['max']}}!</div>
+        <div *ngIf="t['fw'] < t['min']">min. {{t['min']}}!</div>
+      </div>
+      <div class="t_4">
+        <div class="arrow" (click)="modificateFertigkeit(t, 1)">⇧</div>
+        <div>{{t['fw']}}</div>
+        <div class="arrow" (click)="modificateFertigkeit(t, -1)">⇩</div>
+      </div>
+      <div class="t_3" style="text-align: right">{{t['attr_1']}}</div>
+      <div class="t_3">{{t['attr_2']}}</div>
+      <div class="t_3" style="text-align: left">{{t['attr_3']}}</div>
+      <div class="t_4">{{t['be']}}</div>
+      <div class="t_4">{{t['steigerung']}}</div>
+      <div class="t_20">
+        <div *ngFor="let anw of t['anwendungen']">
+          {{anw}}
+        </div>
+      </div>
+      <div class="t_text small-font">{{t['beschreibung']}}</div>
+    </div>
+    <div [class]="'t_row gesellschaft' + (i%2) + ' ' + (t['fw'] > t['max'] || t['fw'] < t['min'])" *ngFor="let t of werte.talente_gesellschaft index as i">
+      <div class="t_name2">{{t['name']}}</div>
+      <div *ngIf="t['fw'] > t['max']">max. {{t['max']}}!</div>
+      <div *ngIf="t['fw'] < t['min']">min. {{t['min']}}!</div>
+      <div class="t_4">
+        <div class="arrow" (click)="modificateFertigkeit(t, 1)">⇧</div>
+        <div>{{t['fw']}}</div>
+        <div class="arrow" (click)="modificateFertigkeit(t, -1)">⇩</div>
+      </div>
+      <div class="t_3" style="text-align: right">{{t['attr_1']}}</div>
+      <div class="t_3">{{t['attr_2']}}</div>
+      <div class="t_3" style="text-align: left">{{t['attr_3']}}</div>
+      <div class="t_4">{{t['be']}}</div>
+      <div class="t_4">{{t['steigerung']}}</div>
+      <div class="t_20">
+        <div  *ngFor="let anw of t['anwendungen']">{{anw}}</div>
+      </div>
+      <div class="t_text small-font">{{t['beschreibung']}}</div>
+    </div>
+    <div [class]="'t_row natur' + (i%2) + ' ' + (t['fw'] > t['max'])" *ngFor="let t of werte.talente_natur index as i">
+      <div class="t_name2">{{t['name']}}</div>
+      <div *ngIf="t['fw'] > t['max']">max. {{t['max']}}!</div>
+      <div *ngIf="t['fw'] < t['min']">min. {{t['min']}}!</div>
+      <div class="t_4">
+        <div class="arrow" (click)="modificateFertigkeit(t, 1)">⇧</div>
+        <div>{{t['fw']}}</div>
+        <div class="arrow" (click)="modificateFertigkeit(t, -1)">⇩</div>
+      </div>
+      <div class="t_3" style="text-align: right">{{t['attr_1']}}</div>
+      <div class="t_3">{{t['attr_2']}}</div>
+      <div class="t_3" style="text-align: left">{{t['attr_3']}}</div>
+      <div class="t_4">{{t['be']}}</div>
+      <div class="t_4">{{t['steigerung']}}</div>
+      <div class="t_20">
+        <div  *ngFor="let anw of t['anwendungen']">{{anw}}</div>
+      </div>
+      <div class="t_text small-font">{{t['beschreibung']}}</div>
+    </div>
+    <div [class]="'t_row wissen' + (i%2) + ' ' + (t['fw'] > t['max'] || t['fw'] < t['min'])" *ngFor="let t of werte.talente_wissen index as i">
+      <div class="t_name2">{{t['name']}}</div>
+      <div *ngIf="t['fw'] > t['max']">max. {{t['max']}}!</div>
+      <div *ngIf="t['fw'] < t['min']">min. {{t['min']}}!</div>
+      <div class="t_4">
+        <div class="arrow" (click)="modificateFertigkeit(t, 1)">⇧</div>
+        <div>{{t['fw']}}</div>
+        <div class="arrow" (click)="modificateFertigkeit(t, -1)">⇩</div>
+      </div>
+      <div class="t_3" style="text-align: right">{{t['attr_1']}}</div>
+      <div class="t_3">{{t['attr_2']}}</div>
+      <div class="t_3" style="text-align: left">{{t['attr_3']}}</div>
+      <div class="t_4">{{t['be']}}</div>
+      <div class="t_4">{{t['steigerung']}}</div>
+      <div class="t_20">
+        <div  *ngFor="let anw of t['anwendungen']">{{anw}}</div>
+      </div>
+      <div class="t_text small-font">{{t['beschreibung']}}</div>
+    </div>
+    <div [class]="'t_row handwerk' + (i%2) + ' ' + (t['fw'] > t['max'] || t['fw'] < t['min'])" *ngFor="let t of werte.talente_handwerk index as i">
+      <div class="t_name2">{{t['name']}}</div>
+      <div *ngIf="t['fw'] > t['max']">max. {{t['max']}}!</div>
+      <div *ngIf="t['fw'] < t['min']">min. {{t['min']}}!</div>
+      <div class="t_4">
+        <div class="arrow" (click)="modificateFertigkeit(t, 1)">⇧</div>
+        <div>{{t['fw']}}</div>
+        <div class="arrow" (click)="modificateFertigkeit(t, -1)">⇩</div>
+      </div>
+      <div class="t_3" style="text-align: right">{{t['attr_1']}}</div>
+      <div class="t_3">{{t['attr_2']}}</div>
+      <div class="t_3" style="text-align: left">{{t['attr_3']}}</div>
+      <div class="t_4">{{t['be']}}</div>
+      <div class="t_4">{{t['steigerung']}}</div>
+      <div class="t_20">
+        <div  *ngFor="let anw of t['anwendungen']">{{anw}}</div>
+      </div>
+      <div class="t_text small-font">{{t['beschreibung']}}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Kamptechniken -->
+<div class="body" *ngIf="werte.nav === 5">
+  <h3>Kampftechniken</h3>
+  <div class="horizontalSpaceAround">
+    <div class="verticalCenter" *ngFor="let kt_mod of werte.ktMods">
+      <h5>Wähle</h5>
+      <div *ngFor="let kt of kt_mod['kt']">
+        <input type="radio" [(ngModel)]="kt_mod['choice']" [value]="kt" [name]="'kt_mod' + kt_mod['id']"
+               (ngModelChange)="kampftechnikChoice(kt_mod)">
+        {{kt}}: {{kt_mod['mod']}}
+      </div>
+    </div>
+  </div>
+
+  <div class="table">
+    <div class="t_row head kampf1"><!-- 20 -->
+      <div class="t_name2">Name</div>
+      <div class="t_4">FW</div>
+      <div class="t_9">LE</div>
+      <div class="t_9">Kampfwert</div>
+      <div class="t_4">BF</div>
+      <div class="t_4">Stg.</div>
+      <div class="t_text">Beschreibung</div>
+    </div>
+    <div [class]="'t_row kampf' + (i%2) + ' ' + (t['fw'] > t['max'] || t['fw'] < t['min'])" *ngFor="let t of werte.kampftechniken index as i">
+      <div class="t_name2">
+        {{t['name']}}
+        <div *ngIf="t['fw'] > t['max']">max. {{t['max']}}!</div>
+        <div *ngIf="t['fw'] < t['min']">min. {{t['min']}}!</div>
+      </div>
+      <div class="t_4">
+        <div class="arrow" (click)="modificateKampftechnik(t, 1)">⇧</div>
+        <div>{{t['fw']}}</div>
+        <div class="arrow" (click)="modificateKampftechnik(t, -1)">⇩</div>
+      </div>
+      <div class="t_18">
+        <div class="horizontalStart" *ngFor="let leiteig of t['le']">
+          <div class="t_9">
+            {{leiteig}}
+          </div>
+          <div class="t_9" *ngIf="t['nk']">
+            <div class="t_9" style="text-align: left">AT: {{getAtWert(t['fw'], 'MU')}}</div>
+            <div class="t_9" style="text-align: left">PA: {{getPaWert(t['fw'], leiteig)}}</div>
+          </div>
+          <div class="t_9" *ngIf="!t['nk']">
+            <div class="t_9" style="text-align: left">FK: {{getAtWert(t['fw'], 'FF')}}</div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="t_4">{{t['bruchfaktor']}}</div>
+      <div class="t_4">{{t['steigerung']}}</div>
+      <div class="t_text small-font">{{t['beschreibung']}}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Magie -->
+<div class="body" *ngIf="werte.nav === 6">
+  <h3>Magische Fertigkeiten</h3>
+  <div class="horizontalCenter">
+    <div class="magie_box">
+      <div class="horizontalStart">
+        <select class="z_name magic1" [(ngModel)]="zauber_index" (ngModelChange)="changeZauber()">
+          <option [value]="infos.magie.indexOf(zauber)" *ngFor="let zauber of infos.magie" class="horizontalStart">
+            {{zauber['name']}} - {{zauber['art']}}
+          </option>
+        </select>
+        <div class="z_merkmal magic1 border_right">Merkmal: {{zauber_to_add['merkmal']}}</div>
+        <div class="z_20 magic1 border_bottom border_right"><i>{{zauber_to_add['art']}}</i></div>
+        <div class="z_5 magic1 border_bottom">{{zauber_to_add['steigerung']}}</div>
+      </div>
+      <div class="horizontalStart magic0 border_bottom">
+        <label>Attribute:</label>
+        <div class="z_attr">{{zauber_to_add['attr_1']}}</div>
+        <div class="z_attr">{{zauber_to_add['attr_2']}}</div>
+        <div class="z_attr border_right">{{zauber_to_add['attr_3']}}</div>
+        <label>Mod:</label>
+        <div class="z_5 border_right">{{zauber_to_add['mod']}}</div>
+        <label>Zauberdauer:</label>
+        <div>{{zauber_to_add['aktions_dauer']}}</div>
+      </div>
+      <div class="horizontalStart line magic0 border_bottom">
+        <label>Zielkategorie:</label>
+        <div class="ziel border_right">{{zauber_to_add['zielkategorie']}}</div>
+        <div *ngIf="!['Verzerrtes Elfenlied','Elfenlied','Zaubermelodie','Zaubertanz'].includes(zauber_to_add['art'])"><label>Reichweite:</label>{{infos.magie[this.zauber_index]['reichweite']}}</div>
+        <div *ngIf="['Verzerrtes Elfenlied','Elfenlied','Zaubermelodie','Zaubertanz'].includes(zauber_to_add['art'])">
+          <label>Reichweite:</label>20 Schritt
+          <label>Talent:</label>{{zauber_to_add['reichweite']}}
+        </div>
+      </div>
+      <div class="horizontalStart line magic0 border_bottom">
+        <label>Kosten:</label>
+        <div>{{zauber_to_add['kosten']}} {{zauber_to_add['kosten_erhaltung']}}</div>
+      </div>
+      <div class="horizontalStart line magic0 border_bottom">
+        <label>Wirkungsdauer:</label>
+        {{zauber_to_add['wirkungsdauer']}}
+      </div>
+      <div class="horizontalStart line magic0 border_bottom">
+        <label>Verbreitungen:</label>
+        <span *ngFor="let v of zauber_to_add['verbreitungen'] index as i">
+          <span *ngIf="i > 0">,</span>
+          {{v}}
+        </span>
+      </div>
+      <div class="z_text" *ngIf="zauber_to_add['beschreibung'] != ''">
+        {{zauber_to_add['beschreibung']}}
+      </div>
+      <div class="z_text" *ngIf="zauber_to_add['wirkung'] != ''">
+        <label>Wirkung</label>
+        {{zauber_to_add['wirkung']}}
+      </div>
+      <div class="z_text" *ngIf="zauber_to_add['wirkung_qs'].length > 1">
+        <label>Wirkung nach QS</label>
+        <div *ngFor="let w of zauber_to_add['wirkung_qs']">
+          <label>{{w['qs']}}:</label> {{w['wirkung']}}
+        </div>
+      </div>
+      <div class="line border_bottom"></div>
+      <div class="magic1 border_bottom"><label>Erweiterungen</label></div>
+      <div class="horizontalStart magic0 border_bottom">
+        <div class="z_4"></div>
+        <div class="z_5"><b>FW</b></div>
+        <div class="z_5"><b>AP</b></div>
+        <div class="z_20"><b>Name</b></div>
+        <div class="z_60"><b>Beschreibung</b></div>
+      </div>
+      <div class="horizontalStart magic2 erweiterung border_bottom_thin" *ngFor="let erw of zauber_to_add['erweiterungen']">
+        <div class="z_4">
+          <input class="erw_check" type="checkbox" [(ngModel)]="erw['gekauft']">
+        </div>
+        <div class="z_5">{{erw['fw_voraussetzung']}}</div>
+        <div class="z_5">{{erw['ap_kosten']}}</div>
+        <div class="z_20">{{erw['name']}}</div>
+        <div class="z_60" style="text-align: left">{{erw['beschreibung']}}</div>
+      </div>
+      <button class="z_button border_top_thin" (click)="addZauber()">hinzufügen</button>
+    </div>
+  </div>
+
+  <div class="table">
+    <div class="t_row head magic1"><!-- 20 -->
+      <div class="t_name2">Name</div>
+      <div class="t_4">FW</div>
+      <div class="t_9">Attribute</div>
+      <div class="t_4">Mod.</div>
+      <div class="t_4">Stg.</div>
+      <div class="t_9">Z-Dauer</div>
+      <div class="t_16">Wirkungsdauer</div>
+      <div class="t_9">Reichweite</div>
+      <div class="t_20">Erweiterungen</div>
+    </div>
+    <div [class]="'t_row magic' + (i%2) + ' ' + (t['fw'] > t['max'] || t['fw'] < t['min'])" *ngFor="let t of werte.zauber index as i">
+      <div class="t_name2">
+        {{t['name']}}
+        <div *ngIf="t['fw'] > t['max']">max. {{t['max']}}!</div>
+        <div *ngIf="t['fw'] < t['min']">min. {{t['min']}}!</div>
+      </div>
+      <div class="t_4">
+        <div class="arrow" (click)="modificateFertigkeit(t, 1)">⇧</div>
+        <div>{{t['fw']}}</div>
+        <div class="arrow" (click)="modificateFertigkeit(t, -1)">⇩</div>
+      </div>
+      <div class="t_3" style="text-align: right">{{t['attr_1']}}</div>
+      <div class="t_3">{{t['attr_2']}}</div>
+      <div class="t_3" style="text-align: left">{{t['attr_3']}}</div>
+      <div class="t_4">{{t['mod']}}</div>
+      <div class="t_4">{{t['steigerung']}}</div>
+      <div class="t_9">{{t['aktions_dauer']}}</div>
+      <div class="t_16">{{t['wirkungsdauer']}}</div>
+      <div class="t_9">{{t['reichweite']}}</div>
+      <div class="t_20">
+        <div *ngFor="let erw of t['erweiterungen']">
+          <div *ngIf="erw['gekauft']">{{erw['name']}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="top_bar">
+  <div class="ap_anzeige" *ngIf="infos.start_ap != null">
+    {{infos.start_ap - infos.ap - werte.ap_werte - werte.ap_kampftechniken}} / {{infos.start_ap}}
+  </div>
+</div>

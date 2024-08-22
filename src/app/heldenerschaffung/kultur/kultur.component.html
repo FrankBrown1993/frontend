@@ -1,0 +1,218 @@
+<div class="verticalCenter">
+  <h3>Wähle deine Kultur</h3>
+  <div class="horizontalSpaceAround">
+    <div class="verticalStart" *ngIf="kulturen != null">
+      <select [(ngModel)]="name" [class]="kulturen.get(name)" (ngModelChange)="set()">
+        <option *ngFor="let key of kulturen.keys()" [class]="kulturen.get(key)" [value]="key">{{key}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="legende">
+    <div>Häufigkeit der Kultur bei der gewählten Spezies: </div>
+    <div class="legende0">üblich</div>
+    <div class="legende1">unüblich</div>
+    <div class="legende2">unpassend</div>
+  </div>
+  <div class="infos" *ngIf="infos != null">
+    <div class="infobox">
+      <h3>{{name}}</h3>
+      <div class="eintrag"><label>AP-Wert:</label> {{infos.ap}} Abenteuerpunkte</div>
+      <div class="eintrag" *ngIf="infos.sprachen_anzahl===1 && infos.sprachen.length === 1">
+        <label>Sprache:</label> {{infos.sprachen[0]}}
+      </div>
+      <div class="eintrag" *ngIf="infos.sprachen_anzahl===1 && infos.sprachen.length > 1">
+        <label>Sprachen:</label>
+        <div *ngFor="let sprache of infos.sprachen index as i" class="aufzaehlung">
+          {{sprache}}
+          <span *ngIf="i == infos.sprachen.length - 2">&nbsp;oder&nbsp;</span>
+          <span *ngIf="i < infos.sprachen.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.sprachen_anzahl===2">
+        <label>Sprachen:</label>
+        <div *ngFor="let sprache of infos.sprachen index as i" class="aufzaehlung">
+          {{sprache}}
+          <span *ngIf="i == infos.sprachen.length - 2">&nbsp;und&nbsp;</span>
+          <span *ngIf="i < infos.sprachen.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.schriften.length == 1">
+        <label>Schrift:</label>{{infos.schriften[0].name}} ({{infos.schriften[0].kosten / 2 * 5}} AP)
+      </div>
+      <div class="eintrag" *ngIf="infos.schriften.length > 1">
+        <label>Schriften:</label>
+        <div *ngFor="let schrift of infos.schriften index as i" class="aufzaehlung">
+          {{schrift.name}} ({{schrift.kosten / 2 * 5}} AP)
+          <span *ngIf="i == infos.schriften.length - 2">&nbsp;oder&nbsp;</span>
+          <span *ngIf="i < infos.schriften.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag"><label>Ortskenntnis:</label> {{infos.ortskenntnis}}</div>
+      <h4>Übliche Professionen</h4>
+      <div class="eintrag" *ngIf="infos.typischeprofession.length>0">
+        <div *ngFor="let prof of infos.typischeprofession index as i" class="aufzaehlung">
+          {{prof.name}} <span *ngIf="prof.variante!=null">&nbsp;({{prof.variante}})</span><!--
+          --><span *ngIf="prof.haeufigkeit!=null">&nbsp;[{{prof.haeufigkeit}}]</span>
+          <span *ngIf="i == infos.typischeprofession.length - 2">&nbsp;oder&nbsp;</span>
+          <span *ngIf="i < infos.typischeprofession.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.typischeweltlicheprofession.length>0">
+        <label>weltliche:</label>
+        <div *ngFor="let prof of infos.typischeweltlicheprofession index as i" class="aufzaehlung">
+          {{prof.name}} <span *ngIf="prof.variante!=null">&nbsp;({{prof.variante}})</span><!--
+          --><span *ngIf="prof.haeufigkeit!=null">&nbsp;[{{prof.haeufigkeit}}]</span>
+          <span *ngIf="i == infos.typischeweltlicheprofession.length - 2">&nbsp;oder&nbsp;</span>
+          <span *ngIf="i < infos.typischeweltlicheprofession.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.typischezaubererprofession.length>0">
+        <label>magische:</label>
+        <div *ngFor="let prof of infos.typischezaubererprofession index as i" class="aufzaehlung">
+          {{prof.name}} <span *ngIf="prof.variante!=null">&nbsp;({{prof.variante}})</span><!--
+          --><span *ngIf="prof.haeufigkeit!=null">&nbsp;[{{prof.haeufigkeit}}]</span>
+          <span *ngIf="i == infos.typischezaubererprofession.length - 2">&nbsp;oder&nbsp;</span>
+          <span *ngIf="i < infos.typischezaubererprofession.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.typischegeweihtenprofession.length>0">
+        <label>karmale:</label>
+        <div *ngFor="let prof of infos.typischegeweihtenprofession index as i" class="aufzaehlung">
+          {{prof.name}} <span *ngIf="prof.variante!=null">&nbsp;({{prof.variante}})</span><!--
+          --><span *ngIf="prof.haeufigkeit!=null">&nbsp;[{{prof.haeufigkeit}}]</span>
+          <span *ngIf="i == infos.typischegeweihtenprofession.length - 2">&nbsp;oder&nbsp;</span>
+          <span *ngIf="i < infos.typischegeweihtenprofession.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <!--
+      <div class="eintrag" *ngIf="infos.ueblichekulturen.length > 0"><label>Übliche Kulturen:</label>
+        <div *ngFor="let kultur of infos.ueblichekulturen index as i" class="aufzaehlung">
+          {{kultur}}
+          <span *ngIf="i == infos.ueblichekulturen.length - 2">&nbsp;oder&nbsp;</span>
+          <span *ngIf="i < infos.ueblichekulturen.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.restlichekulturen.length > 0"><label>Restliche Kulturen:</label>
+        <div *ngFor="let kultur of infos.restlichekulturen index as i" class="aufzaehlung">
+          {{kultur}}
+          <span *ngIf="i == infos.restlichekulturen.length - 2">&nbsp;oder&nbsp;</span>
+          <span *ngIf="i < infos.restlichekulturen.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      -->
+      <div class="eintrag" *ngIf="infos.typischevorteile.length > 0"><label>Typische Vorteile:</label>
+        <div *ngFor="let vun of infos.typischevorteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.typischevorteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.typischenachteile.length > 0"><label>Typische Nachteile:</label>
+        <div *ngFor="let vun of infos.typischenachteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.typischenachteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.untypischevorteile.length > 0"><label>Untypische Vorteile:</label>
+        <div *ngFor="let vun of infos.untypischevorteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.untypischevorteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag" *ngIf="infos.untypischenachteile.length > 0"><label>Untypische Nachteile:</label>
+        <div *ngFor="let vun of infos.untypischenachteile index as i" class="aufzaehlung">
+          {{vun.name}}
+          <span>
+            <span *ngIf="vun.spezialisierungen.length > 0">&nbsp;[</span><!--
+         --><span *ngFor="let spez of vun.spezialisierungen index as si"><!--
+           -->{{spez}}<!--
+           --><span *ngIf="si < vun.spezialisierungen.length - 1">&nbsp;|&nbsp;</span><!--
+         --></span><!--
+         --><span *ngIf="vun.spezialisierungen.length > 0">]</span>
+          </span>
+          <span *ngIf="vun.stufen.length > 0">&nbsp;</span>
+          <span *ngFor="let stufe of vun.stufen index as si">
+            {{romanLetters[stufe-1]}}
+            <span *ngIf="si < vun.stufen.length - 1">/</span>
+          </span>
+          <span *ngIf="i < infos.untypischenachteile.length - 1">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag">
+        <label>Typische Talente:</label>
+        <div *ngFor="let talent of infos.typische_talente index as i" class="aufzaehlung">
+          {{talent}}
+          <span *ngIf="i == infos.typische_talente.length - 2">&nbsp;und&nbsp;</span>
+          <span *ngIf="i < infos.typische_talente.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag">
+        <label>Untypische Talente:</label>
+        <div *ngFor="let talent of infos.untypische_talente index as i" class="aufzaehlung">
+          {{talent}}
+          <span *ngIf="i == infos.untypische_talente.length - 2">&nbsp;und&nbsp;</span>
+          <span *ngIf="i < infos.untypische_talente.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+      <div class="eintrag">
+        <label>Talent-Modifikationen:</label>
+        <div *ngFor="let talent of infos.talent_modifikationen index as i" class="aufzaehlung">
+          {{talent.name}}&nbsp;<span *ngIf="talent.wert > 0">+</span>{{talent.wert}}
+          <span *ngIf="i == infos.talent_modifikationen.length - 2">&nbsp;und&nbsp;</span>
+          <span *ngIf="i < infos.talent_modifikationen.length - 2">,&nbsp;</span>
+        </div>
+      </div>
+    </div>
+
+    <h4>{{name}}</h4>
+    <div>{{infos.beschreibung}}</div>
+    <h4>Verbreitung und Lebensweise</h4>
+    <div>{{infos.verbreitungundlebensweise}}</div>
+    <h4>Weltsicht und Glaube</h4>
+    <div>{{infos.weltsichtundglaube}}</div>
+    <h4>Sitten und Braeuche</h4>
+    <div>{{infos.sittenundbraeuche}}</div>
+    <h4>Tracht und Bewaffnung</h4>
+    <div>{{infos.trachtundbewaffnung}}</div>
+  </div>
+
+</div>
+

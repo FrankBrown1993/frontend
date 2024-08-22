@@ -12,10 +12,12 @@ import {WebsocketService} from "../_services/websocket.service";
 })
 export class HeldenerschaffungComponent implements OnInit {
   destroyed = new Subject();
-
   id: string;
+  msgprefix = "erschaffung_";
 
   step = 0;
+  ap: number;
+  start_ap: number;
 
   constructor(private websocket: WebsocketService) {}
 
@@ -28,16 +30,56 @@ export class HeldenerschaffungComponent implements OnInit {
 
     websocket.subscribe((raw: string) => {
       const message: Message = JSON.parse(raw);
-      if (message.type === 'h_erfahrungen' && message.body.length > 0) {
-        const stufen: string[] = JSON.parse(message.body);
-        console.log(stufen);
+      if (message.body != null && message.body.length > 0) {
+        if (message.type.startsWith(this.msgprefix)) {
+          const msg_type = message.type.substring(this.msgprefix.length);
+          if (msg_type === 'step') {
+            this.step = JSON.parse(message.body).step;
+          } else if (msg_type === 'ap') {
+            this.ap = JSON.parse(message.body).ap;
+            this.start_ap = JSON.parse(message.body).start_ap;
+          }
+        }
+      } else {
+        console.error("MESSAGE BODY IS NULL");
       }
+
     });
+    this.getCurrentStep();
   }
 
-  public startHeldenerschaffung(): void {
-    const message: Message = new Message('heldenerschaffung', 'h_erfahrungen', '', 0, -1, 'start');
+  public getCurrentStep() {
+    console.log("[HELDENERSCHAFFUNG] erfrage step");
+    const message: Message = new Message('heldenerschaffung', this.msgprefix + 'step', '', 0,
+      -1, this.msgprefix + 'step');
     this.websocket.sendMessage(message)
-    this.step = 1;
+  }
+
+
+  public startHeldenerschaffung(): void {
+    console.log("[HELDENERSCHAFFUNG] starte neue heldenerschaffung");
+    const message: Message = new Message('heldenerschaffung', this.msgprefix + 'step', '', 0,
+      -1, this.msgprefix + 'start');
+    this.websocket.sendMessage(message);
+  }
+
+  public resetHeldenerschaffung(): void {
+    console.log("[HELDENERSCHAFFUNG] starte neue heldenerschaffung");
+    const message: Message = new Message('heldenerschaffung', this.msgprefix + 'step', '', 0,
+      -1, this.msgprefix + 'reset');
+    this.websocket.sendMessage(message);
+  }
+
+  public zurueck(): void {
+    this.step --;
+    const message: Message = new Message('heldenerschaffung', this.msgprefix + 'weiter', '', this.step,
+      -1, this.msgprefix + 'weiter');
+    this.websocket.sendMessage(message);
+  }
+  public weiter(): void {
+    this.step ++;
+    const message: Message = new Message('heldenerschaffung', this.msgprefix + 'weiter', '', this.step,
+      -1, this.msgprefix + 'weiter');
+    this.websocket.sendMessage(message);
   }
 }

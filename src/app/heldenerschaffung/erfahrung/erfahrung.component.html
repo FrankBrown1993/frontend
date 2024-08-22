@@ -1,0 +1,17 @@
+<div class="verticalCenter">
+  <h3>Wähle deine Erfahrungsstufe</h3>
+  <select [(ngModel)]="erfahrung" (ngModelChange)="setErfahrung()">
+    <option [value]="e" *ngFor="let e of erfahrungsstufen">{{e}}</option>
+  </select>
+  <div class="verticalStart" *ngIf="erfInfos != null">
+    <div>AP: {{erfInfos.ap}}</div>
+    <div>max. Eigenschaftswert: {{erfInfos.max_wert_eigenschaft}}</div>
+    <div>max. Fertigkeitswert: {{erfInfos.max_wert_fertigkeit}}</div>
+    <div>max. Kampftechnik-Wert: {{erfInfos.max_wert_kampftechnik}}</div>
+    <div>max. Summe Eigenschaftspunkte: {{erfInfos.max_summe_eigenschaftspunkte}}</div>
+    <div>max. Anzahl Zauber/Lituergien: {{erfInfos.max_anzahl_energie_fertigkeiten}}</div>
+    <div>davon aus fremder Verbreitung: {{erfInfos.max_fremd_energie_fertigkeiten}}</div>
+  </div>
+
+  {{erfahrung}}
+</div>
