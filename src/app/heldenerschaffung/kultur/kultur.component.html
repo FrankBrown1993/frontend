@@ -3,7 +3,12 @@
   <div class="horizontalSpaceAround">
     <div class="verticalStart" *ngIf="kulturen != null">
       <select [(ngModel)]="name" [class]="kulturen.get(name)" (ngModelChange)="set()">
-        <option *ngFor="let key of kulturen.keys()" [class]="kulturen.get(key)" [value]="key">{{key}}</option>
+        <option *ngFor="let key of kulturen.keys()" [class]="kulturen.get(key)" [value]="key">
+          {{key}}
+          <span *ngIf="kulturen.get(key) === 'kulturen0'"><i> - üblich</i></span>
+          <span *ngIf="kulturen.get(key) === 'kulturen1'"><i> - unüblich</i></span>
+          <span *ngIf="kulturen.get(key) === 'kulturen2'"><i> - unpassend</i></span>
+        </option>
       </select>
     </div>
   </div>

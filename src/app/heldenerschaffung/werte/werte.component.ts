@@ -879,6 +879,13 @@ export class WerteComponent implements OnInit{
     this.getSfKosten();
   }
 
+  public set() {
+    const message: Message = new Message('heldenerschaffung', this.msgprefix + 'set_', '',
+      0, -1, this.msgprefix + 'set_' + JSON.stringify(this.werte));
+    this.websocket.sendMessage(message)
+    // this.getInfos();
+  }
+
   public setSFName(): void {
     let name = this.sf['name'];
     if (name.includes('Fertigkeitsspezialisierung')) {
@@ -1283,68 +1290,72 @@ export class WerteComponent implements OnInit{
               info_sf = s;
             }
           });
-          let kosten = 0;
-          let kosten_list = [];
-          if (kosten_string.includes('|')) {
-            kosten_list = kosten_string.split('|');
-          } else {
-            kosten = Number(kosten_string);
-          }
-          let hatStufen = false;
-
-          if (prof_sf['stufe'] > 0) {
-            hatStufen = true;
-            if (kosten_list.length === 0) {
-              kosten *= prof_sf['stufe'];
+          if (info_sf != null) {
+            let kosten = 0;
+            let kosten_list = [];
+            if (kosten_string.includes('|')) {
+              kosten_list = kosten_string.split('|');
             } else {
-              kosten = kosten_list[prof_sf['stufe'] - 1];
+              kosten = Number(kosten_string);
             }
-          }
-          let spezifikation = '';
-          if (prof_sf['spezialisierungen'].length > 0) {
-            spezifikation = prof_sf['spezialisierungen'][0];
-          }
-          let artefakt_to_add = '';
-          let volumen = 0;
-          if (info_sf['unterteilung'].includes('Traditionsartefakt-Sonderfertigkeiten') && info_sf['volumen'] != null) {
-            artefakt_to_add = info_sf['traditionsartefakt'];
+            let hatStufen = false;
 
-            let artefakt;
-            this.werte['traditionsartefakte'].forEach(a => {
-              if (a['name'] === info_sf['traditionsartefakt']) {
-                artefakt = a;
+            if (prof_sf['stufe'] > 0) {
+              hatStufen = true;
+              if (kosten_list.length === 0) {
+                kosten *= prof_sf['stufe'];
+              } else {
+                kosten = kosten_list[prof_sf['stufe'] - 1];
               }
-            });
-            let stufe = 1;
-            if (prof_sf['stufe'] > 1) {
-              stufe = prof_sf['stufe'];
             }
-            if (artefakt == null) {
-              artefakt = {
-                name: info_sf['traditionsartefakt'], // volumen
-                volumen: info_sf['volumen'] * stufe * -1,
-              };
-              this.werte['traditionsartefakte'].push(artefakt);
-            } else {
-              artefakt['volumen'] += info_sf['volumen'] * stufe * -1;
+            let spezifikation = '';
+            if (prof_sf['spezialisierungen'].length > 0) {
+              spezifikation = prof_sf['spezialisierungen'][0];
             }
-            volumen = info_sf['volumen'] * stufe * -1;
+            let artefakt_to_add = '';
+            let volumen = 0;
+            console.log(info_sf);
+            if (info_sf['unterteilung'].includes('Traditionsartefakt-Sonderfertigkeiten') && info_sf['volumen'] != null) {
+              artefakt_to_add = info_sf['traditionsartefakt'];
 
+              let artefakt;
+              this.werte['traditionsartefakte'].forEach(a => {
+                if (a['name'] === info_sf['traditionsartefakt']) {
+                  artefakt = a;
+                }
+              });
+              let stufe = 1;
+              if (prof_sf['stufe'] > 1) {
+                stufe = prof_sf['stufe'];
+              }
+              if (artefakt == null) {
+                artefakt = {
+                  name: info_sf['traditionsartefakt'], // volumen
+                  volumen: info_sf['volumen'] * stufe * -1,
+                };
+                this.werte['traditionsartefakte'].push(artefakt);
+              } else {
+                artefakt['volumen'] += info_sf['volumen'] * stufe * -1;
+              }
+              volumen = info_sf['volumen'] * stufe * -1;
+
+            }
+
+            const toAdd = {
+              name: prof_sf.name,
+              stufe: prof_sf.stufe,
+              kategorie: '',
+              spezifikation: spezifikation,
+              kosten: kosten,
+              hatstufen: hatStufen,
+              pAsP: '',
+              kdv: '',
+              volumen: volumen,
+              artefakt: artefakt_to_add,
+            };
+            this.werte.sf.push(toAdd);
           }
 
-          const toAdd = {
-            name: prof_sf.name,
-            stufe: prof_sf.stufe,
-            kategorie: '',
-            spezifikation: spezifikation,
-            kosten: kosten,
-            hatstufen: hatStufen,
-            pAsP: '',
-            kdv: '',
-            volumen: volumen,
-            artefakt: artefakt_to_add,
-          };
-          this.werte.sf.push(toAdd);
         }
       });
       const talentarten: string[] = ['gesellschaft', 'natur', 'handwerk', 'wissen', 'koerper'];
@@ -1638,7 +1649,8 @@ export class WerteComponent implements OnInit{
     this.zurueck.emit();
   }
   public parentWeiter() {
-    this.weiter.emit();
+    this.set();
+    // this.weiter.emit();
   }
 
   private initialKtChoice(kt_mod, id: number) {

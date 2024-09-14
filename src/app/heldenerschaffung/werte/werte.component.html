@@ -8,12 +8,13 @@
 
 <!-- Voraussetzugen -->
 <div class="body">
-  <div class="horizontalSpaceAround" *ngIf="werte.nav > 0">
+  <div class="horizontalSpaceAround" *ngIf="werte.nav > 0 && werte.nav < 7">
     <button class="navButton" (click)="navZurueck()">←</button>
-    <button class="navButton" (click)="navWeiter()">→</button>
+    <button class="navButton" *ngIf="werte.nav < 6" (click)="navWeiter()">→</button>
+    <button class="navButton" style="color: purple" *ngIf="werte.nav === 6" (click)="parentWeiter()">→</button>
   </div>
   <div class="horizontalSpaceAround" *ngIf="werte.nav === 0">
-    <button class="navButton" (click)="parentZurueck()">←</button>
+    <button class="navButton" style="color: purple" (click)="parentZurueck()">←</button>
     <button class="navButton" (click)="navWeiter()">→</button>
   </div>
   <h4>Voraussetzungen aus Profession</h4>
@@ -245,7 +246,7 @@
               <option *ngFor="let sf_name of sf_list" [value]="sf_list.indexOf(sf_name)">{{sf_name}}</option>
             </select>
           </div>
-          <div class="horizontalCenter" *ngIf="sf['stufen'] > 0">
+          <div class="horizontalCenter" *ngIf="sf['stufen'] != null && sf['stufen'] > 0">
             <select [(ngModel)]="sf_to_add['stufe']" (ngModelChange)="getSfKosten()">
               <option [value]="stufe + 1"
                       *ngFor="let d of [].constructor(sf['stufen']) index as stufe">

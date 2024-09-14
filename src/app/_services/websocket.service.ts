@@ -20,7 +20,7 @@ export class WebsocketService implements OnDestroy {
       console.log('[WebsocketService] Connection not yet established. Connect to Websocket.');
       const ip: string = this.ipService.getIp();
       this.connection = webSocket({
-        url: 'ws://' + ip + ':8081/ws/' + this.id,
+        url: 'ws://' + ip + ':8082/ws/' + this.id,
         deserializer: ({data}) => data,
       });
     } else {
@@ -35,7 +35,7 @@ export class WebsocketService implements OnDestroy {
       console.log('[WebsocketService] Connection not yet established. Connect to Websocket.');
       const ip: string = this.ipService.getIp();
       this.firstConnection = webSocket({
-        url: 'ws://' + ip + ':8081/ws/' + this.id,
+        url: 'ws://' + ip + ':8082/ws/' + this.id,
         deserializer: ({data}) => data,
       });
     } else {
@@ -46,12 +46,14 @@ export class WebsocketService implements OnDestroy {
 
   sendMessage(message: Message): void {
     console.log('[WEBSOCKET] sendMessage', message);
-    const maxFrameLimit: number = 65536;
+    // const maxFrameLimit: number = 65536;
+    const maxFrameLimit: number = 60000;
     // const maxFrameLimit: number = 50;
     if (this.connection) {
       let msgFrameSize = message.getFrameSize();
       console.log(msgFrameSize);
       if (msgFrameSize >= maxFrameLimit) {
+        console.log('split message up');
         let seq: number = 0;
         let remainingBody = message.body;
         // let remainingBody = message.body.substr(maxFrameLimit - message.getFrameSizeWithoutBody());
@@ -67,6 +69,8 @@ export class WebsocketService implements OnDestroy {
           if (remainingBody.length >= maxFrameLimit - message.getFrameSizeWithoutBody()) {
             remainingBody = remainingBody.substr(maxFrameLimit - message.getFrameSizeWithoutBody());
           }
+
+          console.log('split message size:', splitMsg.getFrameSize());
           this.connection.next(splitMsg);
           seq++;
         }

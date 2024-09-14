@@ -5,7 +5,7 @@
   <div class="horizontalSpaceAround">
     <button class="navButton" style="color: darkred" (click)="resetHeldenerschaffung()" *ngIf="step == 1">🗴</button>
     <button class="navButton" (click)="zurueck()" *ngIf="step > 1 && step != 5">←</button>
-    <button class="navButton" (click)="weiter()" *ngIf="step > 0 && step != 5">→</button>
+    <button class="navButton" (click)="weiter()" *ngIf="step > 0 && step < 5">→</button>
   </div>
   <div class="horizontalCenter" *ngIf="step == 1">
     <app-erfahrung></app-erfahrung>
@@ -20,7 +20,11 @@
     <app-profession></app-profession>
   </div>
   <div class="horizontalCenter" *ngIf="step == 5">
-    <app-werte (zurueck)="zurueck()"></app-werte>
+    <app-werte (zurueck)="zurueck()" (weiter)="weiter()"></app-werte>
+  </div>
+
+  <div class="horizontalCenter" *ngIf="step == 6">
+    <button>fertigstellen</button>
   </div>
 </div>
 <div class="top_bar" *ngIf="step != 5">
